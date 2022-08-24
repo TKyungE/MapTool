@@ -16,7 +16,6 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Tick(void);
 	virtual HRESULT Render(void);
-	virtual void Tick();
 protected:
 	LPDIRECT3DDEVICE9 m_pGraphic_Device = nullptr;
 

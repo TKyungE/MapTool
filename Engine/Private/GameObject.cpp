@@ -32,9 +32,7 @@ HRESULT CGameObject::Render(void)
 	return S_OK;
 }
 
-void CGameObject::Tick()
-{
-}
+
 
 HRESULT CGameObject::Add_Components(const _tchar * pComponentTag, const _tchar * pPrototypeTag, CComponent ** ppOut, void * pArg)
 {
