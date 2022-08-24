@@ -3,6 +3,7 @@
 #include "GameObject.h"
 
 BEGIN(Engine)
+class CRenderer;
 class CTexture;
 class CTransform;
 class CVIBuffer_Terrain;
@@ -19,9 +20,11 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype(void) override;
 	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Tick(void) override;
 	virtual HRESULT Render(void) override;
 
 private:
+	CRenderer* m_pRendererCom = nullptr;
 	CTexture* m_pTextureCom = nullptr;
 	CTransform* m_pTransformCom = nullptr;
 	CVIBuffer_Terrain* m_pVIBufferCom = nullptr;

@@ -23,6 +23,10 @@ HRESULT CGameObject::Initialize(void * pArg)
 	return S_OK;
 }
 
+void CGameObject::Tick(void)
+{
+}
+
 HRESULT CGameObject::Render(void)
 {
 	return S_OK;

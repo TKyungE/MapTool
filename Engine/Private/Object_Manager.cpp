@@ -42,6 +42,12 @@ HRESULT CObject_Manager::Add_GameObject(const _tchar * pPrototypeTag, const _tch
 	return S_OK;
 }
 
+void CObject_Manager::Tick(void)
+{
+	for (auto& Pair : m_Layers)
+		Pair.second->Tick();
+}
+
 void CObject_Manager::Clear(void)
 {
 	for (auto& Pair : m_Layers)

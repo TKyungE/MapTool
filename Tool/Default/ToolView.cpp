@@ -12,6 +12,7 @@
 #include "ToolDoc.h"
 #include "ToolView.h"
 #include "MainFrm.h"
+#include "MyTerrain.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,6 +31,8 @@ BEGIN_MESSAGE_MAP(CToolView, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
 
 	ON_WM_DESTROY()
+	ON_WM_KEYDOWN()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 // CToolView 생성/소멸
@@ -153,7 +156,17 @@ void CToolView::OnInitialUpdate()
 		return;
 	}
 
-	
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), CMyTerrain::Create(m_pGraphic_Device))))
+	{
+		ERR_MSG(TEXT("Prototype_GameObject_Terrain Failed"));
+		return;
+	}
+		
+	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+	{
+		ERR_MSG(TEXT("Ready_Layer_BackGround Failed"));
+		return;
+	}
 }
 
 // CToolView 그리기
@@ -168,6 +181,8 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
 	m_pGameInstance->Render_Begin();
 
+	m_pRenderer->Render_GameObjects();
+
 	m_pGameInstance->Render_End();
 }
 
@@ -176,6 +191,7 @@ void CToolView::OnDestroy()
 	CView::OnDestroy();
 
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
+	Safe_Release(m_pRenderer);
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pGameInstance);
 
@@ -186,6 +202,10 @@ void CToolView::OnDestroy()
 HRESULT CToolView::Ready_Prototype_Component(void)
 {
 	if (nullptr == m_pGameInstance)
+		return E_FAIL;
+
+	//Prototype_Component_Renderer
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Renderer"), m_pRenderer = CRenderer::Create(m_pGraphic_Device))))
 		return E_FAIL;
 	
 	//Prototype_Component_VIBuffer_Terrain
@@ -206,7 +226,7 @@ HRESULT CToolView::SetUp_RenderState(void)
 	
 	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);
@@ -224,4 +244,36 @@ HRESULT CToolView::SetUp_SamplerState(void)
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
 	return S_OK;
+}
+
+HRESULT CToolView::Ready_Layer_BackGround(const _tchar * pLayerTag)
+{
+	if (nullptr == m_pGameInstance || FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), pLayerTag, nullptr)))
+		return E_FAIL;
+	
+	return S_OK;
+}
+
+
+void CToolView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	CView::OnKeyDown(nChar, nRepCnt, nFlags);
+
+	m_pGameInstance->Tick_Engine();
+
+	Invalidate(FALSE);
+}
+
+
+void CToolView::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	CView::OnMouseMove(nFlags, point);
+
+	m_pGameInstance->Tick_Engine();
+
+	Invalidate(FALSE);
 }

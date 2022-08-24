@@ -31,6 +31,9 @@
     <Filter Include="02. MyTerrain">
       <UniqueIdentifier>{b3e19b62-b9a3-4c35-ba36-9ca235ce490b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Camera_Dynamic">
+      <UniqueIdentifier>{096cf711-2b84-476f-b4f9-8634495552c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -66,6 +69,9 @@
     <ClInclude Include="..\Public\MyTerrain.h">
       <Filter>02. MyTerrain</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Camera_Dynamic.h">
+      <Filter>03. Camera_Dynamic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -88,6 +94,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MyTerrain.cpp">
       <Filter>02. MyTerrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Camera_Dynamic.cpp">
+      <Filter>03. Camera_Dynamic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

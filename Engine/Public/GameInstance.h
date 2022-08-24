@@ -15,6 +15,7 @@ private:
 
 public:	//Engine
 	HRESULT Initialize_Engine(const GRAPHIC_DESC& GraphicDesc, LPDIRECT3DDEVICE9* ppOut);
+	void Tick_Engine(void);
 	void Clear(void);
 
 public: //Graphic_Device

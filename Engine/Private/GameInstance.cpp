@@ -25,6 +25,14 @@ HRESULT CGameInstance::Initialize_Engine(const GRAPHIC_DESC & GraphicDesc, LPDIR
 	return S_OK;
 }
 
+void CGameInstance::Tick_Engine(void)
+{
+	if (nullptr == m_pObject_Manager)
+		return;
+	
+	m_pObject_Manager->Tick();
+}
+
 void CGameInstance::Clear(void)
 {
 	if (nullptr == m_pObject_Manager || nullptr == m_pComponent_Manager)

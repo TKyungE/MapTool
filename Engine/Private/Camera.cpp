@@ -37,6 +37,18 @@ HRESULT CCamera::Initialize(void * pArg)
 	return S_OK;
 }
 
+void CCamera::Tick(void)
+{
+	m_pTransform->Set_State(CTransform::STATE_POSITION, m_CameraDesc.vEye);
+	m_pTransform->LookAt(m_CameraDesc.vAt);
+
+	m_pTransform->Set_TransformDesc(m_CameraDesc.TransformDesc);
+
+	m_Components.emplace(m_pTransformTag, m_pTransform);
+
+	Safe_AddRef(m_pTransform);
+}
+
 HRESULT CCamera::Render(void)
 {
 	return S_OK;
