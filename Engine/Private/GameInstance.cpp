@@ -6,13 +6,15 @@ CGameInstance::CGameInstance()
 	: m_pGraphic_Device(CGraphic_Device::Get_Instance())
 	, m_pObject_Manager(CObject_Manager::Get_Instance())
 	, m_pComponent_Manager(CComponent_Manager::Get_Instance())
+	, m_pInput_Device(CInput_Device::Get_Instance())
 {
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pObject_Manager);
+	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pGraphic_Device);
 }
 
-HRESULT CGameInstance::Initialize_Engine(const GRAPHIC_DESC & GraphicDesc, LPDIRECT3DDEVICE9 * ppOut)
+HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, const GRAPHIC_DESC & GraphicDesc, LPDIRECT3DDEVICE9 * ppOut)
 {
 	if (nullptr == m_pGraphic_Device || nullptr == m_pObject_Manager)
 		return E_FAIL;
@@ -21,6 +23,8 @@ HRESULT CGameInstance::Initialize_Engine(const GRAPHIC_DESC & GraphicDesc, LPDIR
 	if (FAILED(m_pGraphic_Device->InitDevice(GraphicDesc, ppOut)))
 		return E_FAIL;
 
+	if (FAILED(m_pInput_Device->Initialize(hInstance, GraphicDesc.hWnd)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -30,6 +34,8 @@ void CGameInstance::Tick_Engine(void)
 	if (nullptr == m_pObject_Manager)
 		return;
 	
+	m_pInput_Device->Update();
+
 	m_pObject_Manager->Tick();
 }
 
@@ -56,6 +62,31 @@ void CGameInstance::Render_End(HWND hWnd)
 		return;
 	
 	m_pGraphic_Device->Render_End(hWnd);
+}
+
+_char CGameInstance::Get_DIKState(_uchar eKeyID)
+{
+	if (nullptr == m_pInput_Device)
+		return 0;
+
+	return m_pInput_Device->Get_DIKState(eKeyID);
+}
+
+_char CGameInstance::Get_DIMKeyState(DIMK eMouseKeyID)
+{
+	if (nullptr == m_pInput_Device)
+		return 0;
+
+	return m_pInput_Device->Get_DIMKeyState(eMouseKeyID);
+}
+
+
+_long CGameInstance::Get_DIMMoveState(DIMM eMouseMoveID)
+{
+	if (nullptr == m_pInput_Device)
+		return 0;
+
+	return m_pInput_Device->Get_DIMMoveState(eMouseMoveID);
 }
 
 HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)

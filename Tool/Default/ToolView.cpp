@@ -13,12 +13,14 @@
 #include "ToolView.h"
 #include "MainFrm.h"
 #include "MyTerrain.h"
+#include "Camera_Dynamic.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 HWND g_hWnd;
+HINSTANCE g_hInst;
 
 // CToolView
 
@@ -31,8 +33,6 @@ BEGIN_MESSAGE_MAP(CToolView, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
 
 	ON_WM_DESTROY()
-	ON_WM_KEYDOWN()
-	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 // CToolView 생성/소멸
@@ -123,7 +123,7 @@ void CToolView::OnInitialUpdate()
 	pMainFrm->SetWindowPos(nullptr, 0, 0, int(g_iWinSizeX + fRowFrm), int(g_iWinSizeY + fColFrm), SWP_NOZORDER);
 
 	g_hWnd = m_hWnd;
-
+	g_hInst = AfxGetInstanceHandle();
 	GRAPHIC_DESC Graphic_Desc;
 	ZeroMemory(&Graphic_Desc, sizeof(GRAPHIC_DESC));
 
@@ -132,7 +132,7 @@ void CToolView::OnInitialUpdate()
 	Graphic_Desc.iWinSizeY = g_iWinSizeY;
 	Graphic_Desc.eWinMode = GRAPHIC_DESC::MODE_WIN;
 
-	if (FAILED(m_pGameInstance->Initialize_Engine(Graphic_Desc, &m_pGraphic_Device)))
+	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst,Graphic_Desc, &m_pGraphic_Device)))
 	{
 		ERR_MSG(TEXT("Initialize_Engine Failed"));
 		return;
@@ -161,10 +161,20 @@ void CToolView::OnInitialUpdate()
 		ERR_MSG(TEXT("Prototype_GameObject_Terrain Failed"));
 		return;
 	}
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
+		CCamera_Dynamic::Create(m_pGraphic_Device))))
+		return;
 		
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 	{
 		ERR_MSG(TEXT("Ready_Layer_BackGround Failed"));
+		return;
+	}
+
+	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+	{
+		ERR_MSG(TEXT("Ready_Layer_Camera Failed"));
 		return;
 	}
 }
@@ -179,11 +189,16 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 		return;
 
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
+
+	m_pGameInstance->Tick_Engine();
+
 	m_pGameInstance->Render_Begin();
 
 	m_pRenderer->Render_GameObjects();
 
 	m_pGameInstance->Render_End();
+
+	Invalidate(FALSE);
 }
 
 void CToolView::OnDestroy()
@@ -216,6 +231,11 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Transform"), CTransform::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/*For.Prototype_Component_Texture_Terrain*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_Terrain"),
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Terrain/Grass_%d.tga"), 1))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -226,7 +246,7 @@ HRESULT CToolView::SetUp_RenderState(void)
 	
 	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);
@@ -254,26 +274,30 @@ HRESULT CToolView::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-
-void CToolView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+HRESULT CToolView::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	CGameInstance*			pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
 
-	CView::OnKeyDown(nChar, nRepCnt, nFlags);
+	CCamera_Dynamic::CAMERADESC_DERIVED				CameraDesc;
+	ZeroMemory(&CameraDesc, sizeof(CCamera_Dynamic::CAMERADESC_DERIVED));
 
-	m_pGameInstance->Tick_Engine();
+	CameraDesc.CameraDesc.vEye = _float3(0.f, 10.f, -10.f);
+	CameraDesc.CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
 
-	Invalidate(FALSE);
+	CameraDesc.CameraDesc.fFovy = D3DXToRadian(60.0f);
+	CameraDesc.CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
+	CameraDesc.CameraDesc.fNear = 0.2f;
+	CameraDesc.CameraDesc.fFar = 500.f;
+
+	CameraDesc.CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
+	CameraDesc.CameraDesc.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
+
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Camera_Dynamic"), pLayerTag, &CameraDesc)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
 }
 
-
-void CToolView::OnMouseMove(UINT nFlags, CPoint point)
-{
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
-	CView::OnMouseMove(nFlags, point);
-
-	m_pGameInstance->Tick_Engine();
-
-	Invalidate(FALSE);
-}

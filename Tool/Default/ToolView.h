@@ -51,7 +51,7 @@ private:
 	HRESULT SetUp_SamplerState(void);
 	
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
-
+	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 private:
 	CGameInstance* m_pGameInstance = nullptr;
 	LPDIRECT3DDEVICE9 m_pGraphic_Device = nullptr;
@@ -61,8 +61,6 @@ private:
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnDestroy();
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
 
 #ifndef _DEBUG  // ToolView.cpp의 디버그 버전

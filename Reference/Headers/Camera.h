@@ -32,7 +32,7 @@ public:
 	virtual void Tick(void);
 	virtual HRESULT Render(void);
 
-protected:
+public:
 	static _tchar* m_pTransformTag;
 	class CTransform* m_pTransform = nullptr;
 	CAMERADESC m_CameraDesc;

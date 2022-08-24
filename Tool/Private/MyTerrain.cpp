@@ -50,8 +50,8 @@ HRESULT CMyTerrain::Render(void)
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
 		return E_FAIL;
 
-	/*if (FAILED(m_pTextureCom->Bind_OnGraphicDev(0)))
-		return E_FAIL;*/
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(0)))
+		return E_FAIL;
 	
 	m_pVIBufferCom->Render();
 	
@@ -63,8 +63,8 @@ HRESULT CMyTerrain::SetUp_Components(void)
 	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
 	
-	/*if (FAILED(__super::Add_Components(TEXT("Com_Texture"), TEXT("Prototype_Component_Texture_Terrain"), (CComponent**)&m_pTextureCom)))
-		return E_FAIL;*/
+	if (FAILED(__super::Add_Components(TEXT("Com_Texture"), TEXT("Prototype_Component_Texture_Terrain"), (CComponent**)&m_pTextureCom)))
+		return E_FAIL;
 	
 	if (FAILED(__super::Add_Components(TEXT("Com_VIBuffer"), TEXT("Prototype_Component_VIBuffer_Terrain"), (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;

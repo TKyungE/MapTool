@@ -96,6 +96,24 @@ void CTransform::Go_Left(void)
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
+void CTransform::Turn(_float3 vAxis, _float fTimeDelta)
+{
+	_float3	vRight = Get_State(CTransform::STATE_RIGHT);
+	_float3	vUp = Get_State(CTransform::STATE_UP);
+	_float3	vLook = Get_State(CTransform::STATE_LOOK);
+
+	_float4x4	RotationMatrix;
+	D3DXMatrixRotationAxis(&RotationMatrix, &vAxis, m_TransformDesc.fRotationPerSec * fTimeDelta);
+
+	D3DXVec3TransformNormal(&vRight, &vRight, &RotationMatrix);
+	D3DXVec3TransformNormal(&vUp, &vUp, &RotationMatrix);
+	D3DXVec3TransformNormal(&vLook, &vLook, &RotationMatrix);
+
+	Set_State(CTransform::STATE_RIGHT, vRight);
+	Set_State(CTransform::STATE_UP, vUp);
+	Set_State(CTransform::STATE_LOOK, vLook);
+}
+
 void CTransform::LookAt(_float3 vPoint)
 {
 	_float3 vPosition = Get_State(CTransform::STATE_POSITION);

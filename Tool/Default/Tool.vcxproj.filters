@@ -54,9 +54,6 @@
     <ClInclude Include="MainFrm.h">
       <Filter>00. Window\00. MainFrm</Filter>
     </ClInclude>
-    <ClInclude Include="ToolView.h">
-      <Filter>00. Window\01. View</Filter>
-    </ClInclude>
     <ClInclude Include="ToolDoc.h">
       <Filter>00. Window\02. Document</Filter>
     </ClInclude>
@@ -71,6 +68,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Camera_Dynamic.h">
       <Filter>03. Camera_Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolView.h">
+      <Filter>00. Window\01. View</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
