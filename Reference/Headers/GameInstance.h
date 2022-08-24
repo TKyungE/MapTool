@@ -4,6 +4,7 @@
 #include "Object_Manager.h"
 #include "Component_Manager.h"
 #include "Input_Device.h"
+#include "Picking.h"
 
 BEGIN(Engine)
 
@@ -36,6 +37,10 @@ public: //Component_Manager
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CComponent* pPrototype);
 	class CComponent* Clone_Component(const _tchar* pPrototypeTag, void* pArg = nullptr);
 
+public: //Picking
+	HRESULT Intersect(_float4x4 InvWorld, _float3* LU, _float3* RU, _float3* RD);
+	void Tick();
+	_float3 Get_TargetPos(void);
 public:
 	static void Release_Engine(void);
 
@@ -44,7 +49,7 @@ private:
 	CObject_Manager* m_pObject_Manager = nullptr;
 	CComponent_Manager* m_pComponent_Manager = nullptr;
 	CInput_Device*					m_pInput_Device = nullptr;
-	
+	CPicking*		m_pPicking = nullptr;
 public:
 	virtual void Free(void) override;
 };

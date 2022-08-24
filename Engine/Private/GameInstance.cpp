@@ -7,11 +7,13 @@ CGameInstance::CGameInstance()
 	, m_pObject_Manager(CObject_Manager::Get_Instance())
 	, m_pComponent_Manager(CComponent_Manager::Get_Instance())
 	, m_pInput_Device(CInput_Device::Get_Instance())
+	, m_pPicking(CPicking::Get_Instance())
 {
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pGraphic_Device);
+	Safe_AddRef(m_pPicking);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, const GRAPHIC_DESC & GraphicDesc, LPDIRECT3DDEVICE9 * ppOut)
@@ -26,6 +28,10 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, const GRAPHIC_DESC
 	if (FAILED(m_pInput_Device->Initialize(hInstance, GraphicDesc.hWnd)))
 		return E_FAIL;
 
+	if (FAILED(m_pPicking->Initialize(GraphicDesc, ppOut)))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -37,6 +43,8 @@ void CGameInstance::Tick_Engine(void)
 	m_pInput_Device->Update();
 
 	m_pObject_Manager->Tick();
+
+	m_pPicking->Tick();
 }
 
 void CGameInstance::Clear(void)
@@ -121,6 +129,30 @@ CComponent * CGameInstance::Clone_Component(const _tchar * pPrototypeTag, void *
 	return m_pComponent_Manager->Clone_Component(pPrototypeTag, pArg);
 }
 
+HRESULT CGameInstance::Intersect(_float4x4 InvWorld, _float3 * LU, _float3 * RU, _float3 * RD)
+{
+	if (nullptr == m_pPicking)
+		return E_FAIL;
+
+	return m_pPicking->Intersect(InvWorld, LU, RU, RD);
+}
+
+void CGameInstance::Tick()
+{
+	if (nullptr == m_pPicking)
+		return ;
+
+	 m_pPicking->Tick();
+}
+
+_float3 CGameInstance::Get_TargetPos(void)
+{
+	if (nullptr == m_pPicking)
+		return _float3();
+
+	return m_pPicking->Get_TargetPos();
+}
+
 void CGameInstance::Release_Engine(void)
 {
 	CGameInstance::Get_Instance()->Destroy_Instance();
@@ -129,6 +161,10 @@ void CGameInstance::Release_Engine(void)
 
 	CComponent_Manager::Get_Instance()->Destroy_Instance();
 
+	CInput_Device::Get_Instance()->Destroy_Instance();
+
+	CPicking::Get_Instance()->Destroy_Instance();
+
 	CGraphic_Device::Get_Instance()->Destroy_Instance();
 }
 
@@ -136,5 +172,7 @@ void CGameInstance::Free(void)
 {
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_pPicking);
+	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pGraphic_Device);
 }

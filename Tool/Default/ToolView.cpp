@@ -300,4 +300,3 @@ HRESULT CToolView::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 	return S_OK;
 }
-

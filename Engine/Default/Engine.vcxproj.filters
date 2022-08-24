@@ -55,6 +55,9 @@
     <Filter Include="00. System\Input">
       <UniqueIdentifier>{e871056d-b8a8-4e58-a150-1383a2340ce0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Picking">
+      <UniqueIdentifier>{a9f1603d-7040-46b1-8c95-1838184aaa7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -117,6 +120,9 @@
     <ClInclude Include="..\Public\Input_Device.h">
       <Filter>00. System\Input</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Picking.h">
+      <Filter>03. Picking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -163,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Input_Device.cpp">
       <Filter>00. System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Picking.cpp">
+      <Filter>03. Picking</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
