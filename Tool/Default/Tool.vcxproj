@@ -191,6 +191,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\Camera_Dynamic.h" />
     <ClInclude Include="..\Public\MyTerrain.h" />
     <ClInclude Include="..\Public\Tool_Defines.h" />
     <ClInclude Include="MainFrm.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="ToolView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
     <ClCompile Include="..\Private\MyTerrain.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MyForm.cpp" />

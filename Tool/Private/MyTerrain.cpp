@@ -27,8 +27,19 @@ HRESULT CMyTerrain::Initialize(void * pArg)
 	
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
-	
+
+	if (nullptr != m_pRendererCom)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
 	return S_OK;
+}
+
+void CMyTerrain::Tick(void)
+{
+	__super::Tick();
+
+	if (nullptr != m_pRendererCom)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
 HRESULT CMyTerrain::Render(void)
@@ -47,20 +58,11 @@ HRESULT CMyTerrain::Render(void)
 	return S_OK;
 }
 
-void CMyTerrain::Tick()
-{
-	__super::Tick();
-
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
-}
-
 HRESULT CMyTerrain::SetUp_Components(void)
 {
-	/* For.Com_Renderer */
 	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
-
+	
 	if (FAILED(__super::Add_Components(TEXT("Com_Texture"), TEXT("Prototype_Component_Texture_Terrain"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 	
@@ -109,6 +111,7 @@ void CMyTerrain::Free(void)
 {
 	__super::Free();
 
+	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);

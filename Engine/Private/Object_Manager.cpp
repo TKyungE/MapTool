@@ -11,9 +11,9 @@ HRESULT CObject_Manager::Add_Prototype(const _tchar * pPrototypeTag, CGameObject
 {
 	if (nullptr != Find_Prototype(pPrototypeTag))
 		return E_FAIL;
-
+	
 	m_Prototypes.emplace(pPrototypeTag, pPrototype);
-
+	
 	return S_OK;
 }
 
@@ -22,11 +22,11 @@ HRESULT CObject_Manager::Add_GameObject(const _tchar * pPrototypeTag, const _tch
 	CGameObject* pPrototype = Find_Prototype(pPrototypeTag);
 	if (nullptr == pPrototype)
 		return E_FAIL;
-
+	
 	CGameObject* pGameObject = pPrototype->Clone(pArg);
 	if (nullptr == pGameObject)
 		return E_FAIL;
-
+	
 	CLayer* pLayer = Find_Layer(pLayerTag);
 
 	if (nullptr == pLayer)
@@ -42,7 +42,7 @@ HRESULT CObject_Manager::Add_GameObject(const _tchar * pPrototypeTag, const _tch
 	return S_OK;
 }
 
-void CObject_Manager::Tick()
+void CObject_Manager::Tick(void)
 {
 	for (auto& Pair : m_Layers)
 		Pair.second->Tick();
@@ -52,7 +52,7 @@ void CObject_Manager::Clear(void)
 {
 	for (auto& Pair : m_Layers)
 		Safe_Release(Pair.second);
-
+	
 	m_Layers.clear();
 }
 
@@ -72,7 +72,7 @@ CGameObject * CObject_Manager::Find_Prototype(const _tchar * pPrototypeTag)
 
 	if (iter == m_Prototypes.end())
 		return nullptr;
-
+	
 	return iter->second;
 }
 
@@ -80,11 +80,11 @@ void CObject_Manager::Free(void)
 {
 	for (auto& Pair : m_Layers)
 		Safe_Release(Pair.second);
-
+	
 	m_Layers.clear();
 
 	for (auto& Pair : m_Prototypes)
 		Safe_Release(Pair.second);
-
+	
 	m_Prototypes.clear();
 }

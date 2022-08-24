@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Component.h"
 
 BEGIN(Engine)
@@ -13,26 +14,27 @@ private:
 	virtual ~CRenderer() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(void* pArg)override;
+	virtual HRESULT Initialize_Prototype(void) override;
+	virtual HRESULT Initialize(void* pArg) override;
 
 public:
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pGameObject);
-	HRESULT Render_GameObjects();
+	HRESULT Render_GameObjects(void);
 
 private:
-	list<class CGameObject*>				m_GameObjects[RENDER_END];
-	typedef list<class CGameObject*>		GAMEOBJECTS;
+	list<class CGameObject*> m_GameObjects[RENDER_END];
+	typedef list<class CGameObject*> GAMEOBJECTS;
 
 private:
-	HRESULT Render_Priority();
-	HRESULT Render_NonAlphaBlend();
-	HRESULT Render_AlphaBlend();
-	HRESULT Render_UI();
+	HRESULT Render_Priority(void);
+	HRESULT Render_NonAlphaBlend(void);
+	HRESULT Render_AlphaBlend(void);
+	HRESULT Render_UI(void);
+
 public:
 	static CRenderer* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
-	virtual CComponent* Clone(void* pArg = nullptr)override;
-	virtual void Free();
+	virtual CComponent* Clone(void* pArg = nullptr) override;
+	virtual void Free(void);
 };
 
 END

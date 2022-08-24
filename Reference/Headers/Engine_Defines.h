@@ -6,6 +6,12 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 
+#define DIRECTINPUT_VERSION 0x0800
+#include <dinput.h>
+
+enum DIMK { DIMK_LBUTTON, DIMK_RBUTTON, DIMK_WHEEL, DIMK_END };
+enum DIMM { DIMM_X, DIMM_Y, DIMM_WHEEL, DIMM_END };
+
 #include <vector>
 #include <map>
 #include <list>

@@ -4,15 +4,14 @@
 CRenderer::CRenderer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CComponent(pGraphic_Device)
 {
-
 }
 
-HRESULT CRenderer::Initialize_Prototype()
+HRESULT CRenderer::Initialize_Prototype(void)
 {
 	return S_OK;
 }
 
-HRESULT CRenderer::Initialize(void* pArg)
+HRESULT CRenderer::Initialize(void * pArg)
 {
 	return S_OK;
 }
@@ -21,7 +20,7 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject * pGame
 {
 	if (nullptr == pGameObject)
 		return E_FAIL;
-
+	
 	m_GameObjects[eRenderGroup].push_back(pGameObject);
 
 	Safe_AddRef(pGameObject);
@@ -29,7 +28,7 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject * pGame
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_GameObjects()
+HRESULT CRenderer::Render_GameObjects(void)
 {
 	if (FAILED(Render_Priority()))
 		return E_FAIL;
@@ -40,11 +39,10 @@ HRESULT CRenderer::Render_GameObjects()
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 
-
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_Priority()
+HRESULT CRenderer::Render_Priority(void)
 {
 	for (auto& pGameObject : m_GameObjects[RENDER_PRIORITY])
 	{
@@ -60,7 +58,7 @@ HRESULT CRenderer::Render_Priority()
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_NonAlphaBlend()
+HRESULT CRenderer::Render_NonAlphaBlend(void)
 {
 	for (auto& pGameObject : m_GameObjects[RENDER_NONALPHABLEND])
 	{
@@ -72,10 +70,11 @@ HRESULT CRenderer::Render_NonAlphaBlend()
 	}
 
 	m_GameObjects[RENDER_NONALPHABLEND].clear();
+
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_AlphaBlend()
+HRESULT CRenderer::Render_AlphaBlend(void)
 {
 	for (auto& pGameObject : m_GameObjects[RENDER_ALPHABLEND])
 	{
@@ -91,7 +90,7 @@ HRESULT CRenderer::Render_AlphaBlend()
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_UI()
+HRESULT CRenderer::Render_UI(void)
 {
 	for (auto& pGameObject : m_GameObjects[RENDER_UI])
 	{
@@ -103,12 +102,13 @@ HRESULT CRenderer::Render_UI()
 	}
 
 	m_GameObjects[RENDER_UI].clear();
+
 	return S_OK;
 }
 
 CRenderer * CRenderer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CRenderer*	pInstance = new CRenderer(pGraphic_Device);
+	CRenderer* pInstance = new CRenderer(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -126,8 +126,7 @@ CComponent * CRenderer::Clone(void * pArg)
 	return this;
 }
 
-void CRenderer::Free()
+void CRenderer::Free(void)
 {
 	__super::Free();
-
 }

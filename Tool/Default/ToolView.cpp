@@ -12,14 +12,15 @@
 #include "ToolDoc.h"
 #include "ToolView.h"
 #include "MainFrm.h"
-
 #include "MyTerrain.h"
+#include "Camera_Dynamic.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 HWND g_hWnd;
+HINSTANCE g_hInst;
 
 // CToolView
 
@@ -122,7 +123,7 @@ void CToolView::OnInitialUpdate()
 	pMainFrm->SetWindowPos(nullptr, 0, 0, int(g_iWinSizeX + fRowFrm), int(g_iWinSizeY + fColFrm), SWP_NOZORDER);
 
 	g_hWnd = m_hWnd;
-
+	g_hInst = AfxGetInstanceHandle();
 	GRAPHIC_DESC Graphic_Desc;
 	ZeroMemory(&Graphic_Desc, sizeof(GRAPHIC_DESC));
 
@@ -131,7 +132,7 @@ void CToolView::OnInitialUpdate()
 	Graphic_Desc.iWinSizeY = g_iWinSizeY;
 	Graphic_Desc.eWinMode = GRAPHIC_DESC::MODE_WIN;
 
-	if (FAILED(m_pGameInstance->Initialize_Engine(Graphic_Desc, &m_pGraphic_Device)))
+	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst,Graphic_Desc, &m_pGraphic_Device)))
 	{
 		ERR_MSG(TEXT("Initialize_Engine Failed"));
 		return;
@@ -142,7 +143,7 @@ void CToolView::OnInitialUpdate()
 		ERR_MSG(TEXT("SetUp_SamplerState Failed"));
 		return;
 	}
-
+		
 	if (FAILED(SetUp_RenderState()))
 	{
 		ERR_MSG(TEXT("SetUp_RenderState Failed"));
@@ -155,19 +156,27 @@ void CToolView::OnInitialUpdate()
 		return;
 	}
 
-	if (FAILED(Ready_Prototype_Object()))
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), CMyTerrain::Create(m_pGraphic_Device))))
 	{
-		ERR_MSG(TEXT("Ready_Prototype_Object Failed"));
+		ERR_MSG(TEXT("Prototype_GameObject_Terrain Failed"));
 		return;
 	}
 
-	if (FAILED(Ready_BackGruond(TEXT("Layer_BackGround"))))
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
+		CCamera_Dynamic::Create(m_pGraphic_Device))))
+		return;
+		
+	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 	{
-		ERR_MSG(TEXT("Ready_BackGruond Failed"));
+		ERR_MSG(TEXT("Ready_Layer_BackGround Failed"));
 		return;
 	}
 
-
+	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+	{
+		ERR_MSG(TEXT("Ready_Layer_Camera Failed"));
+		return;
+	}
 }
 
 // CToolView 그리기
@@ -180,11 +189,16 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 		return;
 
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
+
+	m_pGameInstance->Tick_Engine();
+
 	m_pGameInstance->Render_Begin();
 
 	m_pRenderer->Render_GameObjects();
 
 	m_pGameInstance->Render_End();
+
+	Invalidate(FALSE);
 }
 
 void CToolView::OnDestroy()
@@ -192,6 +206,7 @@ void CToolView::OnDestroy()
 	CView::OnDestroy();
 
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
+	Safe_Release(m_pRenderer);
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pGameInstance);
 
@@ -204,18 +219,17 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
-	/* For.Prototype_Component_Renderer */
+	//Prototype_Component_Renderer
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Renderer"), m_pRenderer = CRenderer::Create(m_pGraphic_Device))))
 		return E_FAIL;
-
+	
 	//Prototype_Component_VIBuffer_Terrain
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(m_pGraphic_Device, 200, 200))))
 		return E_FAIL;
-
+	
 	//Prototype_Component_Transform
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Transform"), CTransform::Create(m_pGraphic_Device))))
 		return E_FAIL;
-
 
 	/*For.Prototype_Component_Texture_Terrain*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_Terrain"),
@@ -225,28 +239,14 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 	return S_OK;
 }
 
-HRESULT CToolView::Ready_Prototype_Object(void)
-{
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
-		CMyTerrain::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/*For.Prototype_GameObject_Camera_Dynamic */
-	/*if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
-		CCamera_Dynamic::Create(m_pGraphic_Device))))
-		return E_FAIL;*/
-
-	return S_OK;
-}
-
 HRESULT CToolView::SetUp_RenderState(void)
 {
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
-
+	
 	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);
@@ -258,7 +258,7 @@ HRESULT CToolView::SetUp_SamplerState(void)
 {
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
-
+	
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
@@ -266,10 +266,38 @@ HRESULT CToolView::SetUp_SamplerState(void)
 	return S_OK;
 }
 
-HRESULT CToolView::Ready_BackGruond(const _tchar * pLayerTag)
+HRESULT CToolView::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), pLayerTag)))
+	if (nullptr == m_pGameInstance || FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), pLayerTag, nullptr)))
 		return E_FAIL;
+	
+	return S_OK;
+}
+
+HRESULT CToolView::Ready_Layer_Camera(const _tchar * pLayerTag)
+{
+	CGameInstance*			pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
+
+	CCamera_Dynamic::CAMERADESC_DERIVED				CameraDesc;
+	ZeroMemory(&CameraDesc, sizeof(CCamera_Dynamic::CAMERADESC_DERIVED));
+
+	CameraDesc.CameraDesc.vEye = _float3(0.f, 10.f, -10.f);
+	CameraDesc.CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
+
+	CameraDesc.CameraDesc.fFovy = D3DXToRadian(60.0f);
+	CameraDesc.CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
+	CameraDesc.CameraDesc.fNear = 0.2f;
+	CameraDesc.CameraDesc.fFar = 500.f;
+
+	CameraDesc.CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
+	CameraDesc.CameraDesc.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
+
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Camera_Dynamic"), pLayerTag, &CameraDesc)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
+

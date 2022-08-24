@@ -44,6 +44,7 @@ public:
 	void Go_Backward(void);
 	void Go_Right(void);
 	void Go_Left(void);
+	void Turn(_float3 vAxis ,_float fTimeDelta);
 	void LookAt(_float3 vPoint);
 
 private:

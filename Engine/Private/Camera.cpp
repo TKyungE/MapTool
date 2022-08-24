@@ -37,6 +37,10 @@ HRESULT CCamera::Initialize(void * pArg)
 	return S_OK;
 }
 
+void CCamera::Tick(void)
+{
+}
+
 HRESULT CCamera::Render(void)
 {
 	return S_OK;
@@ -49,6 +53,7 @@ HRESULT CCamera::Bind_OnGraphicDev(void)
 	_float4x4 ViewMatrix = *D3DXMatrixInverse(&ViewMatrix, nullptr, &WorldMatrix);
 	_float4x4 ProjMatrix = *D3DXMatrixPerspectiveFovLH(&ProjMatrix, m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
 
+	
 	m_pGraphic_Device->SetTransform(D3DTS_VIEW, &ViewMatrix);
 	m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, &ProjMatrix);
 

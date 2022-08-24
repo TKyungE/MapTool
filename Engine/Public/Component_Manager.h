@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Renderer.h"
 #include "Texture.h"
 #include "Transform.h"
 #include "VIBuffer_Terrain.h"

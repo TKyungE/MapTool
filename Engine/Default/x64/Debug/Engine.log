@@ -1,7 +1,5 @@
-﻿  Component_Manager.cpp
+﻿  Transform.cpp
+  Camera.cpp
   코드를 생성하고 있습니다...
-  건너뛰고 있습니다... (관련된 변경 내용 없음)
-  GameObject.cpp
-  GameInstance.cpp
   Engine.vcxproj -> C:\Users\태경\Desktop\MapTool\Engine\Default\..\Bin\Engine.dll
   Engine.vcxproj -> ..\Bin\Engine.pdb (Full PDB)

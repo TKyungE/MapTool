@@ -19,12 +19,13 @@ HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)
 	return S_OK;
 }
 
-void CLayer::Tick()
+void CLayer::Tick(void)
 {
-	for (auto& iter = m_GameObjects.begin();
-		iter != m_GameObjects.end(); ++iter)
-		(*iter)->Tick();
-	
+	for (auto& pGameObject : m_GameObjects)
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Tick();
+	}
 }
 
 CLayer * CLayer::Create(void)
