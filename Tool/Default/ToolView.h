@@ -6,6 +6,7 @@
 
 #include "Tool_Defines.h"
 #include "GameInstance.h"
+#include "Renderer.h"
 
 class CToolDoc;
 class CToolView : public CView
@@ -46,13 +47,16 @@ protected:
 
 private:
 	HRESULT Ready_Prototype_Component(void);
+	HRESULT Ready_Prototype_Object(void);
 	HRESULT SetUp_RenderState(void);
 	HRESULT SetUp_SamplerState(void);
+private:
+	HRESULT Ready_BackGruond(const _tchar* pLayerTag);
 
 private:
 	CGameInstance* m_pGameInstance = nullptr;
 	LPDIRECT3DDEVICE9 m_pGraphic_Device = nullptr;
-
+	CRenderer*		m_pRenderer = nullptr;
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnDestroy();

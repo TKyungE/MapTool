@@ -13,7 +13,7 @@ private:
 public:
 	HRESULT Initialize(void);
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
-	
+	void Tick();
 private:
 	list<class CGameObject*> m_GameObjects;
 	typedef list<class CGameObject*> GAMEOBJECTS;

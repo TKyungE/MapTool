@@ -3,6 +3,8 @@
 #include "Texture.h"
 #include "Transform.h"
 #include "VIBuffer_Terrain.h"
+#include "Renderer.h"
+
 
 BEGIN(Engine)
 

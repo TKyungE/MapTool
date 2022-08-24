@@ -6,6 +6,7 @@ BEGIN(Engine)
 class CTexture;
 class CTransform;
 class CVIBuffer_Terrain;
+class CRenderer;
 END
 
 class CToolView;
@@ -20,12 +21,12 @@ public:
 	virtual HRESULT Initialize_Prototype(void) override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Render(void) override;
-
+	virtual void Tick()override;
 private:
 	CTexture* m_pTextureCom = nullptr;
 	CTransform* m_pTransformCom = nullptr;
 	CVIBuffer_Terrain* m_pVIBufferCom = nullptr;
-
+	CRenderer*	m_pRendererCom = nullptr;
 private:
 	HRESULT SetUp_Components(void);
 
