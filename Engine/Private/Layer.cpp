@@ -19,6 +19,15 @@ HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)
 	return S_OK;
 }
 
+void CLayer::Tick(void)
+{
+	for (auto& pGameObject : m_GameObjects)
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Tick();
+	}
+}
+
 CLayer * CLayer::Create(void)
 {
 	CLayer* pInstance = new CLayer();

@@ -14,6 +14,7 @@ private:
 public:
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg = nullptr);
+	void Tick(void);
 	void Clear(void);
 	class CLayer* Find_Layer(const _tchar* pLayerTag);
 

@@ -8,6 +8,7 @@
 #include "GameInstance.h"
 
 class CToolDoc;
+class CMyTerrain;
 class CToolView : public CView
 {
 protected: // serialization에서만 만들어집니다.
@@ -48,14 +49,20 @@ private:
 	HRESULT Ready_Prototype_Component(void);
 	HRESULT SetUp_RenderState(void);
 	HRESULT SetUp_SamplerState(void);
+	
+	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
 
 private:
 	CGameInstance* m_pGameInstance = nullptr;
 	LPDIRECT3DDEVICE9 m_pGraphic_Device = nullptr;
 
+	CRenderer* m_pRenderer = nullptr;
+
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnDestroy();
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
 
 #ifndef _DEBUG  // ToolView.cpp의 디버그 버전

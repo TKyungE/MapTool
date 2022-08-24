@@ -29,6 +29,7 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype(void);
 	virtual HRESULT Initialize(void* pArg);
+	virtual void Tick(void);
 	virtual HRESULT Render(void);
 
 protected:
