@@ -2,6 +2,8 @@
 #include "..\Public\MyTerrain.h"
 #include "GameInstance.h"
 
+
+
 CMyTerrain::CMyTerrain(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
 {
@@ -16,7 +18,7 @@ HRESULT CMyTerrain::Initialize_Prototype(void)
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
-
+	
 	return S_OK;
 }
 
@@ -32,6 +34,8 @@ HRESULT CMyTerrain::Initialize(void * pArg)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 	return S_OK;
+
+	
 }
 
 void CMyTerrain::Tick(void)
@@ -42,7 +46,7 @@ void CMyTerrain::Tick(void)
 
 	if (nullptr == pInstance)
 		return;
-
+	
 	Safe_AddRef(pInstance);
 
 	if (pInstance->Get_DIMKeyState(DIMK_LBUTTON) < 0)

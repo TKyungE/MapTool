@@ -36,7 +36,7 @@ public: //Object_Manager
 public: //Component_Manager
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CComponent* pPrototype);
 	class CComponent* Clone_Component(const _tchar* pPrototypeTag, void* pArg = nullptr);
-
+	
 public: //Picking
 	HRESULT Intersect(_float4x4 InvWorld, _float3* LU, _float3* RU, _float3* RD);
 	void Tick();

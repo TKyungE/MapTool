@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 
+
 BEGIN(Engine)
 class CRenderer;
 class CTexture;
@@ -30,7 +31,6 @@ private:
 	CVIBuffer_Terrain* m_pVIBufferCom = nullptr;
 private:
 	HRESULT SetUp_Components(void);
-
 public:
 	static CMyTerrain* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
