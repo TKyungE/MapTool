@@ -33,6 +33,8 @@ BEGIN_MESSAGE_MAP(CToolView, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
 
 	ON_WM_DESTROY()
+	ON_WM_MOUSEMOVE()
+	ON_WM_MOUSELEAVE()
 END_MESSAGE_MAP()
 
 // CToolView 생성/소멸
@@ -198,8 +200,12 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 
 	m_pGameInstance->Render_End();
 
-	Invalidate(FALSE);
+	if (m_bTrack)
+	{
+		Invalidate(FALSE);
+	}	
 }
+	
 
 void CToolView::OnDestroy()
 {
@@ -299,4 +305,41 @@ HRESULT CToolView::Ready_Layer_Camera(const _tchar * pLayerTag)
 	Safe_Release(pGameInstance);
 
 	return S_OK;
+}
+
+
+void CToolView::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	CView::OnMouseMove(nFlags, point);
+		
+
+	if (m_bTrack == false)
+	{
+		TRACKMOUSEEVENT MouseEvent;
+		ZeroMemory(&MouseEvent, sizeof(TRACKMOUSEEVENT));
+
+		MouseEvent.cbSize = sizeof(TRACKMOUSEEVENT);
+		MouseEvent.dwFlags = TME_LEAVE;
+		MouseEvent.hwndTrack = g_hWnd;
+		MouseEvent.dwHoverTime = 0;
+
+
+		m_bTrack = _TrackMouseEvent(&MouseEvent);
+
+		RedrawWindow();
+	}
+}
+
+
+void CToolView::OnMouseLeave()
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	CView::OnMouseLeave();
+
+	m_bTrack = false;
+
+	RedrawWindow();
 }

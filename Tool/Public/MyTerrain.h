@@ -21,7 +21,7 @@ private:
 
 public:
 	CVIBuffer_Terrain* Get_VIBufferCom(void) { return m_pVIBufferCom; }
-
+	void	Set_Value(_float fValue) { m_fValue = fValue; }
 public:
 	virtual HRESULT Initialize_Prototype(void) override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -32,6 +32,8 @@ private:
 	CTexture* m_pTextureCom = nullptr;
 	CTransform* m_pTransformCom = nullptr;
 	CVIBuffer_Terrain* m_pVIBufferCom = nullptr;
+private:
+	_float m_fValue = 0.f;
 private:
 	HRESULT SetUp_Components(void);
 public:

@@ -58,9 +58,12 @@ private:
 
 	CRenderer* m_pRenderer = nullptr;
 
+	bool m_bTrack = false;
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnDestroy();
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnMouseLeave();
 };
 
 #ifndef _DEBUG  // ToolView.cpp의 디버그 버전

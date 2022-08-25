@@ -30,22 +30,25 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	CEdit m_Edit_Value;
 	float m_fSpin_Value = 0.f;
 
 
 public:
-	afx_msg void OnValue();
-	CSliderCtrl m_Slider;
 	virtual void OnInitialUpdate();
-	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 
 public:
 	afx_msg void OnSaveData();
 	afx_msg void OnLoadData();
 
 private:
-	typedef struct tag
+	typedef struct tag;
+public:
+
+	CEdit m_Edit_Slider;
+	CSliderCtrl m_Slider_Value;
+
+	afx_msg void OnEdit_Value();
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 };
 
 
