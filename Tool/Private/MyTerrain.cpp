@@ -63,7 +63,7 @@ void CMyTerrain::Tick(void)
 		VB->Lock(0, 0, (void**)&pVertices, 0);
 		IB->Lock(0, 0, (void**)&pIndices, 0);
 
-		for (_uint i = 0; i < m_pVIBufferCom->Get_NumPrimitive(); ++i)
+		for (_uint i = 0; i < m_pVIBufferCom->Get_VIBInfo().m_iNumPrimitive; ++i)
 		{
 			_float3 LU = pVertices[pIndices[i]._0].vPosition;
 			_float3 RU = pVertices[pIndices[i]._1].vPosition;
@@ -87,8 +87,6 @@ void CMyTerrain::Tick(void)
 	}
 
 	Safe_Release(pInstance);
-
-
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);

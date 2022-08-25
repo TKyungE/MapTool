@@ -10,9 +10,12 @@
 #define IDC_SAVE                        1000
 #define Edit_VALUE                      1001
 #define IDC_LOAD                        1001
+
 #define SLIDER_VALUE                    1002
 #define IDC_EDIT1                       1002
 #define IDC_SLIDER1                     1003
+
+
 
 // Next default values for new objects
 // 

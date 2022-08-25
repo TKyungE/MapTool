@@ -1,6 +1,8 @@
 #pragma once
+
 #include "afxwin.h"
 #include "afxcmn.h"
+
 
 
 // CMyForm 폼 뷰입니다.
@@ -8,6 +10,19 @@
 class CMyForm : public CFormView
 {
 	DECLARE_DYNCREATE(CMyForm)
+
+public:
+	typedef struct tagVIBInfo
+	{
+		unsigned int iNumVer;
+		unsigned int iStride;
+		unsigned long dwFVF;
+		D3DPRIMITIVETYPE ePrimitiveType;
+		unsigned int iNumPrimitive;
+
+		unsigned int iIndicesByte;
+		D3DFORMAT eIndexFormat;
+	}VIBINFO;
 
 protected:
 	CMyForm();           // 동적 만들기에 사용되는 protected 생성자입니다.
@@ -49,6 +64,9 @@ public:
 
 	afx_msg void OnEdit_Value();
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+
+	VIBINFO m_tVIBInfo;
+
 };
 
 
