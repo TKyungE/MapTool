@@ -91,6 +91,9 @@ void CMyForm::OnSaveData()
 			return;
 		}
 
+		WriteFile(hFile, &pTerrain->Get_VIBufferCom()->Get_VIBInfo(), sizeof(CVIBuffer::VIBINFO), &dwByte, nullptr);
+		WriteFile(hFile, &pTerrain->Get_VIBufferCom()->Get_VIBInfoDerived(), sizeof(CVIBuffer_Terrain::VIBINFO_DERIVED), &dwByte, nullptr);
+
 		LPDIRECT3DVERTEXBUFFER9 VB = pTerrain->Get_VIBufferCom()->Get_VB();
 		LPDIRECT3DINDEXBUFFER9 IB = pTerrain->Get_VIBufferCom()->Get_IB();
 
@@ -99,21 +102,23 @@ void CMyForm::OnSaveData()
 
 		VB->Lock(0, 0, (void**)&pVertices, 0);
 
-		for (_uint i = 0; i < pTerrain->Get_VIBufferCom()->Get_NumVecrtices(); ++i)
+		for (_uint i = 0; i < pTerrain->Get_VIBufferCom()->Get_VIBInfo().m_iNumVertices; ++i)
 		{
-			WriteFile(hFile, pVertices[i].vPosition, sizeof(_float3), &dwByte, nullptr);
-			WriteFile(hFile, pVertices[i].vTexture, sizeof(_float2), &dwByte, nullptr);
+			WriteFile(hFile, &pVertices[i].vPosition, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, &pVertices[i].vTexture, sizeof(_float2), &dwByte, nullptr);
 		}
 
 		VB->Unlock();
 
 		IB->Lock(0, 0, (void**)&pIndices, 0);
 
-		WriteFile(hFile, pIndices, sizeof(FACEINDICES32), &dwByte, nullptr);
-		/*for (_uint i = 0; i < pTerrain->Get_VIBufferCom()->Get_NumPrimitive(); ++i)
+		//WriteFile(hFile, pIndices, sizeof(FACEINDICES32), &dwByte, nullptr);
+		for (_uint i = 0; i < pTerrain->Get_VIBufferCom()->Get_VIBInfo().m_iNumPrimitive; ++i)
 		{
 			WriteFile(hFile, &pIndices[i]._0, sizeof(_uint), &dwByte, nullptr);
-		}*/
+			WriteFile(hFile, &pIndices[i]._1, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, &pIndices[i]._2, sizeof(_uint), &dwByte, nullptr);
+		}
 
 		IB->Unlock();
 
@@ -162,29 +167,55 @@ void CMyForm::OnLoadData()
 			return;
 		}
 
+		CVIBuffer::VIBINFO VIBInfo;
+		CVIBuffer_Terrain::VIBINFO_DERIVED VIBInfo_Derived;
+		ZeroMemory(&VIBInfo, sizeof(CVIBuffer::VIBINFO));
+		ZeroMemory(&VIBInfo_Derived, sizeof(CVIBuffer_Terrain::VIBINFO_DERIVED));
+
+		ReadFile(hFile, &VIBInfo, sizeof(CVIBuffer::VIBINFO), &dwByte, nullptr);
+		ReadFile(hFile, &VIBInfo_Derived, sizeof(CVIBuffer_Terrain::VIBINFO_DERIVED), &dwByte, nullptr);
+
+		pTerrain->Get_VIBufferCom()->Release_Buffer();
+
+		pTerrain->Get_VIBufferCom()->Set_VIBInfo(VIBInfo);
+		pTerrain->Get_VIBufferCom()->Set_VIBInfoDerived(VIBInfo_Derived);
+
+		if (FAILED(pTerrain->Get_VIBufferCom()->Load_Terrain()))
+		{
+			ERR_MSG(TEXT("Failed to Load Terrain"));
+			return;
+		}
+
 		LPDIRECT3DVERTEXBUFFER9 VB = pTerrain->Get_VIBufferCom()->Get_VB();
 		LPDIRECT3DINDEXBUFFER9 IB = pTerrain->Get_VIBufferCom()->Get_IB();
-
-		VB->Release();
-		IB->Release();
-
-
 
 		VTXTEX* pVertices = nullptr;
 		FACEINDICES32* pIndices = nullptr;
 
 		VB->Lock(0, 0, (void**)&pVertices, 0);
-		IB->Lock(0, 0, (void**)&pIndices, 0);
 
-		_uint i = 0;
-		while (true)
+		for (_uint i = 0; i < pTerrain->Get_VIBufferCom()->Get_VIBInfo().m_iNumVertices; ++i)
 		{
-			ReadFile(hFile, pVertices[i].vPosition, sizeof(_float3), &dwByte, nullptr);
-			ReadFile(hFile, pVertices[i].vTexture, sizeof(_float2), &dwByte, nullptr);
-			++i;
+			_float3 vPos;
+			_float2 vTex;
+			ReadFile(hFile, vPos, sizeof(_float3), &dwByte, nullptr);
+			ReadFile(hFile, vTex, sizeof(_float2), &dwByte, nullptr);
+
+			pVertices[i].vPosition = vPos;
+			pVertices[i].vTexture = vTex;
 		}
 		
 		VB->Unlock();
+
+		IB->Lock(0, 0, (void**)&pIndices, 0);
+
+		for (_uint i = 0; i < pTerrain->Get_VIBufferCom()->Get_VIBInfo().m_iNumPrimitive; ++i)
+		{
+			ReadFile(hFile, &pIndices[i]._0, sizeof(_uint), &dwByte, nullptr);
+			ReadFile(hFile, &pIndices[i]._1, sizeof(_uint), &dwByte, nullptr);
+			ReadFile(hFile, &pIndices[i]._2, sizeof(_uint), &dwByte, nullptr);
+		}
+
 		IB->Unlock();
 
 		Safe_Release(pInstance);

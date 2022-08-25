@@ -1,12 +1,23 @@
 #pragma once
 
-
-
 // CMyForm 폼 뷰입니다.
 
 class CMyForm : public CFormView
 {
 	DECLARE_DYNCREATE(CMyForm)
+
+public:
+	typedef struct tagVIBInfo
+	{
+		unsigned int iNumVer;
+		unsigned int iStride;
+		unsigned long dwFVF;
+		D3DPRIMITIVETYPE ePrimitiveType;
+		unsigned int iNumPrimitive;
+
+		unsigned int iIndicesByte;
+		D3DFORMAT eIndexFormat;
+	}VIBINFO;
 
 protected:
 	CMyForm();           // 동적 만들기에 사용되는 protected 생성자입니다.
@@ -32,7 +43,7 @@ public:
 	afx_msg void OnLoadData();
 
 private:
-	typedef struct tag
+	VIBINFO m_tVIBInfo;
 };
 
 
