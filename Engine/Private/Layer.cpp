@@ -28,6 +28,16 @@ void CLayer::Tick(void)
 	}
 }
 
+CGameObject * CLayer::Find_GameObject(_uint iIndex)
+{
+	auto& iter = m_GameObjects.begin();
+
+	for (_uint i = 0; i < iIndex; ++i)
+		++iter;
+
+	return *iter;
+}
+
 CLayer * CLayer::Create(void)
 {
 	CLayer* pInstance = new CLayer();

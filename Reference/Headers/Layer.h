@@ -14,6 +14,7 @@ public:
 	HRESULT Initialize(void);
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
 	void Tick(void);
+	class CGameObject* Find_GameObject(_uint iIndex);
 	
 private:
 	list<class CGameObject*> m_GameObjects;

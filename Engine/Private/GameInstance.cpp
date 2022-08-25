@@ -113,6 +113,14 @@ HRESULT CGameInstance::Add_GameObject(const _tchar * pPrototypeTag, const _tchar
 	return m_pObject_Manager->Add_GameObject(pPrototypeTag, pLayerTag, pArg);
 }
 
+CGameObject * CGameInstance::Find_Object(const _tchar * pLayerTag, _uint iIndex)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+	
+	return m_pObject_Manager->Find_Object(pLayerTag, iIndex);
+}
+
 HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CComponent * pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)
