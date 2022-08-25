@@ -56,6 +56,19 @@ void CObject_Manager::Clear(void)
 	m_Layers.clear();
 }
 
+CGameObject * CObject_Manager::Find_Object(const _tchar * pLayerTag, _uint iIndex)
+{
+	CLayer* pLayer = Find_Layer(pLayerTag);
+	if (nullptr == pLayer)
+		return nullptr;
+	
+	CGameObject* pGameObject = pLayer->Find_GameObject(iIndex);
+	if (nullptr == pGameObject)
+		return nullptr;
+
+	return pGameObject;
+}
+
 CLayer * CObject_Manager::Find_Layer(const _tchar * pLayerTag)
 {
 	auto iter = find_if(m_Layers.begin(), m_Layers.end(), CTag_Finder(pLayerTag));

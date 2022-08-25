@@ -1,9 +1,15 @@
 ﻿  MyForm.cpp
+c:\users\603jh\desktop\maptool\tool\default\myform.h(36): error C2059: 구문 오류: '}'
+c:\users\603jh\desktop\maptool\tool\default\myform.h(36): error C2143: 구문 오류: ';'이(가) '}' 앞에 없습니다.
+c:\users\603jh\desktop\maptool\tool\default\myform.h(36): error C2238: ';' 앞에 예기치 않은 토큰이 있습니다.
   MainFrm.cpp
-  MyTerrain.cpp
+c:\users\603jh\desktop\maptool\tool\default\myform.h(36): error C2059: 구문 오류: '}'
+c:\users\603jh\desktop\maptool\tool\default\myform.h(36): error C2143: 구문 오류: ';'이(가) '}' 앞에 없습니다.
+c:\users\603jh\desktop\maptool\tool\default\myform.h(36): error C2238: ';' 앞에 예기치 않은 토큰이 있습니다.
   코드를 생성하고 있습니다...
-  건너뛰고 있습니다... (관련된 변경 내용 없음)
-  ToolView.cpp
+  컴파일하고 있습니다...
   Tool.cpp
-  Tool.vcxproj -> C:\Users\태경\Desktop\MapTool\Tool\Default\..\Bin\Tool.exe
-  Tool.vcxproj -> ..\Bin\Tool.pdb (Partial PDB)
+  코드를 생성하고 있습니다...
+  컴파일하고 있습니다...
+  ToolView.cpp
+  코드를 생성하고 있습니다...

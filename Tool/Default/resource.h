@@ -9,6 +9,9 @@
 #define IDD_MYFORM                      310
 #define Edit_VALUE                      1001
 #define SLIDER_VALUE                    1002
+#define IDC_SAVE                        1000
+#define IDC_LOAD                        1001
+#define IDC_EDIT1                       1002
 
 // Next default values for new objects
 // 

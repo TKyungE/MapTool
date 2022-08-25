@@ -39,6 +39,13 @@ public:
 	CSliderCtrl m_Slider;
 	virtual void OnInitialUpdate();
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+
+public:
+	afx_msg void OnSaveData();
+	afx_msg void OnLoadData();
+
+private:
+	typedef struct tag
 };
 
 

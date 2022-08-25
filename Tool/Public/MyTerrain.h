@@ -20,6 +20,9 @@ private:
 	virtual ~CMyTerrain() = default;
 
 public:
+	CVIBuffer_Terrain* Get_VIBufferCom(void) { return m_pVIBufferCom; }
+
+public:
 	virtual HRESULT Initialize_Prototype(void) override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Tick(void) override;

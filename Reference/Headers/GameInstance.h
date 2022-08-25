@@ -32,6 +32,7 @@ public: /* For.Input_Device */
 public: //Object_Manager
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg = nullptr);
+	CGameObject* Find_Object(const _tchar* pLayerTag, _uint iIndex);
 
 public: //Component_Manager
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CComponent* pPrototype);

@@ -16,7 +16,8 @@ public:
 	HRESULT Add_GameObject(const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg = nullptr);
 	void Tick(void);
 	void Clear(void);
-	class CLayer* Find_Layer(const _tchar* pLayerTag);
+	class CGameObject* Find_Object(const _tchar* pLayerTag, _uint iIndex);
+
 
 private:
 	map<const _tchar*, class CGameObject*> m_Prototypes;
@@ -28,6 +29,7 @@ private:
 
 private:
 	class CGameObject* Find_Prototype(const _tchar* pPrototypeTag);
+	class CLayer* Find_Layer(const _tchar* pLayerTag);
 
 public:
 	virtual void Free(void) override;
