@@ -366,6 +366,7 @@ void CMyForm::OnCreateButton()
 	LPDIRECT3DVERTEXBUFFER9 SaveVB = pTerrain->Get_VIBufferCom()->Get_VB();
 	LPDIRECT3DINDEXBUFFER9 SaveIB = pTerrain->Get_VIBufferCom()->Get_IB();
 
+
 	CVIBuffer::VIBINFO SaveVIBInfo;
 	CVIBuffer_Terrain::VIBINFO_DERIVED SaveVIBInfo_Derived;
 	ZeroMemory(&SaveVIBInfo, sizeof(CVIBuffer::VIBINFO));
@@ -376,8 +377,6 @@ void CMyForm::OnCreateButton()
 
 
 	pTerrain->Get_VIBufferCom()->Release_Buffer();
-
-	
 
 	//================================================================
 
@@ -514,12 +513,8 @@ void CMyForm::OnCreateButton()
 
 	IB->Unlock();
 
-	SaveVB->Release();
-	SaveIB->Release();
-
 	Safe_Release(pInstance);
 		
-
 
 }
 
