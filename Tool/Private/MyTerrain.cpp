@@ -21,7 +21,7 @@ HRESULT CMyTerrain::Initialize_Prototype(void)
 	
 	return S_OK;
 }
-
+//s
 HRESULT CMyTerrain::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
