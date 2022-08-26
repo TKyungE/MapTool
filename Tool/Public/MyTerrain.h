@@ -21,6 +21,7 @@ private:
 
 public:
 	CVIBuffer_Terrain* Get_VIBufferCom(void) { return m_pVIBufferCom; }
+	CTransform*		Get_Transform(void) { return m_pTransformCom; }
 	void	Set_Value(_float fValue) { m_fValue = fValue; }
 public:
 	virtual HRESULT Initialize_Prototype(void) override;

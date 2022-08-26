@@ -14,6 +14,7 @@
 #include "MainFrm.h"
 #include "MyTerrain.h"
 #include "Camera_Dynamic.h"
+#include "MyForm.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -200,10 +201,12 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 
 	m_pGameInstance->Render_End();
 
+
 	if (m_bTrack)
 	{
 		Invalidate(FALSE);
 	}	
+	
 }
 	
 
@@ -217,6 +220,7 @@ void CToolView::OnDestroy()
 	Safe_Release(m_pGameInstance);
 
 	CGameInstance::Release_Engine();
+
 }
 
 
@@ -329,6 +333,9 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 		m_bTrack = _TrackMouseEvent(&MouseEvent);
 
 		RedrawWindow();
+
+
+		
 	}
 }
 

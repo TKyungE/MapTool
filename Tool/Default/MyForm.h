@@ -70,6 +70,9 @@ public:
 	CEdit m_Edit_VerticesX;
 	CEdit m_Edit_VerticesZ;
 	afx_msg void OnCreateButton();
+	CStatic m_StaticX;
+	CStatic m_StaticY;
+	CStatic m_StaticZ;
 };
 
 

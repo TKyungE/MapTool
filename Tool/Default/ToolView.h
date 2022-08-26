@@ -57,7 +57,7 @@ private:
 	LPDIRECT3DDEVICE9 m_pGraphic_Device = nullptr;
 
 	CRenderer* m_pRenderer = nullptr;
-
+	
 	bool m_bTrack = false;
 public:
 	virtual void OnInitialUpdate();

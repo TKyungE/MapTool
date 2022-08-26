@@ -197,6 +197,12 @@ BEGIN
     LTEXT           "VerticesX",IDC_STATIC,29,47,30,8
     LTEXT           "VerticesZ",IDC_STATIC,79,46,30,8
     PUSHBUTTON      "Create",IDC_BUTTON1,43,77,50,14
+    LTEXT           "X",IDC_STATIC,134,48,8,8
+    LTEXT           "Y",IDC_STATIC,155,48,8,8
+    LTEXT           "Z",IDC_STATIC,175,48,8,8
+    LTEXT           "0",IDC_MouseX,134,63,8,8
+    LTEXT           "0",IDC_MouseY,155,63,8,8
+    LTEXT           "0",IDC_MouseZ,175,63,8,8
 END
 
 

@@ -29,6 +29,9 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER1, m_Slider_Value);
 	DDX_Control(pDX, IDC_EDIT2, m_Edit_VerticesX);
 	DDX_Control(pDX, IDC_EDIT3, m_Edit_VerticesZ);
+	DDX_Control(pDX, IDC_MouseX, m_StaticX);
+	DDX_Control(pDX, IDC_MouseY, m_StaticY);
+	DDX_Control(pDX, IDC_MouseZ, m_StaticZ);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
