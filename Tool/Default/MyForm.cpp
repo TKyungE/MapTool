@@ -64,6 +64,8 @@ void CMyForm::OnInitialUpdate()
 		m_Slider_Value.SetRange(0, 100);
 		m_Slider_Value.SetPos(0);
 
+		m_Slider_Value.SetTicFreq(1);
+
 	CString	strPos;
 	strPos.Format(L"%d", m_Slider_Value.GetPos());
 	m_Edit_Slider.SetWindowText(strPos);
@@ -273,6 +275,8 @@ void CMyForm::OnEdit_Value()
 
 	m_Slider_Value.SetPos(iPos);
 
+	float fPos = _wtof(strPos);
+	
 
 
 
@@ -282,7 +286,7 @@ void CMyForm::OnEdit_Value()
 
 	CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
 
-	pTerrain->Set_Value(iPos);
+	pTerrain->Set_Value(fPos);
 
 	Safe_Release(pInstance);
 }
@@ -297,20 +301,29 @@ void CMyForm::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CFormView::OnHScroll(nSBCode, nPos, pScrollBar);
 	if (IDC_SLIDER1 == pScrollBar->GetDlgCtrlID())
 	{
-		CString	strPos;
+		CString	strPos, strEditPos;
 		strPos.Format(L"%d", m_Slider_Value.GetPos());
-		m_Edit_Slider.SetWindowText(strPos);
+
+		float fPos = _wtof(strPos);
+		fPos /= 10.f;
+
+		strEditPos.Format(L"%f", fPos);
+
+		strEditPos.TrimRight('0');
+		strEditPos.TrimRight('.');
+
+		m_Edit_Slider.SetWindowText(strEditPos);
 
 		int iPos = _ttoi(strPos);
 
 		m_Slider_Value.SetPos(iPos);
-
+		
 		CGameInstance* pInstance = CGameInstance::Get_Instance();
 		Safe_AddRef(pInstance);
 
 		CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
 
-		pTerrain->Set_Value(iPos);
+		pTerrain->Set_Value(fPos);
 
 		Safe_Release(pInstance);
 	}
