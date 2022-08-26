@@ -480,6 +480,8 @@ void CMyForm::OnCreateButton()
 		}
 	}
 
+	VB->Unlock();
+	SaveVB->Unlock();
 
 	IB->Lock(0, 0, (void**)&pIndices, 0);
 
@@ -511,6 +513,9 @@ void CMyForm::OnCreateButton()
 	}
 
 	IB->Unlock();
+
+	SaveVB->Release();
+	SaveIB->Release();
 
 	Safe_Release(pInstance);
 		
