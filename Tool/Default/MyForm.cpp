@@ -338,7 +338,7 @@ void CMyForm::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	}
 	
 }
-//t
+
 
 void CMyForm::OnCreateButton()
 {

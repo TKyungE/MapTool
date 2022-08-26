@@ -181,7 +181,7 @@ void CToolView::OnInitialUpdate()
 	}
 }
 
-// CToolView 그리기2
+// CToolView 그리기
 
 void CToolView::OnDraw(CDC* /*pDC*/)
 {
