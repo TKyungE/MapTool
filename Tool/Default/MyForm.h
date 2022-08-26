@@ -67,6 +67,9 @@ public:
 
 	VIBINFO m_tVIBInfo;
 
+	CEdit m_Edit_VerticesX;
+	CEdit m_Edit_VerticesZ;
+	afx_msg void OnCreateButton();
 };
 
 

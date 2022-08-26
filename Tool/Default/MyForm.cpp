@@ -27,6 +27,8 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT1, m_Edit_Slider);
 	DDX_Control(pDX, IDC_SLIDER1, m_Slider_Value);
+	DDX_Control(pDX, IDC_EDIT2, m_Edit_VerticesX);
+	DDX_Control(pDX, IDC_EDIT3, m_Edit_VerticesZ);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
@@ -34,6 +36,7 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_LOAD, &CMyForm::OnLoadData)
 	ON_EN_CHANGE(IDC_EDIT1, &CMyForm::OnEdit_Value)
 	ON_WM_HSCROLL()
+	ON_BN_CLICKED(IDC_BUTTON1, &CMyForm::OnCreateButton)
 END_MESSAGE_MAP()
 
 
@@ -329,3 +332,115 @@ void CMyForm::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	}
 	
 }
+
+
+void CMyForm::OnCreateButton()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	CGameInstance* pInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pInstance);
+
+	CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
+	if (nullptr == pTerrain)
+	{
+		ERR_MSG(TEXT("Failed to Load"));
+		return;
+	}
+
+	CVIBuffer::VIBINFO VIBInfo;
+	CVIBuffer_Terrain::VIBINFO_DERIVED VIBInfo_Derived;
+	ZeroMemory(&VIBInfo, sizeof(CVIBuffer::VIBINFO));
+	ZeroMemory(&VIBInfo_Derived, sizeof(CVIBuffer_Terrain::VIBINFO_DERIVED));
+
+	CString strX, strZ;
+
+	m_Edit_VerticesX.GetWindowText(strX);
+	m_Edit_VerticesZ.GetWindowText(strZ);
+
+	int iNumVerticesX = _ttoi(strX);
+	int iNumVerticesZ = _ttoi(strZ);
+
+
+ 
+	VIBInfo.m_iNumVertices = iNumVerticesX * iNumVerticesZ;
+	VIBInfo.m_iStride = sizeof(VTXTEX);
+	VIBInfo.m_dwFVF = D3DFVF_XYZ | D3DFVF_TEX1;
+	VIBInfo.m_ePrimitiveType = D3DPT_TRIANGLELIST;
+	VIBInfo.m_iNumPrimitive = (iNumVerticesX - 1) * (iNumVerticesZ - 1) * 2;
+
+	VIBInfo.m_iIndicesByte = sizeof(FACEINDICES32);
+	VIBInfo.m_eIndexFormat = D3DFMT_INDEX32;
+
+	VIBInfo_Derived.m_iNumVerticesX = iNumVerticesX;
+	VIBInfo_Derived.m_iNumVerticesZ = iNumVerticesZ;
+
+
+	pTerrain->Get_VIBufferCom()->Release_Buffer();
+
+	pTerrain->Get_VIBufferCom()->Set_VIBInfo(VIBInfo);
+	pTerrain->Get_VIBufferCom()->Set_VIBInfoDerived(VIBInfo_Derived);
+
+	if (FAILED(pTerrain->Get_VIBufferCom()->Load_Terrain()))
+	{
+		ERR_MSG(TEXT("Failed to Load Terrain"));
+		return;
+	}
+
+	LPDIRECT3DVERTEXBUFFER9 VB = pTerrain->Get_VIBufferCom()->Get_VB();
+	LPDIRECT3DINDEXBUFFER9 IB = pTerrain->Get_VIBufferCom()->Get_IB();
+
+	VTXTEX* pVertices = nullptr;
+	FACEINDICES32* pIndices = nullptr;
+
+	VB->Lock(0, 0, (void**)&pVertices, 0);
+
+	for (_uint i = 0; i < iNumVerticesZ; ++i)
+	{
+		for (_uint j = 0; j < iNumVerticesX; ++j)
+		{
+			_uint iIndex = i * iNumVerticesX + j;
+
+			pVertices[iIndex].vPosition = _float3((_float)j, 0.f, (_float)i);
+			pVertices[iIndex].vTexture = _float2((_float)j, (_float)i);
+		}
+	}
+
+	VB->Unlock();
+
+	IB->Lock(0, 0, (void**)&pIndices, 0);
+
+	_uint iNumFaces = 0;
+
+	for (_uint i = 0; i < iNumVerticesZ - 1; ++i)
+	{
+		for (_uint j = 0; j < iNumVerticesX - 1; ++j)
+		{
+			_uint iIndex = i * iNumVerticesX + j;
+
+			_uint iIndices[4] = {
+				iIndex + iNumVerticesX,
+				iIndex + iNumVerticesX + 1,
+				iIndex + 1,
+				iIndex
+			};
+
+			pIndices[iNumFaces]._0 = iIndices[0];
+			pIndices[iNumFaces]._1 = iIndices[1];
+			pIndices[iNumFaces]._2 = iIndices[2];
+			++iNumFaces;
+
+			pIndices[iNumFaces]._0 = iIndices[0];
+			pIndices[iNumFaces]._1 = iIndices[2];
+			pIndices[iNumFaces]._2 = iIndices[3];
+			++iNumFaces;
+		}
+	}
+
+	IB->Unlock();
+}
+
+
+
+
+
