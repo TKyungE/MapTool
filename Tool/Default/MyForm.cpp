@@ -289,6 +289,9 @@ void CMyForm::OnEdit_Value()
 
 	CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
 
+	if (nullptr == pTerrain)
+		return;
+
 	pTerrain->Set_Value(fPos);
 
 	Safe_Release(pInstance);
@@ -326,6 +329,9 @@ void CMyForm::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 		CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
 
+		if (nullptr == pTerrain)
+		return;
+
 		pTerrain->Set_Value(fPos);
 
 		Safe_Release(pInstance);
@@ -341,6 +347,12 @@ void CMyForm::OnCreateButton()
 	CGameInstance* pInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pInstance);
 
+
+	/*if (FAILED(pInstance->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), TEXT("Layer_BackGround"), nullptr)))
+		return;*/
+
+
+
 	CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
 	if (nullptr == pTerrain)
 	{
@@ -348,38 +360,52 @@ void CMyForm::OnCreateButton()
 		return;
 	}
 
-	CVIBuffer::VIBINFO VIBInfo;
-	CVIBuffer_Terrain::VIBINFO_DERIVED VIBInfo_Derived;
-	ZeroMemory(&VIBInfo, sizeof(CVIBuffer::VIBINFO));
-	ZeroMemory(&VIBInfo_Derived, sizeof(CVIBuffer_Terrain::VIBINFO_DERIVED));
+	LPDIRECT3DVERTEXBUFFER9 SaveVB = pTerrain->Get_VIBufferCom()->Get_VB();
+	LPDIRECT3DINDEXBUFFER9 SaveIB = pTerrain->Get_VIBufferCom()->Get_IB();
 
-	CString strX, strZ;
+	CVIBuffer::VIBINFO SaveVIBInfo;
+	CVIBuffer_Terrain::VIBINFO_DERIVED SaveVIBInfo_Derived;
+	ZeroMemory(&SaveVIBInfo, sizeof(CVIBuffer::VIBINFO));
+	ZeroMemory(&SaveVIBInfo_Derived, sizeof(CVIBuffer_Terrain::VIBINFO_DERIVED));
 
-	m_Edit_VerticesX.GetWindowText(strX);
-	m_Edit_VerticesZ.GetWindowText(strZ);
-
-	int iNumVerticesX = _ttoi(strX);
-	int iNumVerticesZ = _ttoi(strZ);
-
-
- 
-	VIBInfo.m_iNumVertices = iNumVerticesX * iNumVerticesZ;
-	VIBInfo.m_iStride = sizeof(VTXTEX);
-	VIBInfo.m_dwFVF = D3DFVF_XYZ | D3DFVF_TEX1;
-	VIBInfo.m_ePrimitiveType = D3DPT_TRIANGLELIST;
-	VIBInfo.m_iNumPrimitive = (iNumVerticesX - 1) * (iNumVerticesZ - 1) * 2;
-
-	VIBInfo.m_iIndicesByte = sizeof(FACEINDICES32);
-	VIBInfo.m_eIndexFormat = D3DFMT_INDEX32;
-
-	VIBInfo_Derived.m_iNumVerticesX = iNumVerticesX;
-	VIBInfo_Derived.m_iNumVerticesZ = iNumVerticesZ;
+	SaveVIBInfo = pTerrain->Get_VIBufferCom()->Get_VIBInfo();
+	SaveVIBInfo_Derived = pTerrain->Get_VIBufferCom()->Get_VIBInfoDerived();
 
 
 	pTerrain->Get_VIBufferCom()->Release_Buffer();
 
-	pTerrain->Get_VIBufferCom()->Set_VIBInfo(VIBInfo);
-	pTerrain->Get_VIBufferCom()->Set_VIBInfoDerived(VIBInfo_Derived);
+	
+
+	//================================================================
+
+	CVIBuffer::VIBINFO VIBInfo1;
+	CVIBuffer_Terrain::VIBINFO_DERIVED VIBInfo_Derived1;
+	ZeroMemory(&VIBInfo1, sizeof(CVIBuffer::VIBINFO));
+	ZeroMemory(&VIBInfo_Derived1, sizeof(CVIBuffer_Terrain::VIBINFO_DERIVED));
+
+
+	CString strVerticesX, strVerticesZ;
+	m_Edit_VerticesX.GetWindowText(strVerticesX);
+	m_Edit_VerticesZ.GetWindowText(strVerticesZ);
+
+	int iVerticesX = _ttoi(strVerticesX);
+	int iVerticesZ = _ttoi(strVerticesZ);
+
+
+	VIBInfo1.m_iNumVertices = iVerticesX * iVerticesZ;
+	VIBInfo1.m_iStride = sizeof(VTXTEX);
+	VIBInfo1.m_dwFVF = D3DFVF_XYZ | D3DFVF_TEX1;
+	VIBInfo1.m_ePrimitiveType = D3DPT_TRIANGLELIST;
+	VIBInfo1.m_iNumPrimitive = (iVerticesX - 1) * (iVerticesZ - 1) * 2;
+	VIBInfo1.m_iIndicesByte = sizeof(FACEINDICES32);
+	VIBInfo1.m_eIndexFormat = D3DFMT_INDEX32;
+
+	VIBInfo_Derived1.m_iNumVerticesX = iVerticesX;
+	VIBInfo_Derived1.m_iNumVerticesZ = iVerticesZ;
+
+
+	pTerrain->Get_VIBufferCom()->Set_VIBInfo(VIBInfo1);
+	pTerrain->Get_VIBufferCom()->Set_VIBInfoDerived(VIBInfo_Derived1);
 
 	if (FAILED(pTerrain->Get_VIBufferCom()->Load_Terrain()))
 	{
@@ -387,40 +413,84 @@ void CMyForm::OnCreateButton()
 		return;
 	}
 
-	LPDIRECT3DVERTEXBUFFER9 VB = pTerrain->Get_VIBufferCom()->Get_VB();
-	LPDIRECT3DINDEXBUFFER9 IB = pTerrain->Get_VIBufferCom()->Get_IB();
+	CMyTerrain* pTerrain1 = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
+	if (nullptr == pTerrain1)
+	{
+		ERR_MSG(TEXT("Failed to Load"));
+		return;
+	}
+
+	LPDIRECT3DVERTEXBUFFER9 VB = pTerrain1->Get_VIBufferCom()->Get_VB();
+	LPDIRECT3DINDEXBUFFER9 IB = pTerrain1->Get_VIBufferCom()->Get_IB();
 
 	VTXTEX* pVertices = nullptr;
+	VTXTEX* pSaveVertices = nullptr;
+
 	FACEINDICES32* pIndices = nullptr;
+	FACEINDICES32* pSaveIndices = nullptr;
+
 
 	VB->Lock(0, 0, (void**)&pVertices, 0);
+	SaveVB->Lock(0, 0, (void**)&pSaveVertices, 0);
 
-	for (_uint i = 0; i < iNumVerticesZ; ++i)
+	_uint i = 0;
+
+	_uint NumZ = 0;
+	_uint NumX = 0;
+
+	if (SaveVIBInfo_Derived.m_iNumVerticesZ > VIBInfo_Derived1.m_iNumVerticesZ)
 	{
-		for (_uint j = 0; j < iNumVerticesX; ++j)
-		{
-			_uint iIndex = i * iNumVerticesX + j;
+		NumZ = SaveVIBInfo_Derived.m_iNumVerticesZ - VIBInfo_Derived1.m_iNumVerticesZ;
+	}
+	if (SaveVIBInfo_Derived.m_iNumVerticesX > VIBInfo_Derived1.m_iNumVerticesX)
+	{
+		NumX = SaveVIBInfo_Derived.m_iNumVerticesX - VIBInfo_Derived1.m_iNumVerticesX;
+	}
 
-			pVertices[iIndex].vPosition = _float3((_float)j, 0.f, (_float)i);
-			pVertices[iIndex].vTexture = _float2((_float)j, (_float)i);
+	for (i; i < SaveVIBInfo_Derived.m_iNumVerticesZ - NumZ; ++i)
+	{
+		_uint j = 0;
+		for (j; j < SaveVIBInfo_Derived.m_iNumVerticesX - NumX; ++j)
+		{
+			_uint iIndex = i *  VIBInfo_Derived1.m_iNumVerticesX + j;
+			_uint iSaveIndex = i * SaveVIBInfo_Derived.m_iNumVerticesX + j;
+
+			pVertices[iIndex].vPosition = pSaveVertices[iSaveIndex].vPosition;
+			pVertices[iIndex].vTexture = pSaveVertices[iSaveIndex].vTexture;
+		}
+		for (j; j < VIBInfo_Derived1.m_iNumVerticesX; ++j)
+		{
+			_uint iIndex = i *  VIBInfo_Derived1.m_iNumVerticesX + j;
+
+			pVertices[iIndex].vPosition = pVertices[iIndex].vPosition = _float3((_float)j, 0.f, (_float)i);
+			pVertices[iIndex].vTexture = pVertices[iIndex].vTexture = _float2((_float)j, (_float)i);
+		}
+	}
+	for (i; i < VIBInfo_Derived1.m_iNumVerticesZ; ++i)
+	{
+		for (_uint j = 0; j < VIBInfo_Derived1.m_iNumVerticesX; ++j)
+		{
+			_uint iIndex = i *  VIBInfo_Derived1.m_iNumVerticesX + j;
+
+			pVertices[iIndex].vPosition = pVertices[iIndex].vPosition = _float3((_float)j, 0.f, (_float)i);
+			pVertices[iIndex].vTexture = pVertices[iIndex].vTexture = _float2((_float)j, (_float)i);
 		}
 	}
 
-	VB->Unlock();
 
 	IB->Lock(0, 0, (void**)&pIndices, 0);
 
 	_uint iNumFaces = 0;
 
-	for (_uint i = 0; i < iNumVerticesZ - 1; ++i)
+	for (_uint i = 0; i < VIBInfo_Derived1.m_iNumVerticesZ - 1; ++i)
 	{
-		for (_uint j = 0; j < iNumVerticesX - 1; ++j)
+		for (_uint j = 0; j < VIBInfo_Derived1.m_iNumVerticesX - 1; ++j)
 		{
-			_uint iIndex = i * iNumVerticesX + j;
+			_uint iIndex = i * VIBInfo_Derived1.m_iNumVerticesX + j;
 
 			_uint iIndices[4] = {
-				iIndex + iNumVerticesX,
-				iIndex + iNumVerticesX + 1,
+				iIndex + VIBInfo_Derived1.m_iNumVerticesX,
+				iIndex + VIBInfo_Derived1.m_iNumVerticesX + 1,
 				iIndex + 1,
 				iIndex
 			};
@@ -438,7 +508,13 @@ void CMyForm::OnCreateButton()
 	}
 
 	IB->Unlock();
+
+	Safe_Release(pInstance);
+		
+
+
 }
+
 
 
 
