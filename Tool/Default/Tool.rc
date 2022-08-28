@@ -203,6 +203,7 @@ BEGIN
     LTEXT           "0",IDC_MouseX,134,63,8,8
     LTEXT           "0",IDC_MouseY,155,63,8,8
     LTEXT           "0",IDC_MouseZ,175,63,8,8
+    LISTBOX         IDC_OBJECTLIST,7,338,48,40,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
 END
 
 

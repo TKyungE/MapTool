@@ -58,6 +58,9 @@
     <Filter Include="03. Picking">
       <UniqueIdentifier>{a9f1603d-7040-46b1-8c95-1838184aaa7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\02. Components\VIBuffer\Rect">
+      <UniqueIdentifier>{89ffeb94-765f-49cf-8b6b-11261875c7fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -123,6 +126,9 @@
     <ClInclude Include="..\Public\Picking.h">
       <Filter>03. Picking</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Rect.h">
+      <Filter>01. Utility\02. Components\VIBuffer\Rect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -172,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Picking.cpp">
       <Filter>03. Picking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Rect.cpp">
+      <Filter>01. Utility\02. Components\VIBuffer\Rect</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

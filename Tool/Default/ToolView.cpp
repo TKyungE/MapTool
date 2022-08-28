@@ -14,6 +14,7 @@
 #include "MainFrm.h"
 #include "MyTerrain.h"
 #include "Camera_Dynamic.h"
+#include "PlayerSpawn.h"
 #include "MyForm.h"
 
 #ifdef _DEBUG
@@ -165,6 +166,12 @@ void CToolView::OnInitialUpdate()
 		return;
 	}
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_PlayerSpawn"), CPlayerSpawn::Create(m_pGraphic_Device))))
+	{
+		ERR_MSG(TEXT("Prototype_GameObject_PlayerSpawn Failed"));
+		return;
+	}
+
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
 		CCamera_Dynamic::Create(m_pGraphic_Device))))
 		return;
@@ -237,6 +244,10 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(m_pGraphic_Device, 2, 2))))
 		return E_FAIL;
 	
+	/*For.Prototype_Component_VIBuffer_Rect*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pGraphic_Device))))
+		return E_FAIL;
+	
 	//Prototype_Component_Transform
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Transform"), CTransform::Create(m_pGraphic_Device))))
 		return E_FAIL;
@@ -245,6 +256,16 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_Terrain"),
 		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Terrain/Grass_%d.tga"), 1))))
 		return E_FAIL;
+
+	///*For.Prototype_Component_Texture_PlayerSpawn*/
+	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_PlayerSpawn"),
+	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT(), 1))))
+	//	return E_FAIL;
+
+	///*For.Prototype_Component_Texture_MonsterSpawn*/
+	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_MonsterSpawn"),
+	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT(), 1))))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -317,7 +338,6 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
 	CView::OnMouseMove(nFlags, point);
-		
 
 	if (m_bTrack == false)
 	{
@@ -333,9 +353,6 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 		m_bTrack = _TrackMouseEvent(&MouseEvent);
 
 		RedrawWindow();
-
-
-		
 	}
 }
 

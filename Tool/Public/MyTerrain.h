@@ -2,13 +2,11 @@
 
 #include "GameObject.h"
 
-
 BEGIN(Engine)
 class CRenderer;
 class CTexture;
 class CTransform;
 class CVIBuffer_Terrain;
-class CRenderer;
 END
 
 class CToolView;

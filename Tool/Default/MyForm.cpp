@@ -11,6 +11,8 @@ IMPLEMENT_DYNCREATE(CMyForm, CFormView)
 
 #include "GameInstance.h"
 #include "MyTerrain.h"
+#include "MainFrm.h"
+#include "ToolView.h"
 
 CMyForm::CMyForm()
 	: CFormView(IDD_MYFORM)
@@ -32,6 +34,7 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_MouseX, m_StaticX);
 	DDX_Control(pDX, IDC_MouseY, m_StaticY);
 	DDX_Control(pDX, IDC_MouseZ, m_StaticZ);
+	DDX_Control(pDX, IDC_OBJECTLIST, m_ObejctListBox);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
@@ -40,6 +43,7 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_EN_CHANGE(IDC_EDIT1, &CMyForm::OnEdit_Value)
 	ON_WM_HSCROLL()
 	ON_BN_CLICKED(IDC_BUTTON1, &CMyForm::OnCreateButton)
+	ON_LBN_SELCHANGE(IDC_OBJECTLIST, &CMyForm::OnListBox)
 END_MESSAGE_MAP()
 
 
@@ -75,20 +79,14 @@ void CMyForm::OnInitialUpdate()
 	CString	strPos;
 	strPos.Format(L"%d", m_Slider_Value.GetPos());
 	m_Edit_Slider.SetWindowText(strPos);
+
+	UpdateData(TRUE);
+
+	m_ObejctListBox.AddString(TEXT("PlayerSpawn"));
+	m_ObejctListBox.AddString(TEXT("MonsterSpwan"));
+
+	UpdateData(FALSE);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void CMyForm::OnSaveData()
 {
@@ -281,11 +279,7 @@ void CMyForm::OnEdit_Value()
 
 	m_Slider_Value.SetPos(iPos);
 
-	float fPos = _wtof(strPos);
-	
-
-
-
+	float fPos = _float(_wtof(strPos));
 
 	CGameInstance* pInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pInstance);
@@ -313,7 +307,7 @@ void CMyForm::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 		CString	strPos, strEditPos;
 		strPos.Format(L"%d", m_Slider_Value.GetPos());
 
-		float fPos = _wtof(strPos);
+		float fPos = _float(_wtof(strPos));
 		fPos /= 10.f;
 
 		strEditPos.Format(L"%f", fPos);
@@ -432,7 +426,6 @@ void CMyForm::OnCreateButton()
 	FACEINDICES32* pIndices = nullptr;
 	FACEINDICES32* pSaveIndices = nullptr;
 
-
 	VB->Lock(0, 0, (void**)&pVertices, 0);
 	SaveVB->Lock(0, 0, (void**)&pSaveVertices, 0);
 
@@ -514,17 +507,29 @@ void CMyForm::OnCreateButton()
 
 	IB->Unlock();
 
-	SaveVB->Release();
-	SaveIB->Release();
-
 	Safe_Release(pInstance);
-		
-
-
 }
 
 
+void CMyForm::OnListBox()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	UpdateData(TRUE);
+
+	CString strFindName;
+
+	int iSelect = m_ObejctListBox.GetCurSel();
+
+	if (-1 == iSelect)
+		return;
+	
+	m_ObejctListBox.GetText(iSelect, strFindName);
+
+	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
 
 
 
-
+	UpdateData(FALSE);
+}

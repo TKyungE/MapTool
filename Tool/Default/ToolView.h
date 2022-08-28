@@ -39,8 +39,6 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-protected:
-
 // 생성된 메시지 맵 함수
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -59,6 +57,9 @@ private:
 	CRenderer* m_pRenderer = nullptr;
 	
 	bool m_bTrack = false;
+	
+	CString m_strObjectName = TEXT("");
+
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnDestroy();

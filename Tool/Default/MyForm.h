@@ -47,32 +47,31 @@ protected:
 public:
 	float m_fSpin_Value = 0.f;
 
-
 public:
 	virtual void OnInitialUpdate();
 
 public:
 	afx_msg void OnSaveData();
 	afx_msg void OnLoadData();
-
-private:
-	typedef struct tag;
-public:
-
-	CEdit m_Edit_Slider;
-	CSliderCtrl m_Slider_Value;
-
+	afx_msg void OnCreateButton();
 	afx_msg void OnEdit_Value();
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void OnListBox();
+
+public:
+	CEdit m_Edit_Slider;
+	CSliderCtrl m_Slider_Value;
 
 	VIBINFO m_tVIBInfo;
 
 	CEdit m_Edit_VerticesX;
 	CEdit m_Edit_VerticesZ;
-	afx_msg void OnCreateButton();
+	
 	CStatic m_StaticX;
 	CStatic m_StaticY;
 	CStatic m_StaticZ;
+
+	CListBox m_ObejctListBox;
 };
 
 
