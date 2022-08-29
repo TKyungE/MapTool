@@ -72,6 +72,8 @@ public:
 	CStatic m_StaticZ;
 
 	CListBox m_ObejctListBox;
+	afx_msg void OnObjectSaveButton();
+	afx_msg void OnObjectLoadButton();
 };
 
 

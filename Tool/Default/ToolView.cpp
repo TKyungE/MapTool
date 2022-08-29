@@ -38,6 +38,7 @@ BEGIN_MESSAGE_MAP(CToolView, CView)
 	ON_WM_MOUSEMOVE()
 	ON_WM_MOUSELEAVE()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
 // CToolView 생성/소멸
@@ -375,6 +376,16 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	CView::OnLButtonDown(nFlags, point);
 
+}
+
+
+void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	CView::OnLButtonUp(nFlags, point);
+
+
 	if ("" != m_strObjectName)
 	{
 		if (nullptr == m_pGameInstance)
@@ -398,5 +409,6 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 			ERR_MSG(TEXT("Failed to Cloned : CPlayerSpawn"));
 			return;
 		}
+		m_mapSpawn.insert({ m_strObjectName,vPos });
 	}
 }

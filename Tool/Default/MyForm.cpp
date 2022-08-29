@@ -13,6 +13,8 @@ IMPLEMENT_DYNCREATE(CMyForm, CFormView)
 #include "MyTerrain.h"
 #include "MainFrm.h"
 #include "ToolView.h"
+#include "PlayerSpawn.h"
+#include "Transform.h"
 
 CMyForm::CMyForm()
 	: CFormView(IDD_MYFORM)
@@ -44,6 +46,8 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_WM_HSCROLL()
 	ON_BN_CLICKED(IDC_BUTTON1, &CMyForm::OnCreateButton)
 	ON_LBN_SELCHANGE(IDC_OBJECTLIST, &CMyForm::OnListBox)
+	ON_BN_CLICKED(IDC_BUTTON2, &CMyForm::OnObjectSaveButton)
+	ON_BN_CLICKED(IDC_BUTTON3, &CMyForm::OnObjectLoadButton)
 END_MESSAGE_MAP()
 
 
@@ -531,4 +535,55 @@ void CMyForm::OnListBox()
 	pToolView->Set_ObjectName(strFindName);
 
 	UpdateData(FALSE);
+}
+
+
+void CMyForm::OnObjectSaveButton()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CFileDialog Dlg(FALSE, TEXT("dat"), TEXT("*.dat"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, TEXT("Data File(*.dat) | *.dat||"), this);
+
+	TCHAR szPath[MAX_PATH] = TEXT("");
+	GetCurrentDirectory(MAX_PATH, szPath);
+
+	PathRemoveFileSpec(szPath);
+
+	lstrcat(szPath, TEXT("\\Data"));
+
+	Dlg.m_ofn.lpstrInitialDir = szPath;
+
+	if (IDOK == Dlg.DoModal())
+	{
+		CString str = Dlg.GetPathName();
+
+		const TCHAR* pGetPath = str.GetString();
+
+		HANDLE hFile = CreateFile(pGetPath, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+		DWORD dwByte = 0;
+		DWORD dwStrByte = 0;
+		CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+		CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
+		
+		for (auto& iter : pToolView->m_mapSpawn)
+		{
+			dwStrByte = sizeof(TCHAR) * (iter.first.GetLength() + 1);
+			WriteFile(hFile, &dwStrByte, sizeof(DWORD), &dwByte, nullptr);
+			WriteFile(hFile, iter.first.GetString(), dwStrByte, &dwByte,nullptr);
+
+			WriteFile(hFile, iter.second, sizeof(_float3), &dwByte, nullptr);
+		}
+
+		CloseHandle(hFile);
+	}
+
+}
+
+
+void CMyForm::OnObjectLoadButton()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }

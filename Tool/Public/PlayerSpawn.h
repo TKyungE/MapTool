@@ -17,6 +17,9 @@ private:
 	virtual ~CPlayerSpawn() = default;
 
 public:
+	CTransform*		Get_Transform(void) { return m_pTransformCom; }
+
+public:
 	virtual HRESULT Initialize_Prototype(void) override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Tick(void) override;
@@ -30,6 +33,8 @@ private:
 
 private:
 	HRESULT SetUp_Components(void);
+	HRESULT SetUp_RenderState();
+	HRESULT Release_RenderState();
 	
 public:
 	static CPlayerSpawn* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
