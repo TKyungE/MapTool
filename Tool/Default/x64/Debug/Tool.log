@@ -1,4 +1,4 @@
 ﻿  ToolView.cpp
-c:\users\603jh\desktop\maptool\tool\default\toolview.cpp(353): warning C4800: 'BOOL': 'true' 또는 'false'로 bool 값을 강제하고 있습니다(성능 경고).
-  Tool.vcxproj -> C:\Users\603jh\Desktop\MapTool\Tool\Default\..\Bin\Tool.exe
+c:\users\jjh\desktop\maptool\tool\default\toolview.cpp(353): warning C4800: 'BOOL': 'true' 또는 'false'로 bool 값을 강제하고 있습니다(성능 경고).
+  Tool.vcxproj -> C:\Users\JJH\Desktop\MapTool\Tool\Default\..\Bin\Tool.exe
   Tool.vcxproj -> ..\Bin\Tool.pdb (Partial PDB)

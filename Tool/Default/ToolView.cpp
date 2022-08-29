@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(CToolView, CView)
 	ON_WM_DESTROY()
 	ON_WM_MOUSEMOVE()
 	ON_WM_MOUSELEAVE()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 // CToolView 생성/소멸
@@ -227,7 +228,6 @@ void CToolView::OnDestroy()
 	Safe_Release(m_pGameInstance);
 
 	CGameInstance::Release_Engine();
-
 }
 
 
@@ -257,10 +257,10 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Terrain/Grass_%d.tga"), 1))))
 		return E_FAIL;
 
-	///*For.Prototype_Component_Texture_PlayerSpawn*/
-	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_PlayerSpawn"),
-	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT(), 1))))
-	//	return E_FAIL;
+	/*For.Prototype_Component_Texture_PlayerSpawn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_PlayerSpawn"),
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Effect/UseSkill/Effect%d.png"), 1))))
+		return E_FAIL;
 
 	///*For.Prototype_Component_Texture_MonsterSpawn*/
 	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_MonsterSpawn"),
@@ -366,4 +366,37 @@ void CToolView::OnMouseLeave()
 	m_bTrack = false;
 
 	RedrawWindow();
+}
+
+
+void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	CView::OnLButtonDown(nFlags, point);
+
+	if ("" != m_strObjectName)
+	{
+		if (nullptr == m_pGameInstance)
+		{
+			ERR_MSG(TEXT("Failed to Created"));
+			return;
+		}
+
+		_tchar PrototypeTag[MAX_PATH] = TEXT("Prototype_GameObject_");
+		_tchar LayerTag[MAX_PATH] = TEXT("Layer_");
+
+		wsprintf(PrototypeTag, TEXT("%s%s"), PrototypeTag, m_strObjectName);
+		wsprintf(LayerTag, TEXT("%s%s"), LayerTag, m_strObjectName);
+
+		Invalidate(FALSE);
+
+		_float3 vPos = m_pGameInstance->Get_TargetPos();
+
+		if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, LayerTag, &vPos)))
+		{
+			ERR_MSG(TEXT("Failed to Cloned : CPlayerSpawn"));
+			return;
+		}
+	}
 }

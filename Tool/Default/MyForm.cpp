@@ -529,7 +529,7 @@ void CMyForm::OnListBox()
 	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
 	CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
 
-
+	pToolView->Set_ObjectName(strFindName);
 
 	UpdateData(FALSE);
 }
