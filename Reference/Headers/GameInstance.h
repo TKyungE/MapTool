@@ -42,6 +42,7 @@ public: //Picking
 	HRESULT Intersect(_float4x4 InvWorld, _float3* LU, _float3* RU, _float3* RD);
 	void Tick();
 	_float3 Get_TargetPos(void);
+
 public:
 	static void Release_Engine(void);
 
