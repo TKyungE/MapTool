@@ -74,6 +74,9 @@ public:
 	CListBox m_ObejctListBox;
 	afx_msg void OnObjectSaveButton();
 	afx_msg void OnObjectLoadButton();
+	
+	CButton m_ResetX;
+	afx_msg void OnResetXButton();
 };
 
 

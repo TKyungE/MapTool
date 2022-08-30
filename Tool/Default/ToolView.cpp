@@ -139,6 +139,8 @@ void CToolView::OnInitialUpdate()
 	Graphic_Desc.iWinSizeY = g_iWinSizeY;
 	Graphic_Desc.eWinMode = GRAPHIC_DESC::MODE_WIN;
 
+	ZeroMemory(&m_SavePos.m_vPlayerPos, sizeof(_float3));
+
 	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst,Graphic_Desc, &m_pGraphic_Device)))
 	{
 		ERR_MSG(TEXT("Initialize_Engine Failed"));
@@ -177,7 +179,7 @@ void CToolView::OnInitialUpdate()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MonsterSpawn"), CMonsterSpawn::Create(m_pGraphic_Device))))
 	{
-		ERR_MSG(TEXT("Prototype_GameObject_PlayerSpawn Failed"));
+		ERR_MSG(TEXT("Prototype_GameObject_MonsterSpawn Failed"));
 		return;
 	}
 
@@ -208,6 +210,14 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 		return;
 
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
+	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	CMyForm*		pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
+
+	CMyTerrain* pTerrain1 = dynamic_cast<CMyTerrain*>(m_pGameInstance->Find_Object(TEXT("Layer_BackGround"), 0));
+	if (pMyForm->m_ObejctListBox.GetCurSel() != -1)
+		pTerrain1->Set_Check(true);
+	else
+		pTerrain1->Set_Check(false);
 
 	m_pGameInstance->Tick_Engine();
 
@@ -222,7 +232,6 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 	{
 		Invalidate(FALSE);
 	}	
-	
 }
 	
 
@@ -382,7 +391,6 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
 	CView::OnLButtonDown(nFlags, point);
-
 }
 
 
@@ -391,45 +399,63 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
 	CView::OnLButtonUp(nFlags, point);
-	
-	_tchar pStr[MAX_PATH] = TEXT("");
-	memcpy(&pStr,m_strObjectName, sizeof(TCHAR) * MAX_PATH);
-	
-	//lstrcpy(pStr, m_strObjectName.GetString());
 
-	if (pStr != TEXT(""))
+	
+
+	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	CMyForm*		pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
+
+	const _tchar* pStr = (_tchar*)(LPCTSTR)m_strObjectName;
+
+	if (pMyForm->m_ObejctListBox.GetCurSel() != -1)s
 	{
-		if (nullptr == m_pGameInstance)
+		if (pStr != TEXT(""))
 		{
-			ERR_MSG(TEXT("Failed to Created"));
-			return;
+			if (nullptr == m_pGameInstance)
+			{
+				ERR_MSG(TEXT("Failed to Created"));
+				return;
+			}
+
+			_tchar PrototypeTag[MAX_PATH] = TEXT("Prototype_GameObject_");
+			_tchar LayerTag[MAX_PATH] = TEXT("Layer_");
+
+			wsprintf(PrototypeTag, TEXT("%s%s"), PrototypeTag, pStr);
+			wsprintf(LayerTag, TEXT("%s%s"), LayerTag, pStr);
+
+			_float3 vPos = m_pGameInstance->Get_TargetPos();
+
+			if (!lstrcmp(pStr, TEXT("PlayerSpawn")))
+			{
+				if (m_bCheck == false)
+					m_bCheck = true;
+
+				else if (m_bCheck)
+				{
+					CPlayerSpawn* PlayerSpawn = (CPlayerSpawn*)m_pGameInstance->Find_Object(TEXT("Layer_PlayerSpawn"), 0);
+					vPos.y += 0.01f;
+					PlayerSpawn->Get_Transform()->Set_State(CTransform::STATE_POSITION, vPos);
+					m_SavePos.m_vPlayerPos = vPos;
+					return;
+				}
+
+			}
+
+			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, LayerTag, &vPos)))
+			{
+				ERR_MSG(TEXT("Failed to Cloned : CPlayerSpawn"));
+				return;
+			}
+
+			if (!lstrcmp(pStr, TEXT("PlayerSpawn")))
+				m_SavePos.m_vPlayerPos = vPos;
+
+			else
+				m_SavePos.m_vMonsterPos.push_back(vPos);
+
 		}
-
-		_tchar PrototypeTag[MAX_PATH] = TEXT("Prototype_GameObject_");
-		_tchar LayerTag[MAX_PATH] = TEXT("Layer_");
-
-		wsprintf(PrototypeTag, TEXT("%s%s"), PrototypeTag, pStr);
-		wsprintf(LayerTag, TEXT("%s%s"), LayerTag, pStr);
-
-		_float3 vPos = m_pGameInstance->Get_TargetPos();
-
-
- 		auto iter = find_if(m_mapSpawn.begin(), m_mapSpawn.end(), CTag_Finder(TEXT("PlayerSpawn")));
-		
-		if (iter != m_mapSpawn.end())
-		{
-			CPlayerSpawn* PlayerSpawn = (CPlayerSpawn*)m_pGameInstance->Find_Object(TEXT("Layer_PlayerSpawn"),0);
-			vPos.y += 0.01f;
-			PlayerSpawn->Get_Transform()->Set_State(CTransform::STATE_POSITION, vPos);
-			m_mapSpawn.insert({ pStr,vPos });
-			return;
-		}
-
-		if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, LayerTag, &vPos)))
-		{
-			ERR_MSG(TEXT("Failed to Cloned : CPlayerSpawn"));
-			return;
-		}
-		m_mapSpawn.insert({ pStr,vPos });
+		if (!pMyForm->m_ResetX.GetCheck())
+			pMyForm->m_ObejctListBox.SetCurSel(-1);
 	}
+		
 }

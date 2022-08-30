@@ -62,9 +62,15 @@ private:
 public:
 	typedef struct tagPos
 	{
+		_float3 m_vPlayerPos;
 
-	};
+		vector<_float3> m_vMonsterPos;
+
+	}SAVEPOS;
 	map<CString, _float3>	m_mapSpawn;
+
+	SAVEPOS m_SavePos;
+	_bool m_bCheck = false;
 public:
 	void Set_ObjectName(CString _strObjectName) { m_strObjectName = _strObjectName; }
 

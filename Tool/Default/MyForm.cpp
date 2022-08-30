@@ -37,6 +37,7 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_MouseY, m_StaticY);
 	DDX_Control(pDX, IDC_MouseZ, m_StaticZ);
 	DDX_Control(pDX, IDC_OBJECTLIST, m_ObejctListBox);
+	DDX_Control(pDX, IDC_CHECK1, m_ResetX);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
@@ -48,6 +49,7 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_LBN_SELCHANGE(IDC_OBJECTLIST, &CMyForm::OnListBox)
 	ON_BN_CLICKED(IDC_BUTTON2, &CMyForm::OnObjectSaveButton)
 	ON_BN_CLICKED(IDC_BUTTON3, &CMyForm::OnObjectLoadButton)
+	ON_BN_CLICKED(IDC_CHECK1, &CMyForm::OnResetXButton)
 END_MESSAGE_MAP()
 
 
@@ -523,7 +525,7 @@ void CMyForm::OnListBox()
 	CString strFindName;
 
 	int iSelect = m_ObejctListBox.GetCurSel();
-
+	
 	if (-1 == iSelect)
 		return;
 	
@@ -564,18 +566,13 @@ void CMyForm::OnObjectSaveButton()
 			return;
 
 		DWORD dwByte = 0;
-		DWORD dwStrByte = 0;
 		CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
 		CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
-		
-		for (auto& iter : pToolView->m_mapSpawn)
-		{
-			dwStrByte = sizeof(TCHAR) * (iter.first.GetLength() + 1);
-			WriteFile(hFile, &dwStrByte, sizeof(DWORD), &dwByte, nullptr);
-			WriteFile(hFile, iter.first.GetString(), dwStrByte, &dwByte,nullptr);
 
-			WriteFile(hFile, iter.second, sizeof(_float3), &dwByte, nullptr);
-		}
+			WriteFile(hFile, pToolView->m_SavePos.m_vPlayerPos, sizeof(_float3), &dwByte, nullptr);
+			
+			for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
+				WriteFile(hFile, iter, sizeof(_float3), &dwByte, nullptr);
 
 		CloseHandle(hFile);
 	}
@@ -586,4 +583,14 @@ void CMyForm::OnObjectSaveButton()
 void CMyForm::OnObjectLoadButton()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CMyForm::OnResetXButton()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	UpdateData(TRUE);
+
+	UpdateData(FALSE);
 }
