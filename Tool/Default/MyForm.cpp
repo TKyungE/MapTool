@@ -87,7 +87,7 @@ void CMyForm::OnInitialUpdate()
 	UpdateData(TRUE);
 
 	m_ObejctListBox.AddString(TEXT("PlayerSpawn"));
-	m_ObejctListBox.AddString(TEXT("MonsterSpwan"));
+	m_ObejctListBox.AddString(TEXT("MonsterSpawn"));
 
 	UpdateData(FALSE);
 }

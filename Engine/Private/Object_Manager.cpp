@@ -62,7 +62,7 @@ CGameObject * CObject_Manager::Find_Object(const _tchar * pLayerTag, _uint iInde
 	if (nullptr == pLayer)
 		return nullptr;
 	
-	CGameObject* pGameObject = pLayer->Find_GameObject(iIndex);
+ 	CGameObject* pGameObject = pLayer->Find_GameObject(iIndex);
 	if (nullptr == pGameObject)
 		return nullptr;
 

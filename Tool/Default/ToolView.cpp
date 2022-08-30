@@ -16,6 +16,7 @@
 #include "Camera_Dynamic.h"
 #include "PlayerSpawn.h"
 #include "MyForm.h"
+#include "MonsterSpawn.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -174,6 +175,12 @@ void CToolView::OnInitialUpdate()
 		return;
 	}
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MonsterSpawn"), CMonsterSpawn::Create(m_pGraphic_Device))))
+	{
+		ERR_MSG(TEXT("Prototype_GameObject_PlayerSpawn Failed"));
+		return;
+	}
+
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
 		CCamera_Dynamic::Create(m_pGraphic_Device))))
 		return;
@@ -260,13 +267,13 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 
 	/*For.Prototype_Component_Texture_PlayerSpawn*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_PlayerSpawn"),
-		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Effect/UseSkill/Effect%d.png"), 1))))
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Effect/UseSkill/Effect%d.png"), 3))))
 		return E_FAIL;
 
 	///*For.Prototype_Component_Texture_MonsterSpawn*/
-	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_MonsterSpawn"),
-	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT(), 1))))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_MonsterSpawn"),
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Effect/UseSkill/Effect%d.png"), 3))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -384,9 +391,13 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
 	CView::OnLButtonUp(nFlags, point);
+	
+	_tchar pStr[MAX_PATH] = TEXT("");
+	memcpy(&pStr,m_strObjectName, sizeof(TCHAR) * MAX_PATH);
+	
+	//lstrcpy(pStr, m_strObjectName.GetString());
 
-
-	if ("" != m_strObjectName)
+	if (pStr != TEXT(""))
 	{
 		if (nullptr == m_pGameInstance)
 		{
@@ -397,18 +408,28 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		_tchar PrototypeTag[MAX_PATH] = TEXT("Prototype_GameObject_");
 		_tchar LayerTag[MAX_PATH] = TEXT("Layer_");
 
-		wsprintf(PrototypeTag, TEXT("%s%s"), PrototypeTag, m_strObjectName);
-		wsprintf(LayerTag, TEXT("%s%s"), LayerTag, m_strObjectName);
-
-		Invalidate(FALSE);
+		wsprintf(PrototypeTag, TEXT("%s%s"), PrototypeTag, pStr);
+		wsprintf(LayerTag, TEXT("%s%s"), LayerTag, pStr);
 
 		_float3 vPos = m_pGameInstance->Get_TargetPos();
+
+
+ 		auto iter = find_if(m_mapSpawn.begin(), m_mapSpawn.end(), CTag_Finder(TEXT("PlayerSpawn")));
+		
+		if (iter != m_mapSpawn.end())
+		{
+			CPlayerSpawn* PlayerSpawn = (CPlayerSpawn*)m_pGameInstance->Find_Object(TEXT("Layer_PlayerSpawn"),0);
+			vPos.y += 0.01f;
+			PlayerSpawn->Get_Transform()->Set_State(CTransform::STATE_POSITION, vPos);
+			m_mapSpawn.insert({ pStr,vPos });
+			return;
+		}
 
 		if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, LayerTag, &vPos)))
 		{
 			ERR_MSG(TEXT("Failed to Cloned : CPlayerSpawn"));
 			return;
 		}
-		m_mapSpawn.insert({ m_strObjectName,vPos });
+		m_mapSpawn.insert({ pStr,vPos });
 	}
 }

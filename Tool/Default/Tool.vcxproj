@@ -191,6 +191,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Engine\Public\MonsterSpawn.h" />
     <ClInclude Include="..\Public\Camera_Dynamic.h" />
     <ClInclude Include="..\Public\MyTerrain.h" />
     <ClInclude Include="..\Public\PlayerSpawn.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="ToolView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Engine\Private\MonsterSpawn.cpp" />
     <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
     <ClCompile Include="..\Private\MyTerrain.cpp" />
     <ClCompile Include="..\Private\PlayerSpawn.cpp" />

@@ -29,10 +29,15 @@ HRESULT CPlayerSpawn::Initialize(void * pArg)
 		return E_FAIL;
 
 	_float3 vPos;
-	memcpy(&vPos, &pArg, sizeof(_float3));
+	memcpy(&vPos, pArg, sizeof(_float3));
+	vPos.y += 0.1f;
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
 	_float3 vRight = { 1.f,0.f,0.f };
+
 	m_pTransformCom->Turn(vRight, 1.f);
+
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
@@ -43,14 +48,14 @@ void CPlayerSpawn::Tick(void)
 {
 	__super::Tick();
 
-	CGameInstance* pInstance = CGameInstance::Get_Instance();
-	Safe_AddRef(pInstance);
+	//CGameInstance* pInstance = CGameInstance::Get_Instance();
+	//Safe_AddRef(pInstance);
 
-	_float3 vPos = pInstance->Get_TargetPos();
-	vPos.y += 0.01f;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+	//_float3 vPos = pInstance->Get_TargetPos();
+	//vPos.y += 0.01f;
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
- 	Safe_Release(pInstance);
+ //	Safe_Release(pInstance);
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
@@ -64,7 +69,7 @@ HRESULT CPlayerSpawn::Render(void)
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
 		return E_FAIL;
 	
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(0)))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(1)))
 		return E_FAIL;
 	
 	if (FAILED(SetUp_RenderState()))

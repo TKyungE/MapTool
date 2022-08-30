@@ -40,6 +40,9 @@
     <Filter Include="02. Object\01. PlayerSpawn">
       <UniqueIdentifier>{64b86a9b-b4cf-49ab-ba4c-310df7992703}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\02. MonsterSpawn">
+      <UniqueIdentifier>{9df4afdb-20fd-414a-8d87-0f65eb52c461}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -81,6 +84,9 @@
     <ClInclude Include="..\Public\PlayerSpawn.h">
       <Filter>02. Object\01. PlayerSpawn</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Engine\Public\MonsterSpawn.h">
+      <Filter>02. Object\02. MonsterSpawn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -109,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\PlayerSpawn.cpp">
       <Filter>02. Object\01. PlayerSpawn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Private\MonsterSpawn.cpp">
+      <Filter>02. Object\02. MonsterSpawn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

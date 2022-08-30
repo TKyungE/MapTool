@@ -60,7 +60,10 @@ private:
 	
 	CString m_strObjectName = TEXT("");
 public:
+	typedef struct tagPos
+	{
 
+	};
 	map<CString, _float3>	m_mapSpawn;
 public:
 	void Set_ObjectName(CString _strObjectName) { m_strObjectName = _strObjectName; }
