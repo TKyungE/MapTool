@@ -407,7 +407,7 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 	const _tchar* pStr = (_tchar*)(LPCTSTR)m_strObjectName;
 
-	if (pMyForm->m_ObejctListBox.GetCurSel() != -1)s
+	if (pMyForm->m_ObejctListBox.GetCurSel() != -1)
 	{
 		if (pStr != TEXT(""))
 		{
