@@ -405,12 +405,12 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
 	CMyForm*		pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
 
-	const _tchar* pStr = (_tchar*)(LPCTSTR)m_strObjectName;
+	
+	const _tchar* pstr = (_tchar*)(LPCTSTR)m_strObjectName;
 
-	if (pMyForm->m_ObejctListBox.GetCurSel() != -1)s
+
+	/*if (pMyForm->m_ObejctListBox.GetCurSel() != -1)
 	{
-		if (pStr != TEXT(""))
-		{
 			if (nullptr == m_pGameInstance)
 			{
 				ERR_MSG(TEXT("Failed to Created"));
@@ -420,12 +420,12 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			_tchar PrototypeTag[MAX_PATH] = TEXT("Prototype_GameObject_");
 			_tchar LayerTag[MAX_PATH] = TEXT("Layer_");
 
-			wsprintf(PrototypeTag, TEXT("%s%s"), PrototypeTag, pStr);
-			wsprintf(LayerTag, TEXT("%s%s"), LayerTag, pStr);
-
+			wsprintf(PrototypeTag, TEXT("%s%s"), PrototypeTag, pstr);
+			wsprintf(LayerTag, TEXT("%s%s"), LayerTag, pstr);
+			
 			_float3 vPos = m_pGameInstance->Get_TargetPos();
 
-			if (!lstrcmp(pStr, TEXT("PlayerSpawn")))
+			if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
 			{
 				if (m_bCheck == false)
 					m_bCheck = true;
@@ -447,15 +447,78 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 				return;
 			}
 
-			if (!lstrcmp(pStr, TEXT("PlayerSpawn")))
+			if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
 				m_SavePos.m_vPlayerPos = vPos;
 
 			else
 				m_SavePos.m_vMonsterPos.push_back(vPos);
 
+		
+		if (!pMyForm->m_ResetX.GetCheck())
+			pMyForm->m_ObejctListBox.SetCurSel(-1);
+	}*/
+		
+
+	if (pMyForm->m_ObejctListBox.GetCurSel() != -1)
+	{
+		if (nullptr == m_pGameInstance)
+		{
+			ERR_MSG(TEXT("Failed to Created"));
+			return;
 		}
+
+		_tchar PrototypeTag[MAX_PATH] = TEXT("Prototype_GameObject_");
+		_tchar LayerTag[MAX_PATH] = TEXT("Layer_");
+
+		wsprintf(PrototypeTag, TEXT("%s%s"), PrototypeTag, pstr);
+		wsprintf(LayerTag, TEXT("%s%s"), LayerTag, pstr);
+
+		_float3 vPos = m_pGameInstance->Get_TargetPos();
+
+		if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
+		{
+			if (m_bCheck == false)
+				m_bCheck = true;
+
+			else if (m_bCheck)
+			{
+				CPlayerSpawn* PlayerSpawn = (CPlayerSpawn*)m_pGameInstance->Find_Object(TEXT("Layer_PlayerSpawn"), 0);
+				vPos.y += 0.01f;
+				PlayerSpawn->Get_Transform()->Set_State(CTransform::STATE_POSITION, vPos);
+				m_SavePos.m_vPlayerPos = vPos;
+
+				if (!pMyForm->m_ResetX.GetCheck())
+					pMyForm->m_ObejctListBox.SetCurSel(-1);
+
+				return;
+			}
+
+		}
+		if (!lstrcmp(pstr, TEXT("MonsterSpawn")))
+		{
+			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_MonsterSpawn"), &vPos)))
+			{
+				ERR_MSG(TEXT("Failed to Cloned : MonsterSpawn"));
+				return;
+			}
+		}
+		else
+		{
+			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_PlayerSpawn"), &vPos)))
+			{
+				ERR_MSG(TEXT("Failed to Cloned : PlayerSpawn"));
+				return;
+			}
+		}
+
+		if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
+			m_SavePos.m_vPlayerPos = vPos;
+
+		else
+			m_SavePos.m_vMonsterPos.push_back(vPos);
+
+
 		if (!pMyForm->m_ResetX.GetCheck())
 			pMyForm->m_ObejctListBox.SetCurSel(-1);
 	}
-		
 }
