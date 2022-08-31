@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\MyTerrain.h"
+
 #include "GameInstance.h"
-
-
 
 CMyTerrain::CMyTerrain(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
@@ -30,12 +29,7 @@ HRESULT CMyTerrain::Initialize(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
-
 	return S_OK;
-
-	
 }
 
 void CMyTerrain::Tick(void)
@@ -74,11 +68,16 @@ void CMyTerrain::Tick(void)
 				/*_tchar m_szFPS[MAX_PATH] = L"";
 				wsprintf(m_szFPS, L"ÁÂÇ¥ : %d, %d, %d", (int)pInstance->Get_TargetPos().x, (int)pInstance->Get_TargetPos().y, (int)pInstance->Get_TargetPos().z);
 				ERR_MSG(m_szFPS);*/
-				if (!m_bCheck)
+				if (!m_bObjectCheck)
 				{
 					pVertices[pIndices[i]._0].vPosition.y = m_fValue;
 					pVertices[pIndices[i]._1].vPosition.y = m_fValue;
 					pVertices[pIndices[i]._2].vPosition.y = m_fValue;
+				}
+
+				if (0 <= m_iTileCheck)
+				{
+					Change_Terrain(LU, m_iTileCheck);
 				}
 				
 				break;
@@ -103,7 +102,7 @@ HRESULT CMyTerrain::Render(void)
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(0)))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(6)))
 		return E_FAIL;
 
 	m_pVIBufferCom->Render();
@@ -132,6 +131,47 @@ HRESULT CMyTerrain::SetUp_Components(void)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CMyTerrain::Change_Terrain(_float3& LU, _int _iTile)
+{
+	CGameInstance* pInstance = CGameInstance::Get_Instance();
+	if (nullptr == pInstance)
+		return;
+
+	Safe_AddRef(pInstance);
+	
+	_float3 vRectPos = LU + _float3(0.5f, 0.f, -0.5f);
+	vRectPos.y += 0.001f;
+	D3DXVec3TransformCoord(&vRectPos, &vRectPos, &m_pTransformCom->Get_WorldMatrix());
+
+	CTerrainRect::RECTINFO m_tRectInfo;
+	m_tRectInfo.vPos = vRectPos;
+	m_tRectInfo.vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	m_tRectInfo.iTex = _iTile;
+
+	_uint i = 0;
+	CTerrainRect* pObject;
+	while (nullptr != (pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i)))
+	{
+		CTransform* pTransform = (CTransform*)pObject->Find_Component(TEXT("Com_Transform"));
+		if (m_tRectInfo.vPos == *(_float3*)&pTransform->Get_WorldMatrix().m[3][0])
+		{
+			pObject->Set_RectInfo(m_tRectInfo);
+			Safe_Release(pInstance);
+			return;
+		}
+		
+		++i;
+	}
+	
+	if (FAILED(pInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), &m_tRectInfo)))
+	{
+		ERR_MSG(TEXT("Failed to Cloned : TerrainRect"));
+		return;
+	}
+
+	Safe_Release(pInstance);
 }
 
 CMyTerrain * CMyTerrain::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

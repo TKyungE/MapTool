@@ -77,6 +77,9 @@ public:
 	
 	CButton m_ResetX;
 	afx_msg void OnResetXButton();
+
+	CListBox m_TileList;
+	afx_msg void OnSelectTile();
 };
 
 

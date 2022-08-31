@@ -17,6 +17,7 @@
 #include "PlayerSpawn.h"
 #include "MyForm.h"
 #include "MonsterSpawn.h"
+#include "TerrainRect.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -107,6 +108,13 @@ CToolDoc* CToolView::GetDocument() const // 디버그되지 않은 버전은 인라인으로 지
 
 // CToolView 메시지 처리기
 
+void CToolView::Set_Tile(_int _iIndex)
+{
+	CMyTerrain* pTerrain = (CMyTerrain*)m_pGameInstance->Find_Object(TEXT("Layer_BackGround"), 0);
+
+	pTerrain->Set_TileCheck(_iIndex);
+}
+
 void CToolView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
@@ -168,6 +176,12 @@ void CToolView::OnInitialUpdate()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), CMyTerrain::Create(m_pGraphic_Device))))
 	{
 		ERR_MSG(TEXT("Prototype_GameObject_Terrain Failed"));
+		return;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TerrainRect"), CTerrainRect::Create(m_pGraphic_Device))))
+	{
+		ERR_MSG(TEXT("Prototype_GameObject_TerrainRect Failed"));
 		return;
 	}
 
@@ -271,8 +285,11 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 
 	/*For.Prototype_Component_Texture_Terrain*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Terrain/Grass_%d.tga"), 1))))
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/LookMap/Map%d.png"), 10))))
 		return E_FAIL;
+
+	m_strTexFilePath = TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/LookMap/Map%d.png");
+	m_iNumTex = 10;
 
 	/*For.Prototype_Component_Texture_PlayerSpawn*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_PlayerSpawn"),
@@ -477,10 +494,10 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 		if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
 		{
-			if (m_bCheck == false)
-				m_bCheck = true;
+			if (m_bObjectCheck == false)
+				m_bObjectCheck = true;
 
-			else if (m_bCheck)
+			else if (m_bObjectCheck)
 			{
 				CPlayerSpawn* PlayerSpawn = (CPlayerSpawn*)m_pGameInstance->Find_Object(TEXT("Layer_PlayerSpawn"), 0);
 				vPos.y += 0.01f;

@@ -35,6 +35,9 @@ CGameObject * CLayer::Find_GameObject(_uint iIndex)
 	for (_uint i = 0; i < iIndex; ++i)
 		++iter;
 
+	if (iter == m_GameObjects.end())
+		return nullptr;
+
 	return *iter;
 }
 

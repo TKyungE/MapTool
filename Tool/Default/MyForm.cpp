@@ -38,6 +38,7 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_MouseZ, m_StaticZ);
 	DDX_Control(pDX, IDC_OBJECTLIST, m_ObejctListBox);
 	DDX_Control(pDX, IDC_CHECK1, m_ResetX);
+	DDX_Control(pDX, IDC_TILELIST, m_TileList);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
@@ -50,6 +51,7 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON2, &CMyForm::OnObjectSaveButton)
 	ON_BN_CLICKED(IDC_BUTTON3, &CMyForm::OnObjectLoadButton)
 	ON_BN_CLICKED(IDC_CHECK1, &CMyForm::OnResetXButton)
+	ON_LBN_SELCHANGE(IDC_TILELIST, &CMyForm::OnSelectTile)
 END_MESSAGE_MAP()
 
 
@@ -90,6 +92,17 @@ void CMyForm::OnInitialUpdate()
 
 	m_ObejctListBox.AddString(TEXT("PlayerSpawn"));
 	m_ObejctListBox.AddString(TEXT("MonsterSpawn"));
+
+	CGameInstance* pInstance = CGameInstance::Get_Instance();
+	if (nullptr == pInstance)
+		return;
+
+	Safe_AddRef(pInstance);
+
+
+	TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/LookMap/Map%d.png"), 10
+
+	Safe_Release(pInstance);
 
 	UpdateData(FALSE);
 }
@@ -591,6 +604,27 @@ void CMyForm::OnResetXButton()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 
 	UpdateData(TRUE);
+
+	UpdateData(FALSE);
+}
+
+
+
+
+void CMyForm::OnSelectTile()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+
+	int iSelect = m_TileList.GetCurSel();
+
+	if (-1 == iSelect)
+		return;
+
+	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
+
+	pToolView->Set_Tile(iSelect);
 
 	UpdateData(FALSE);
 }

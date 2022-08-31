@@ -18,7 +18,6 @@ public:
 	void Clear(void);
 	class CGameObject* Find_Object(const _tchar* pLayerTag, _uint iIndex);
 
-
 private:
 	map<const _tchar*, class CGameObject*> m_Prototypes;
 	typedef map<const _tchar*, class CGameObject*> PROTOTYPES;
