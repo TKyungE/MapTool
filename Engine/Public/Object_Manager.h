@@ -17,6 +17,7 @@ public:
 	void Tick(void);
 	void Clear(void);
 	class CGameObject* Find_Object(const _tchar* pLayerTag, _uint iIndex);
+	_int Get_LayerSize(const _tchar* pLayerTag);
 
 private:
 	map<const _tchar*, class CGameObject*> m_Prototypes;

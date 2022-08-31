@@ -76,9 +76,7 @@ void CMyTerrain::Tick(void)
 				}
 
 				if (0 <= m_iTileCheck)
-				{
 					Change_Terrain(LU, m_iTileCheck);
-				}
 				
 				break;
 			}

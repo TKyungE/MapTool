@@ -33,6 +33,7 @@ public: //Object_Manager
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg = nullptr);
 	CGameObject* Find_Object(const _tchar* pLayerTag, _uint iIndex);
+	_int Get_LayerSize(const _tchar* pLayerTag);
 
 public: //Component_Manager
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CComponent* pPrototype);

@@ -149,6 +149,15 @@ void CMyForm::OnSaveData()
 		CGameInstance* pInstance = CGameInstance::Get_Instance();
 		Safe_AddRef(pInstance);
 
+		_int TerrainRectSize = pInstance->Get_LayerSize(TEXT("Layer_TerrainRect"));
+		CString strSize;
+		strSize.Format(TEXT("%d"), TerrainRectSize);
+
+		_tchar szSize[MAX_PATH];
+		_tcscpy_s(szSize, MAX_PATH, strSize.GetBuffer(0));
+
+		WriteFile(hFile, &(szSize), sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
 		CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
 		if (nullptr == pTerrain)
 		{
@@ -187,11 +196,19 @@ void CMyForm::OnSaveData()
 
 		IB->Unlock();
 
+		_uint i = 0;
+		CTerrainRect* pObject;
+		while (nullptr != (pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i)))
+		{
+			WriteFile(hFile, &pObject->Get_RectInfo(), sizeof(CTerrainRect::RECTINFO), &dwByte, nullptr);
+
+			++i;
+		}
+
 		Safe_Release(pInstance);
 
 		CloseHandle(hFile);
 	}
-
 }
 
 
@@ -224,6 +241,10 @@ void CMyForm::OnLoadData()
 
 		CGameInstance* pInstance = CGameInstance::Get_Instance();
 		Safe_AddRef(pInstance);
+
+		_tchar szSize[MAX_PATH];
+		ReadFile(hFile, &szSize, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		_int TerrainRectSize = _wtoi(szSize);
 
 		CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
 		if (nullptr == pTerrain)
@@ -283,12 +304,23 @@ void CMyForm::OnLoadData()
 
 		IB->Unlock();
 
+		CTerrainRect::RECTINFO tRectInfo;
+
+		for (_int i = 0; i < TerrainRectSize; ++i)
+		{
+			ReadFile(hFile, &tRectInfo, sizeof(CTerrainRect::RECTINFO), &dwByte, nullptr);
+
+			if (FAILED(pInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), &tRectInfo)))
+			{
+				ERR_MSG(TEXT("Failed to Cloned : CTerrainRect"));
+				return;
+			}
+		}
+
 		Safe_Release(pInstance);
 
 		CloseHandle(hFile);
 	}
-
-	
 }
 
 

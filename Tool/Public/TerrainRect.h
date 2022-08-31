@@ -24,6 +24,8 @@ private:
 	virtual ~CTerrainRect() = default;
 
 public:
+	RECTINFO Get_RectInfo(void) { return m_tInfo; }
+
 	void Set_RectInfo(RECTINFO& tInfo) { memcpy(&m_tInfo, &tInfo, sizeof(RECTINFO)); }
 
 public:
