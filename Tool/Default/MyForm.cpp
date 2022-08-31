@@ -587,11 +587,20 @@ void CMyForm::OnObjectSaveButton()
 		CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
 		CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
 
+		for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
+			++pToolView->m_SavePos.m_iMSize;
+		for (auto& iter : pToolView->m_SavePos.m_IndexPos)
+			++pToolView->m_SavePos.m_IndexSize;
+		
+
 			WriteFile(hFile, pToolView->m_SavePos.m_vPlayerPos, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, &pToolView->m_SavePos.m_iMSize, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, &pToolView->m_SavePos.m_IndexSize, sizeof(_uint), &dwByte, nullptr);
+
 			
 			for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
 				WriteFile(hFile, iter, sizeof(_float3), &dwByte, nullptr);
-
+			
 			for (auto& iter : pToolView->m_SavePos.m_IndexPos)
 			{
 				WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);

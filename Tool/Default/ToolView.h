@@ -73,6 +73,9 @@ public:
 
 		vector<INDEXPOS>	m_IndexPos;
 
+		_uint		m_iMSize;
+		_uint		m_IndexSize;
+
 	}SAVEPOS;
 
 	

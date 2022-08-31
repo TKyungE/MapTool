@@ -36,3 +36,11 @@ Tool/Bin/Tool.pdb
 Tool/Bin/Tool.ilk
 Tool/Bin/Tool.exe
 MapTool.VC.db
+Tool/Default/x64/Debug/MainFrm.obj
+Tool/Default/x64/Debug/MyForm.obj
+Tool/Default/x64/Debug/Tool.log
+Tool/Default/x64/Debug/Tool.obj
+Tool/Default/x64/Debug/ToolView.obj
+Tool/Default/x64/Debug/vc140.idb
+Tool/Default/x64/Debug/vc140.pdb
+MapTool.VC.db
