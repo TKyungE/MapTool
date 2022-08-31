@@ -99,8 +99,19 @@ void CMyForm::OnInitialUpdate()
 
 	Safe_AddRef(pInstance);
 
+	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
 
-	TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/LookMap/Map%d.png"), 10
+	CString strTexFilePath = pToolView->Get_TexFilePath();
+	_uint iNumTex = pToolView->Get_NumTex();
+	
+	for (_uint i = 0; i < iNumTex; ++i)
+	{
+		CString strInt;
+		strInt.Format(TEXT("%d"), i);
+
+		m_TileList.AddString(strTexFilePath + strInt);
+	}
 
 	Safe_Release(pInstance);
 

@@ -288,7 +288,7 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/LookMap/Map%d.png"), 10))))
 		return E_FAIL;
 
-	m_strTexFilePath = TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/LookMap/Map%d.png");
+	m_strTexFilePath = TEXT("Map");
 	m_iNumTex = 10;
 
 	/*For.Prototype_Component_Texture_PlayerSpawn*/
