@@ -1,4 +1,4 @@
 ﻿  MyForm.cpp
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(641): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\태경\desktop\maptool\tool\default\myform.cpp(647): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
   Tool.vcxproj -> C:\Users\태경\Desktop\MapTool\Tool\Default\..\Bin\Tool.exe
   Tool.vcxproj -> ..\Bin\Tool.pdb (Partial PDB)
