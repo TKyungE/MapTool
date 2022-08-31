@@ -80,10 +80,10 @@ void CMyForm::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-		m_Slider_Value.SetRange(0, 100);
-		m_Slider_Value.SetPos(0);
+	m_Slider_Value.SetRange(0, 100);
+	m_Slider_Value.SetPos(0);
 
-		m_Slider_Value.SetTicFreq(1);
+	m_Slider_Value.SetTicFreq(1);
 
 	CString	strPos;
 	strPos.Format(L"%d", m_Slider_Value.GetPos());
@@ -202,7 +202,7 @@ void CMyForm::OnLoadData()
 
 		if (INVALID_HANDLE_VALUE == hFile)
 			return;
-		
+
 		DWORD dwByte = 0;
 
 		CGameInstance* pInstance = CGameInstance::Get_Instance();
@@ -252,7 +252,7 @@ void CMyForm::OnLoadData()
 			pVertices[i].vPosition = vPos;
 			pVertices[i].vTexture = vTex;
 		}
-		
+
 		VB->Unlock();
 
 		IB->Lock(0, 0, (void**)&pIndices, 0);
@@ -271,7 +271,7 @@ void CMyForm::OnLoadData()
 		CloseHandle(hFile);
 	}
 
-	
+
 }
 
 
@@ -333,20 +333,20 @@ void CMyForm::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 		int iPos = _ttoi(strPos);
 
 		m_Slider_Value.SetPos(iPos);
-		
+
 		CGameInstance* pInstance = CGameInstance::Get_Instance();
 		Safe_AddRef(pInstance);
 
 		CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
 
 		if (nullptr == pTerrain)
-		return;
+			return;
 
 		pTerrain->Set_Value(fPos);
 
 		Safe_Release(pInstance);
 	}
-	
+
 }
 
 
@@ -532,10 +532,10 @@ void CMyForm::OnListBox()
 	CString strFindName;
 
 	int iSelect = m_ObejctListBox.GetCurSel();
-	
+
 	if (-1 == iSelect)
 		return;
-	
+
 	m_ObejctListBox.GetText(iSelect, strFindName);
 
 	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
@@ -587,25 +587,33 @@ void CMyForm::OnObjectSaveButton()
 		CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
 		CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
 
-		for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
-			++pToolView->m_SavePos.m_iMSize;
-		for (auto& iter : pToolView->m_SavePos.m_IndexPos)
-			++pToolView->m_SavePos.m_IndexSize;
+		_tchar str1[MAX_PATH];
+		_tchar str2[MAX_PATH];
+		pToolView->m_SavePos.m_iMSize = pToolView->m_SavePos.m_vMonsterPos.size();
+
+		pToolView->m_SavePos.m_IndexSize = pToolView->m_SavePos.m_IndexPos.size();
+
 		
+		WriteFile(hFile, pToolView->m_SavePos.m_vPlayerPos, sizeof(_float3), &dwByte, nullptr);
 
-			WriteFile(hFile, pToolView->m_SavePos.m_vPlayerPos, sizeof(_float3), &dwByte, nullptr);
-			WriteFile(hFile, &pToolView->m_SavePos.m_iMSize, sizeof(_uint), &dwByte, nullptr);
-			WriteFile(hFile, &pToolView->m_SavePos.m_IndexSize, sizeof(_uint), &dwByte, nullptr);
+		wsprintf(str1, TEXT("%d"), pToolView->m_SavePos.m_iMSize);
+		WriteFile(hFile, str1, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 
-			
-			for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
-				WriteFile(hFile, iter, sizeof(_float3), &dwByte, nullptr);
-			
-			for (auto& iter : pToolView->m_SavePos.m_IndexPos)
-			{
-				WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
-				WriteFile(hFile, &iter.m_iIndex, sizeof(_uint), &dwByte, nullptr);
-			}
+		wsprintf(str2, TEXT("%d"), pToolView->m_SavePos.m_IndexSize);
+		WriteFile(hFile, str2, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+
+		for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
+			WriteFile(hFile, iter, sizeof(_float3), &dwByte, nullptr);
+
+		for (auto& iter : pToolView->m_SavePos.m_IndexPos)
+		{
+			_tchar str3[MAX_PATH];
+			wsprintf(str3, TEXT("%d"), iter.m_iIndex);
+
+			WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, str3, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		}
 
 		CloseHandle(hFile);
 	}
@@ -664,7 +672,7 @@ void CMyForm::OnSpinIndex(NMHDR *pNMHDR, LRESULT *pResult)
 				return;
 
 			--m_iIndex1;
-			
+
 		}
 		SetDlgItemInt(IDC_EDIT4, m_iIndex1);
 	}
