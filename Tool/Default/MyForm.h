@@ -77,6 +77,10 @@ public:
 	
 	CButton m_ResetX;
 	afx_msg void OnResetXButton();
+	CEdit m_EditIndex;
+	int	m_iIndex1 = 0;
+	CSpinButtonCtrl m_SpinIndex;
+	afx_msg void OnSpinIndex(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 

@@ -17,6 +17,7 @@
 #include "PlayerSpawn.h"
 #include "MyForm.h"
 #include "MonsterSpawn.h"
+#include "BackGruondObj.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -183,6 +184,12 @@ void CToolView::OnInitialUpdate()
 		return;
 	}
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGroundObj::Create(m_pGraphic_Device))))
+	{
+		ERR_MSG(TEXT("Prototype_GameObject_BackGround Failed"));
+		return;
+	}
+
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
 		CCamera_Dynamic::Create(m_pGraphic_Device))))
 		return;
@@ -284,6 +291,12 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Effect/UseSkill/Effect%d.png"), 3))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_BackGround"),
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Terrain/grass_%d.png"), m_iIndex = 2))))
+		return E_FAIL;
+
+	m_iIndex -= 1;
+
 	return S_OK;
 }
 
@@ -316,9 +329,12 @@ HRESULT CToolView::SetUp_SamplerState(void)
 
 HRESULT CToolView::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
-	if (nullptr == m_pGameInstance || FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), pLayerTag, nullptr)))
+	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 	
+	if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), pLayerTag, nullptr)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -400,64 +416,11 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 	CView::OnLButtonUp(nFlags, point);
 
-	
-
 	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
 	CMyForm*		pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
 
-	
 	const _tchar* pstr = (_tchar*)(LPCTSTR)m_strObjectName;
 
-	/*if (pMyForm->m_ObejctListBox.GetCurSel() != -1)
-
-	{
-			if (nullptr == m_pGameInstance)
-			{
-				ERR_MSG(TEXT("Failed to Created"));
-				return;
-			}
-
-			_tchar PrototypeTag[MAX_PATH] = TEXT("Prototype_GameObject_");
-			_tchar LayerTag[MAX_PATH] = TEXT("Layer_");
-
-			wsprintf(PrototypeTag, TEXT("%s%s"), PrototypeTag, pstr);
-			wsprintf(LayerTag, TEXT("%s%s"), LayerTag, pstr);
-			
-			_float3 vPos = m_pGameInstance->Get_TargetPos();
-
-			if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
-			{
-				if (m_bCheck == false)
-					m_bCheck = true;
-
-				else if (m_bCheck)
-				{
-					CPlayerSpawn* PlayerSpawn = (CPlayerSpawn*)m_pGameInstance->Find_Object(TEXT("Layer_PlayerSpawn"), 0);
-					vPos.y += 0.01f;
-					PlayerSpawn->Get_Transform()->Set_State(CTransform::STATE_POSITION, vPos);
-					m_SavePos.m_vPlayerPos = vPos;
-					return;
-				}
-
-			}
-
-			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, LayerTag, &vPos)))
-			{
-				ERR_MSG(TEXT("Failed to Cloned : CPlayerSpawn"));
-				return;
-			}
-
-			if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
-				m_SavePos.m_vPlayerPos = vPos;
-
-			else
-				m_SavePos.m_vMonsterPos.push_back(vPos);
-
-		
-		if (!pMyForm->m_ResetX.GetCheck())
-			pMyForm->m_ObejctListBox.SetCurSel(-1);
-	}*/
-		
 
 	if (pMyForm->m_ObejctListBox.GetCurSel() != -1)
 	{
@@ -474,6 +437,7 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		wsprintf(LayerTag, TEXT("%s%s"), LayerTag, pstr);
 
 		_float3 vPos = m_pGameInstance->Get_TargetPos();
+
 
 		if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
 		{
@@ -502,9 +466,20 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 				return;
 			}
 		}
-		else
+		else if(!lstrcmp(pstr, TEXT("PlayerSpawn")))
 		{
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_PlayerSpawn"), &vPos)))
+			{
+				ERR_MSG(TEXT("Failed to Cloned : PlayerSpawn"));
+				return;
+			}
+		}
+		else if (!lstrcmp(pstr, TEXT("BackGround")))
+		{
+			m_Index.m_iIndex = pMyForm->m_iIndex1;
+			m_Index.m_BackGroundPos = vPos;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_BackGround"), &m_Index)))
 			{
 				ERR_MSG(TEXT("Failed to Cloned : PlayerSpawn"));
 				return;
@@ -514,9 +489,12 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
 			m_SavePos.m_vPlayerPos = vPos;
 
-		else
+		else if(!lstrcmp(pstr, TEXT("MonsterSpawn")))
 			m_SavePos.m_vMonsterPos.push_back(vPos);
 
+		else if (!lstrcmp(pstr, TEXT("BackGround")))
+			m_SavePos.m_IndexPos.push_back(m_Index);
+		
 
 		if (!pMyForm->m_ResetX.GetCheck())
 			pMyForm->m_ObejctListBox.SetCurSel(-1);

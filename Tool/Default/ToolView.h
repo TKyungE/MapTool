@@ -60,16 +60,25 @@ private:
 	
 	CString m_strObjectName = TEXT("");
 public:
+	typedef struct tagIndexPos
+	{
+		_float3 m_BackGroundPos;
+		_uint m_iIndex;
+	}INDEXPOS;
+
 	typedef struct tagPos
 	{
 		_float3 m_vPlayerPos;
-
 		vector<_float3> m_vMonsterPos;
 
-	}SAVEPOS;
-	map<CString, _float3>	m_mapSpawn;
+		vector<INDEXPOS>	m_IndexPos;
 
+	}SAVEPOS;
+
+	
 	SAVEPOS m_SavePos;
+	INDEXPOS m_Index;
+	_uint m_iIndex;
 	_bool m_bCheck = false;
 public:
 	void Set_ObjectName(CString _strObjectName) { m_strObjectName = _strObjectName; }

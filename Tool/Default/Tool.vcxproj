@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Engine\Public\MonsterSpawn.h" />
+    <ClInclude Include="..\Public\BackGruondObj.h" />
     <ClInclude Include="..\Public\Camera_Dynamic.h" />
     <ClInclude Include="..\Public\MyTerrain.h" />
     <ClInclude Include="..\Public\PlayerSpawn.h" />
@@ -207,6 +208,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Engine\Private\MonsterSpawn.cpp" />
+    <ClCompile Include="..\Private\BackGruondObj.cpp" />
     <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
     <ClCompile Include="..\Private\MyTerrain.cpp" />
     <ClCompile Include="..\Private\PlayerSpawn.cpp" />

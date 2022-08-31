@@ -38,6 +38,8 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_MouseZ, m_StaticZ);
 	DDX_Control(pDX, IDC_OBJECTLIST, m_ObejctListBox);
 	DDX_Control(pDX, IDC_CHECK1, m_ResetX);
+	DDX_Control(pDX, IDC_EDIT4, m_EditIndex);
+	DDX_Control(pDX, IDC_SPIN1, m_SpinIndex);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
@@ -50,6 +52,7 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON2, &CMyForm::OnObjectSaveButton)
 	ON_BN_CLICKED(IDC_BUTTON3, &CMyForm::OnObjectLoadButton)
 	ON_BN_CLICKED(IDC_CHECK1, &CMyForm::OnResetXButton)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN1, &CMyForm::OnSpinIndex)
 END_MESSAGE_MAP()
 
 
@@ -90,7 +93,11 @@ void CMyForm::OnInitialUpdate()
 
 	m_ObejctListBox.AddString(TEXT("PlayerSpawn"));
 	m_ObejctListBox.AddString(TEXT("MonsterSpawn"));
+	m_ObejctListBox.AddString(TEXT("BackGround"));
 
+	m_EditIndex.SetWindowText(TEXT("0"));
+	m_SpinIndex.SetRange(0, 100);
+	m_SpinIndex.SetPos(0);
 	UpdateData(FALSE);
 }
 
@@ -536,6 +543,17 @@ void CMyForm::OnListBox()
 
 	pToolView->Set_ObjectName(strFindName);
 
+	if (strFindName == TEXT("BackGround"))
+	{
+		SetDlgItemInt(IDC_STATIC1, pToolView->m_iIndex);
+	}
+	else
+	{
+		SetDlgItemInt(IDC_STATIC1, 0);
+		SetDlgItemInt(IDC_EDIT4, 0);
+		m_iIndex1 = 0;
+	}
+
 	UpdateData(FALSE);
 }
 
@@ -574,6 +592,12 @@ void CMyForm::OnObjectSaveButton()
 			for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
 				WriteFile(hFile, iter, sizeof(_float3), &dwByte, nullptr);
 
+			for (auto& iter : pToolView->m_SavePos.m_IndexPos)
+			{
+				WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
+				WriteFile(hFile, &iter.m_iIndex, sizeof(_uint), &dwByte, nullptr);
+			}
+
 		CloseHandle(hFile);
 	}
 
@@ -594,3 +618,51 @@ void CMyForm::OnResetXButton()
 
 	UpdateData(FALSE);
 }
+
+
+void CMyForm::OnSpinIndex(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
+
+	UpdateData(TRUE);
+
+	CString strFindName;
+
+	int iSelect = m_ObejctListBox.GetCurSel();
+
+	if (-1 == iSelect)
+		return;
+
+	m_ObejctListBox.GetText(iSelect, strFindName);
+
+
+	if (strFindName == TEXT("BackGround"))
+	{
+		if (pNMUpDown->iDelta > 0)
+		{
+			if (m_iIndex1 >= GetDlgItemInt(IDC_STATIC1))
+				return;
+
+			++m_iIndex1;
+		}
+		else
+		{
+			if (m_iIndex1 <= 0)
+				return;
+
+			--m_iIndex1;
+			
+		}
+		SetDlgItemInt(IDC_EDIT4, m_iIndex1);
+	}
+	*pResult = 0;
+
+	UpdateData(FALSE);
+}
+
+
+
