@@ -99,6 +99,7 @@ void CMyForm::OnInitialUpdate()
 	m_ObejctListBox.AddString(TEXT("MonsterSpawn"));
 	m_ObejctListBox.AddString(TEXT("BackGround"));
 	m_ObejctListBox.AddString(TEXT("Tree"));
+	m_ObejctListBox.AddString(TEXT("House"));
 
 	m_EditIndex.SetWindowText(TEXT("0"));
 	m_SpinIndex.SetRange(0, 100);

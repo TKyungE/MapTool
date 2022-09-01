@@ -75,9 +75,12 @@ public:
 
 		vector<INDEXPOS>	m_IndexPos;
 		vector<INDEXPOS>	m_TreePos;
+		vector<INDEXPOS>	m_HousePos;
+
 		_uint		m_iMSize;
 		_uint		m_IndexSize;
 		_uint		m_TreeSize;
+		_uint		m_HouseSize;
 
 	}SAVEPOS;
 
@@ -86,6 +89,8 @@ public:
 	INDEXPOS m_Index;
 	_uint m_iBackIndex;
 	_uint m_iTreeIndex;
+	_uint m_iHouseIndex;
+
 	_bool m_bCheck = false;
 public:
 	void Set_ObjectName(CString _strObjectName) { m_strObjectName = _strObjectName; }

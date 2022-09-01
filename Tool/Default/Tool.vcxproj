@@ -194,6 +194,7 @@
     <ClInclude Include="..\..\Engine\Public\MonsterSpawn.h" />
     <ClInclude Include="..\Public\BackGruondObj.h" />
     <ClInclude Include="..\Public\Camera_Dynamic.h" />
+    <ClInclude Include="..\Public\House.h" />
     <ClInclude Include="..\Public\MyTerrain.h" />
     <ClInclude Include="..\Public\PlayerSpawn.h" />
     <ClInclude Include="..\Public\Tool_Defines.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="..\..\Engine\Private\MonsterSpawn.cpp" />
     <ClCompile Include="..\Private\BackGruondObj.cpp" />
     <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
+    <ClCompile Include="..\Private\House.cpp" />
     <ClCompile Include="..\Private\MyTerrain.cpp" />
     <ClCompile Include="..\Private\PlayerSpawn.cpp" />
     <ClCompile Include="..\Private\Tree.cpp" />
