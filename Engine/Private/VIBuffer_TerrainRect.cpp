@@ -25,16 +25,16 @@ HRESULT CVIBuffer_TerrainRect::Initialize_Prototype(void)
 
 	m_pVB->Lock(0, 0, (void**)&pVertices, 0);
 
-	pVertices[0].vPosition = _float3(0.f, 0.f, 1.f);
+	pVertices[0].vPosition = m_VertexPosArray[0] = _float3(0.f, 0.f, 1.f);
 	pVertices[0].vTexture = _float2(0.f, 0.f);
 
-	pVertices[1].vPosition = _float3(1.f, 0.f, 1.f);
+	pVertices[1].vPosition = m_VertexPosArray[1] = _float3(1.f, 0.f, 1.f);
 	pVertices[1].vTexture = _float2(1.f, 0.f);
 
-	pVertices[2].vPosition = _float3(1.f, 0.f, 0.f);
+	pVertices[2].vPosition = m_VertexPosArray[2] = _float3(1.f, 0.f, 0.f);
 	pVertices[2].vTexture = _float2(1.f, 1.f);
 
-	pVertices[3].vPosition = _float3(0.f, 0.f, 0.f);
+	pVertices[3].vPosition = m_VertexPosArray[3] = _float3(0.f, 0.f, 0.f);
 	pVertices[3].vTexture = _float2(0.f, 1.f);
 
 	m_pVB->Unlock();

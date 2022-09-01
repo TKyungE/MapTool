@@ -17,7 +17,7 @@ HRESULT CMyTerrain::Initialize_Prototype(void)
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
-	
+
 	return S_OK;
 }
 
@@ -40,10 +40,10 @@ void CMyTerrain::Tick(void)
 
 	if (nullptr == pInstance)
 		return;
-	
+
 	Safe_AddRef(pInstance);
 
-	if (pInstance->Get_DIMKeyState(DIMK_LBUTTON) < 0)
+	if ((GetKeyState(VK_LBUTTON) < 0) & 0x8001)
 	{
 		_float4x4 matWorld = m_pTransformCom->Get_WorldMatrix();
 		D3DXMatrixInverse(&matWorld, nullptr, &matWorld);
@@ -75,9 +75,6 @@ void CMyTerrain::Tick(void)
 					pVertices[pIndices[i]._2].vPosition.y = m_fValue;
 				}
 
-				if (0 <= m_iTileCheck)
-					Change_Terrain(pVertices[pIndices[i]._0].vPosition, m_iTileCheck);
-				
 				break;
 			}
 		}
@@ -129,47 +126,6 @@ HRESULT CMyTerrain::SetUp_Components(void)
 		return E_FAIL;
 
 	return S_OK;
-}
-
-void CMyTerrain::Change_Terrain(_float3 LU, _int _iTile)
-{
-	CGameInstance* pInstance = CGameInstance::Get_Instance();
-	if (nullptr == pInstance)
-		return;
-
-	Safe_AddRef(pInstance);
-	
-	_float3 vRectPos = LU + _float3(0.f, 0.f, -1.f);
-	D3DXVec3TransformCoord(&vRectPos, &vRectPos, &m_pTransformCom->Get_WorldMatrix());
-
-	CTerrainRect::RECTINFO m_tRectInfo;
-	m_tRectInfo.vPos = vRectPos;
-	//m_tRectInfo.vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	m_tRectInfo.iTex = _iTile;
-
-	_uint i = 0;
-	CTerrainRect* pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
-	while (nullptr != pObject)
-	{
-		CTransform* pTransform = (CTransform*)pObject->Find_Component(TEXT("Com_Transform"));
-		if ((round(m_tRectInfo.vPos.x * 10.f) / 10.f) == pTransform->Get_WorldMatrix().m[3][0] && (round(m_tRectInfo.vPos.z * 10.f) / 10.f) == pTransform->Get_WorldMatrix().m[3][2])
-		{
-			//pObject->Set_RectInfo(m_tRectInfo);
-			Safe_Release(pInstance);
-			return;
-		}
-		
-		++i;
-		pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
-	}
-	
-	if (FAILED(pInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), &m_tRectInfo)))
-	{
-		ERR_MSG(TEXT("Failed to Cloned : TerrainRect"));
-		return;
-	}
-
-	Safe_Release(pInstance);
 }
 
 CMyTerrain * CMyTerrain::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

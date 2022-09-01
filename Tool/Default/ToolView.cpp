@@ -108,13 +108,6 @@ CToolDoc* CToolView::GetDocument() const // 디버그되지 않은 버전은 인라인으로 지
 
 // CToolView 메시지 처리기
 
-void CToolView::Set_Tile(_int _iIndex)
-{
-	CMyTerrain* pTerrain = (CMyTerrain*)m_pGameInstance->Find_Object(TEXT("Layer_BackGround"), 0);
-
-	pTerrain->Set_TileCheck(_iIndex);
-}
-
 void CToolView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
@@ -420,64 +413,10 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 	CView::OnLButtonUp(nFlags, point);
 
-	
-
 	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
 	CMyForm*		pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
 
-	
 	const _tchar* pstr = (_tchar*)(LPCTSTR)m_strObjectName;
-
-	/*if (pMyForm->m_ObejctListBox.GetCurSel() != -1)
-
-	{
-			if (nullptr == m_pGameInstance)
-			{
-				ERR_MSG(TEXT("Failed to Created"));
-				return;
-			}
-
-			_tchar PrototypeTag[MAX_PATH] = TEXT("Prototype_GameObject_");
-			_tchar LayerTag[MAX_PATH] = TEXT("Layer_");
-
-			wsprintf(PrototypeTag, TEXT("%s%s"), PrototypeTag, pstr);
-			wsprintf(LayerTag, TEXT("%s%s"), LayerTag, pstr);
-			
-			_float3 vPos = m_pGameInstance->Get_TargetPos();
-
-			if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
-			{
-				if (m_bCheck == false)
-					m_bCheck = true;
-
-				else if (m_bCheck)
-				{
-					CPlayerSpawn* PlayerSpawn = (CPlayerSpawn*)m_pGameInstance->Find_Object(TEXT("Layer_PlayerSpawn"), 0);
-					vPos.y += 0.01f;
-					PlayerSpawn->Get_Transform()->Set_State(CTransform::STATE_POSITION, vPos);
-					m_SavePos.m_vPlayerPos = vPos;
-					return;
-				}
-
-			}
-
-			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, LayerTag, &vPos)))
-			{
-				ERR_MSG(TEXT("Failed to Cloned : CPlayerSpawn"));
-				return;
-			}
-
-			if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
-				m_SavePos.m_vPlayerPos = vPos;
-
-			else
-				m_SavePos.m_vMonsterPos.push_back(vPos);
-
-		
-		if (!pMyForm->m_ResetX.GetCheck())
-			pMyForm->m_ObejctListBox.SetCurSel(-1);
-	}*/
-		
 
 	if (pMyForm->m_ObejctListBox.GetCurSel() != -1)
 	{
@@ -540,5 +479,63 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 		if (!pMyForm->m_ResetX.GetCheck())
 			pMyForm->m_ObejctListBox.SetCurSel(-1);
+	}
+
+	if (pMyForm->m_TileList.GetCurSel() != -1)
+	{
+		if (nullptr == m_pGameInstance)
+		{
+			ERR_MSG(TEXT("Failed to Created"));
+			return;
+		}
+
+		_float3 mPoint = m_pGameInstance->Get_TargetPos();
+		CMyTerrain* pTerrain = (CMyTerrain*)m_pGameInstance->Find_Object(TEXT("Layer_BackGround"), 0);
+		_uint iIndex = pTerrain->Get_VIBufferCom()->Get_VIBInfoDerived().m_iNumVerticesX * (_uint)mPoint.z + (_uint)mPoint.x;
+		_uint iIndices[4] = {
+			iIndex + pTerrain->Get_VIBufferCom()->Get_VIBInfoDerived().m_iNumVerticesX,
+			iIndex + pTerrain->Get_VIBufferCom()->Get_VIBInfoDerived().m_iNumVerticesX + 1,
+			iIndex + 1,
+			iIndex
+		};
+
+		LPDIRECT3DVERTEXBUFFER9 VB = pTerrain->Get_VIBufferCom()->Get_VB();
+		LPDIRECT3DINDEXBUFFER9 IB = pTerrain->Get_VIBufferCom()->Get_IB();
+
+		VTXTEX* pVertices = nullptr;
+		FACEINDICES32* pIndices = nullptr;
+
+		VB->Lock(0, 0, (void**)&pVertices, 0);
+		IB->Lock(0, 0, (void**)&pIndices, 0);
+
+		CTerrainRect::RECTINFO m_tRectInfo;
+		m_tRectInfo.vPos = pVertices[iIndex].vPosition;
+		m_tRectInfo.iTex = pMyForm->m_TileList.GetCurSel();
+
+		VB->Unlock();
+		IB->Unlock();
+
+		_uint LayerSize = m_pGameInstance->Get_LayerSize(TEXT("Layer_TerrainRect"));
+
+		for (_uint i = 0; i < LayerSize; ++i)
+		{
+			CTerrainRect* pObject = (CTerrainRect*)m_pGameInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
+
+			CTransform* pTransform = (CTransform*)pObject->Find_Component(TEXT("Com_Transform"));
+
+			_float3 ObjectWorldPos = *D3DXVec3TransformCoord(&ObjectWorldPos, &_float3(0.f, 0.f, 0.f), &pTransform->Get_WorldMatrix());
+
+			if (pVertices[iIndex].vPosition.x == ObjectWorldPos.x && pVertices[iIndex].vPosition.z == ObjectWorldPos.z)
+			{
+				pObject->Set_RectTex(m_tRectInfo.iTex);
+				return;
+			}
+		}
+
+		if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), (CTerrainRect::RECTINFO*)&m_tRectInfo)))
+		{
+			ERR_MSG(TEXT("Failed to Cloned : TerrainRect"));
+			return;
+		}
 	}
 }

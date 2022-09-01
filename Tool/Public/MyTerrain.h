@@ -22,7 +22,6 @@ public:
 	CTransform*		Get_Transform(void) { return m_pTransformCom; }
 	void	Set_Value(_float fValue) { m_fValue = fValue; }
 	void	Set_Check(_bool bCheck) { m_bObjectCheck = bCheck; }
-	void	Set_TileCheck(_int iCheck) { m_iTileCheck = iCheck; }
 
 public:
 	virtual HRESULT Initialize_Prototype(void) override;
@@ -39,11 +38,9 @@ private:
 private:
 	_float m_fValue = 0.f;
 	_bool m_bObjectCheck = false;
-	_int m_iTileCheck = -1;
 
 private:
 	HRESULT SetUp_Components(void);
-	void Change_Terrain(_float3 LU, _int _iTile);
 
 public:
 	static CMyTerrain* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

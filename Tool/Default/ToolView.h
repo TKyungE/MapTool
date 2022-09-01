@@ -77,7 +77,6 @@ public:
 	_bool m_bObjectCheck = false;
 public:
 	void Set_ObjectName(CString _strObjectName) { m_strObjectName = _strObjectName; }
-	void Set_Tile(_int _iIndex);
 
 	CString Get_TexFilePath(void) { return m_strTexFilePath; }
 	_uint Get_NumTex(void) { return m_iNumTex; }

@@ -1,3 +1,7 @@
 ﻿  TerrainRect.cpp
-  Tool.vcxproj -> C:\Users\JJH\Desktop\MapTool\Tool\Default\..\Bin\Tool.exe
-  Tool.vcxproj -> ..\Bin\Tool.pdb (Partial PDB)
+c:\users\jjh\desktop\maptool\tool\private\terrainrect.cpp(81): error C2065: 'RectVB': 선언되지 않은 식별자입니다.
+c:\users\jjh\desktop\maptool\tool\private\terrainrect.cpp(81): error C2227: '->Lock' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
+  c:\users\jjh\desktop\maptool\tool\private\terrainrect.cpp(81): note: 'unknown-type' 형식입니다.
+c:\users\jjh\desktop\maptool\tool\private\terrainrect.cpp(95): error C2065: 'RectVB': 선언되지 않은 식별자입니다.
+c:\users\jjh\desktop\maptool\tool\private\terrainrect.cpp(95): error C2227: '->Unlock' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
+  c:\users\jjh\desktop\maptool\tool\private\terrainrect.cpp(95): note: 'unknown-type' 형식입니다.

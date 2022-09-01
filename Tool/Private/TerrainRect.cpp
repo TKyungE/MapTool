@@ -32,45 +32,8 @@ HRESULT CTerrainRect::Initialize(void * pArg)
 		return E_FAIL;
 
 	memcpy(&m_tInfo, pArg, sizeof(RECTINFO));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_tInfo.vPos);
-
-	CGameInstance* pInstance = CGameInstance::Get_Instance();
-	if (nullptr == pInstance)
-	{
-		ERR_MSG(TEXT("Failed to Get : CGameInstance"));
-		return E_FAIL;
-	}
-
-	Safe_AddRef(pInstance);
-
-	CMyTerrain* pTerrain = (CMyTerrain*)pInstance->Find_Object(TEXT("Layer_BackGround"), 0);
-	if (nullptr == pTerrain)
-	{
-		ERR_MSG(TEXT("Failed to Get : CMyTerrain"));
-		return E_FAIL;
-	}
-
-	Safe_AddRef(pTerrain);
-
-	CVIBuffer_Terrain* pVIBufferTerrain = (CVIBuffer_Terrain*)pTerrain->Find_Component(TEXT("Com_VIBuffer"));
-	if (nullptr == pVIBufferTerrain)
-	{
-		ERR_MSG(TEXT("Failed to Get : CVIBuffer_Terrain"));
-		return E_FAIL;
-	}
-
-	Safe_AddRef(pVIBufferTerrain);
-
-	m_iIndex = (_uint)m_tInfo.vPos.z * pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX + (_uint)m_tInfo.vPos.x;
-
-	m_iIndices[0] = m_iIndex + pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX;
-	m_iIndices[1] = m_iIndex + pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX + 1;
-	m_iIndices[2] = m_iIndex + 1;
-	m_iIndices[3] = m_iIndex;
-
-	Safe_Release(pVIBufferTerrain);
-	Safe_Release(pTerrain);
-	Safe_Release(pInstance);
+	if (nullptr != m_pTransformCom)
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_tInfo.vPos);
 
 	return S_OK;
 }
@@ -107,35 +70,29 @@ void CTerrainRect::Tick(void)
 	Safe_AddRef(pVIBufferTerrain);
 
 	LPDIRECT3DVERTEXBUFFER9 VB = pVIBufferTerrain->Get_VB();
-	LPDIRECT3DINDEXBUFFER9 IB = pVIBufferTerrain->Get_IB();
-
-	LPDIRECT3DVERTEXBUFFER9 RectVB = m_pVIBufferCom->Get_VB();
-	LPDIRECT3DINDEXBUFFER9 RectIB = m_pVIBufferCom->Get_IB();
+	_float3 VerArray[4] = {
+		m_pVIBufferCom->Get_VertexArray(0),
+		m_pVIBufferCom->Get_VertexArray(1),
+		m_pVIBufferCom->Get_VertexArray(2),
+		m_pVIBufferCom->Get_VertexArray(3)
+	};
 
 	VTXTEX* pVertices = nullptr;
-	VTXTEX* pRectVertices = nullptr;
-	FACEINDICES32* pIndices = nullptr;
-	FACEINDICES16* pRectIndices = nullptr;
 
 	VB->Lock(0, 0, (void**)&pVertices, 0);
-	IB->Lock(0, 0, (void**)&pIndices, 0);
-	RectVB->Lock(0, 0, (void**)&pRectVertices, 0);
-	RectIB->Lock(0, 0, (void**)&pRectIndices, 0);
 
-	pRectVertices[0].vPosition = pVertices[m_iIndices[0]].vPosition;
-	pRectVertices[1].vPosition = pVertices[m_iIndices[1]].vPosition;
-	pRectVertices[2].vPosition = pVertices[m_iIndices[2]].vPosition;
-	pRectVertices[3].vPosition = pVertices[m_iIndices[3]].vPosition;
+	m_iIndex = pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX * (_uint)m_tInfo.vPos.z + (_uint)m_tInfo.vPos.x;
+	m_iIndices[0] = m_iIndex + pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX;
+	m_iIndices[1] = m_iIndex + pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX + 1;
+	m_iIndices[2] = m_iIndex + 1;
+	m_iIndices[3] = m_iIndex;
 
-	pRectVertices[0].vPosition.y += 0.001f;
-	pRectVertices[1].vPosition.y += 0.001f;
-	pRectVertices[2].vPosition.y += 0.001f;
-	pRectVertices[3].vPosition.y += 0.001f;
+	VerArray[0].y = pVertices[m_iIndices[0]].vPosition.y;
+	VerArray[1].y = pVertices[m_iIndices[1]].vPosition.y;
+	VerArray[2].y = pVertices[m_iIndices[2]].vPosition.y;
+	VerArray[3].y = pVertices[m_iIndices[3]].vPosition.y;
 
 	VB->Unlock();
-	IB->Unlock();
-	RectVB->Unlock();
-	RectIB->Unlock();
 
 	Safe_Release(pVIBufferTerrain);
 	Safe_Release(pTerrain);
@@ -155,6 +112,17 @@ HRESULT CTerrainRect::Render(void)
 
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(m_tInfo.iTex)))
 		return E_FAIL;
+
+	LPDIRECT3DVERTEXBUFFER9 RectVB = m_pVIBufferCom->Get_VB();
+	VTXTEX* pRectVertices = nullptr;
+	RectVB->Lock(0, 0, (void**)&pRectVertices, 0);
+
+	_float3 a = pRectVertices[0].vPosition;
+	a = pRectVertices[1].vPosition;
+	a = pRectVertices[2].vPosition;
+	a = pRectVertices[3].vPosition;
+
+	RectVB->Unlock();
 
 	m_pVIBufferCom->Render();
 
