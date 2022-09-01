@@ -40,6 +40,9 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK1, m_ResetX);
 	DDX_Control(pDX, IDC_EDIT4, m_EditIndex);
 	DDX_Control(pDX, IDC_SPIN1, m_SpinIndex);
+	DDX_Control(pDX, IDC_EDIT5, m_EditSizeX);
+	DDX_Control(pDX, IDC_EDIT6, m_EditSizeY);
+	DDX_Control(pDX, IDC_EDIT7, m_EditSizeZ);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
@@ -53,6 +56,7 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON3, &CMyForm::OnObjectLoadButton)
 	ON_BN_CLICKED(IDC_CHECK1, &CMyForm::OnResetXButton)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN1, &CMyForm::OnSpinIndex)
+	ON_BN_CLICKED(IDC_BUTTON4, &CMyForm::OnScaleButton)
 END_MESSAGE_MAP()
 
 
@@ -99,6 +103,15 @@ void CMyForm::OnInitialUpdate()
 	m_EditIndex.SetWindowText(TEXT("0"));
 	m_SpinIndex.SetRange(0, 100);
 	m_SpinIndex.SetPos(0);
+
+	m_EditSizeX.SetWindowText(TEXT("1"));
+	m_EditSizeY.SetWindowText(TEXT("1"));
+	m_EditSizeZ.SetWindowText(TEXT("1"));
+
+	m_fScaleX = 1.f;
+	m_fScaleY = 1.f;
+	m_fScaleZ = 1.f;
+
 	UpdateData(FALSE);
 }
 
@@ -706,6 +719,34 @@ void CMyForm::OnSpinIndex(NMHDR *pNMHDR, LRESULT *pResult)
 
 	UpdateData(FALSE);
 }
+
+
+
+
+
+void CMyForm::OnScaleButton()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+
+	CString strPosX, strPosY, strPosZ;
+	
+
+	m_EditSizeX.GetWindowText(strPosX);
+	float fPosX = _float(_wtof(strPosX));
+
+	m_EditSizeY.GetWindowText(strPosY);
+	float fPosY = _float(_wtof(strPosY));
+
+	m_EditSizeZ.GetWindowText(strPosZ);
+	float fPosZ = _float(_wtof(strPosZ));
+
+	m_fScaleX = fPosX;
+	m_fScaleY = fPosY;
+	m_fScaleZ = fPosZ;
+}
+
+
 
 
 

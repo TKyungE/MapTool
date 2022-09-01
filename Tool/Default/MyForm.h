@@ -3,8 +3,6 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 
-
-
 // CMyForm Æû ºäÀÔ´Ï´Ù.
 
 class CMyForm : public CFormView
@@ -46,7 +44,9 @@ protected:
 
 public:
 	float m_fSpin_Value = 0.f;
-
+	float m_fScaleX;
+	float m_fScaleY;
+	float m_fScaleZ;
 public:
 	virtual void OnInitialUpdate();
 
@@ -81,6 +81,13 @@ public:
 	int	m_iIndex1 = 0;
 	CSpinButtonCtrl m_SpinIndex;
 	afx_msg void OnSpinIndex(NMHDR *pNMHDR, LRESULT *pResult);
+	CEdit m_EditSizeX;
+	CEdit m_EditSizeY;
+	CEdit m_EditSizeZ;
+
+	
+
+	afx_msg void OnScaleButton();
 };
 
 

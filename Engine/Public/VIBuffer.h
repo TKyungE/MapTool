@@ -39,6 +39,7 @@ public:
 protected:
 	LPDIRECT3DVERTEXBUFFER9 m_pVB = nullptr;
 	_float3*					m_pVerticesPos = nullptr;
+	FACEINDICES16*					m_pIndicesPos = nullptr;
 
 protected:
 	LPDIRECT3DINDEXBUFFER9 m_pIB = nullptr;

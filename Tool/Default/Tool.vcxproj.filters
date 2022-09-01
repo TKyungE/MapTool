@@ -110,9 +110,6 @@
     <ClCompile Include="MainFrm.cpp">
       <Filter>00. Window\00. MainFrm</Filter>
     </ClCompile>
-    <ClCompile Include="ToolView.cpp">
-      <Filter>00. Window\01. View</Filter>
-    </ClCompile>
     <ClCompile Include="ToolDoc.cpp">
       <Filter>00. Window\02. Document</Filter>
     </ClCompile>
@@ -136,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tree.cpp">
       <Filter>02. Object\03. BackGround\Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolView.cpp">
+      <Filter>00. Window\01. View</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

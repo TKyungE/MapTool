@@ -142,6 +142,9 @@ void CToolView::OnInitialUpdate()
 	Graphic_Desc.eWinMode = GRAPHIC_DESC::MODE_WIN;
 
 	ZeroMemory(&m_SavePos.m_vPlayerPos, sizeof(_float3));
+	ZeroMemory(&m_Index, sizeof(INDEXPOS));
+
+
 
 	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst,Graphic_Desc, &m_pGraphic_Device)))
 	{
@@ -315,6 +318,10 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 
 	m_iTreeIndex -= 1;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_TreeRect"),
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Tree/%d.png"), 2))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -341,6 +348,8 @@ HRESULT CToolView::SetUp_SamplerState(void)
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+
+
 
 	return S_OK;
 }
@@ -496,6 +505,9 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		{
 			m_Index.m_iIndex = pMyForm->m_iIndex1;
 			m_Index.m_BackGroundPos = vPos;
+			m_Index.m_Scale.x = pMyForm->m_fScaleX;
+			m_Index.m_Scale.y = pMyForm->m_fScaleY;
+			m_Index.m_Scale.z = pMyForm->m_fScaleZ;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_BackGround"), &m_Index)))
 			{
@@ -507,6 +519,10 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		{
 			m_Index.m_iIndex = pMyForm->m_iIndex1;
 			m_Index.m_BackGroundPos = vPos;
+
+			m_Index.m_Scale.x = pMyForm->m_fScaleX;
+			m_Index.m_Scale.y = pMyForm->m_fScaleY;
+			m_Index.m_Scale.z = pMyForm->m_fScaleZ;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_Tree"), &m_Index)))
 			{

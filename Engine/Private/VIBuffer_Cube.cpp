@@ -1,4 +1,6 @@
 #include "..\Public\VIBuffer_Cube.h"
+#include "Picking.h"
+
 
 CVIBuffer_Cube::CVIBuffer_Cube(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CVIBuffer(pGraphic_Device)
@@ -14,9 +16,11 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 {
 	m_tVIBInfo.m_iNumVertices = 8;
 	m_tVIBInfo.m_iStride = sizeof(VTXCUBETEX);
+	m_pVerticesPos = new _float3[m_tVIBInfo.m_iNumVertices];
 	m_tVIBInfo.m_dwFVF = D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_TEXCOORDSIZE3(0);
 	m_tVIBInfo.m_ePrimitiveType = D3DPT_TRIANGLELIST;
 	m_tVIBInfo.m_iNumPrimitive = 12;
+	m_pIndicesPos = new FACEINDICES16[m_tVIBInfo.m_iNumPrimitive];
 
 	/* 정점들을 할당했다. */
 	if (FAILED(__super::Ready_Vertex_Buffer()))
@@ -26,35 +30,35 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 
 	m_pVB->Lock(0, /*m_iNumVertices * m_iStride*/0, (void**)&pVertices, 0);
 
-	pVertices[0].vPosition = _float3(-0.5f, 0.5f, -0.5f);
+	m_pVerticesPos[0] = pVertices[0].vPosition = _float3(-0.5f, 0.5f, -0.5f);
 	pVertices[0].vTexture = pVertices[0].vPosition;
 
 
-	pVertices[1].vPosition = _float3(0.5f, 0.5f, -0.5f);
+	m_pVerticesPos[1] = pVertices[1].vPosition = _float3(0.5f, 0.5f, -0.5f);
 	pVertices[1].vTexture = pVertices[1].vPosition;
 
 
-	pVertices[2].vPosition = _float3(0.5f, -0.5f, -0.5f);
+	m_pVerticesPos[2] = pVertices[2].vPosition = _float3(0.5f, -0.5f, -0.5f);
 	pVertices[2].vTexture = pVertices[2].vPosition;
 
 
-	pVertices[3].vPosition = _float3(-0.5f, -0.5f, -0.5f);
+	m_pVerticesPos[3] = pVertices[3].vPosition = _float3(-0.5f, -0.5f, -0.5f);
 	pVertices[3].vTexture = pVertices[3].vPosition;
 
 
-	pVertices[4].vPosition = _float3(-0.5f, 0.5f, 0.5f);
+	m_pVerticesPos[4] = pVertices[4].vPosition = _float3(-0.5f, 0.5f, 0.5f);
 	pVertices[4].vTexture = pVertices[4].vPosition;
 	
 
-	pVertices[5].vPosition = _float3(0.5f, 0.5f, 0.5f);
+	m_pVerticesPos[5] = pVertices[5].vPosition = _float3(0.5f, 0.5f, 0.5f);
 	pVertices[5].vTexture = pVertices[5].vPosition;
 	
 
-	pVertices[6].vPosition = _float3(0.5f, -0.5f, 0.5f);
+	m_pVerticesPos[6] = pVertices[6].vPosition = _float3(0.5f, -0.5f, 0.5f);
 	pVertices[6].vTexture = pVertices[6].vPosition;
 	
 
-	pVertices[7].vPosition = _float3(-0.5f, -0.5f, 0.5f);
+	m_pVerticesPos[7] = pVertices[7].vPosition = _float3(-0.5f, -0.5f, 0.5f);
 	pVertices[7].vTexture = pVertices[7].vPosition;
 
 
@@ -73,7 +77,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	/* +X */
 	pIndices[0]._0 = 1; pIndices[0]._1 = 5; pIndices[0]._2 = 6;
 	pIndices[1]._0 = 1; pIndices[1]._1 = 6; pIndices[1]._2 = 2;
-
+	
 
 	/* -X */
 	pIndices[2]._0 = 4; pIndices[2]._1 = 0; pIndices[2]._2 = 3;
@@ -101,6 +105,19 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	pIndices[11]._0 = 0; pIndices[11]._1 = 2; pIndices[11]._2 = 3;
 
 
+	m_pIndicesPos[0] = pIndices[0];
+	m_pIndicesPos[1] = pIndices[1];
+	m_pIndicesPos[2] = pIndices[2];
+	m_pIndicesPos[3] = pIndices[3];
+	m_pIndicesPos[4] = pIndices[4];
+	m_pIndicesPos[5] = pIndices[5];
+	m_pIndicesPos[6] = pIndices[6];
+	m_pIndicesPos[7] = pIndices[7];
+	m_pIndicesPos[8] = pIndices[8];
+	m_pIndicesPos[9] = pIndices[9];
+	m_pIndicesPos[10] = pIndices[10];
+	m_pIndicesPos[11] = pIndices[11];
+
 	m_pIB->Unlock();
 
 	return S_OK;
@@ -109,6 +126,33 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 HRESULT CVIBuffer_Cube::Initialize(void* pArg)
 {
 	return S_OK;
+}
+
+_bool CVIBuffer_Cube::Picking(_float4x4 WorldMatrix, _float3 * pPickPoint)
+{
+	CPicking*			pPicking = CPicking::Get_Instance();
+	Safe_AddRef(pPicking);
+
+	_float4x4			WorldMatrixInv;
+	D3DXMatrixInverse(&WorldMatrixInv, nullptr, &WorldMatrix);
+
+	pPicking->Transform_ToLocalSpace(WorldMatrixInv);
+
+	if (true == pPicking->Intersect_InLocalSpace(m_pVerticesPos[m_pIndicesPos->_0], m_pVerticesPos[1], m_pVerticesPos[2], pPickPoint))
+		goto Coll;
+
+	else if (true == pPicking->Intersect_InLocalSpace(m_pVerticesPos[0], m_pVerticesPos[2], m_pVerticesPos[3], pPickPoint))
+		goto Coll;
+
+	Safe_Release(pPicking);
+	return false;
+
+Coll:
+	D3DXVec3TransformCoord(pPickPoint, pPickPoint, &WorldMatrix);
+
+	Safe_Release(pPicking);
+
+	return true;
 }
 
 CVIBuffer_Cube * CVIBuffer_Cube::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

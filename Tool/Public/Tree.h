@@ -8,6 +8,7 @@ class CRenderer;
 class CTexture;
 class CTransform;
 class CVIBuffer_Cube;
+class CVIBuffer_Rect;
 END
 
 class CTree final : public CGameObject
@@ -27,17 +28,30 @@ private:
 	CTexture* m_pTextureCom = nullptr;
 	CTransform* m_pTransformCom = nullptr;
 	CVIBuffer_Cube* m_pVIBufferCom = nullptr;
+
+	CTexture* m_pRectTexture = nullptr;
+	CTransform* m_pRectTransform = nullptr;
+	CVIBuffer_Rect* m_VIBufferRect = nullptr;
+
+	CTransform* m_pRectTransform2 = nullptr;
+	CVIBuffer_Rect* m_VIBufferRect2 = nullptr;
+	CTexture* m_pRectTexture2 = nullptr;
+
 private:
 	typedef struct tagIndexPos
 	{
 		_float3 m_BackGroundPos;
 		_uint m_iIndex;
+
+		_float3 m_Scale;
 	}INDEXPOS;
 
 	INDEXPOS m_iIndex;
 private:
 	HRESULT SetUp_Components(void);
 	HRESULT SetUp_RenderState();
+	HRESULT SetUp_Rect_RenderState();
+
 	HRESULT Release_RenderState();
 
 public:

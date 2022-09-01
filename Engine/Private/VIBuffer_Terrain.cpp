@@ -159,7 +159,11 @@ _bool CVIBuffer_Terrain::Picking(_float4x4 WorldMatrix, _float3 * pPickPoint)
 	return false;
 
 Coll:
+	D3DXVec3TransformCoord(pPickPoint, pPickPoint, &WorldMatrix);
 
+	Safe_Release(pPicking);
+
+	return true;
 }
 
 CVIBuffer_Terrain * CVIBuffer_Terrain::Create(LPDIRECT3DDEVICE9 pGraphic_Device, _uint iNumVerticesX, _uint iNumVerticesZ)
