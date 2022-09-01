@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Terrain.h"
+#include "VIBuffer_TerrainRect.h"
 #include "Renderer.h"
 
 

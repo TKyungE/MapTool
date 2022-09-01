@@ -5,7 +5,7 @@ BEGIN(Engine)
 class CRenderer;
 class CTexture;
 class CTransform;
-class CVIBuffer_Rect;
+class CVIBuffer_TerrainRect;
 END
 
 class CTerrainRect final : public CGameObject
@@ -38,13 +38,15 @@ private:
 	CRenderer* m_pRendererCom = nullptr;
 	CTexture* m_pTextureCom = nullptr;
 	CTransform* m_pTransformCom = nullptr;
-	CVIBuffer_Rect* m_pVIBufferCom = nullptr;
+	CVIBuffer_TerrainRect* m_pVIBufferCom = nullptr;
 
 private:
 	HRESULT SetUp_Components(void);
 
 private:
 	RECTINFO m_tInfo;
+	_uint m_iIndex = 0;
+	_uint m_iIndices[4];
 
 public:
 	static CTerrainRect* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

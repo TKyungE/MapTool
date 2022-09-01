@@ -76,7 +76,7 @@ void CMyTerrain::Tick(void)
 				}
 
 				if (0 <= m_iTileCheck)
-					Change_Terrain(LU, m_iTileCheck);
+					Change_Terrain(pVertices[pIndices[i]._0].vPosition, m_iTileCheck);
 				
 				break;
 			}
@@ -131,7 +131,7 @@ HRESULT CMyTerrain::SetUp_Components(void)
 	return S_OK;
 }
 
-void CMyTerrain::Change_Terrain(_float3& LU, _int _iTile)
+void CMyTerrain::Change_Terrain(_float3 LU, _int _iTile)
 {
 	CGameInstance* pInstance = CGameInstance::Get_Instance();
 	if (nullptr == pInstance)
@@ -139,28 +139,28 @@ void CMyTerrain::Change_Terrain(_float3& LU, _int _iTile)
 
 	Safe_AddRef(pInstance);
 	
-	_float3 vRectPos = LU + _float3(0.5f, 0.f, -0.5f);
-	vRectPos.y += 0.001f;
+	_float3 vRectPos = LU + _float3(0.f, 0.f, -1.f);
 	D3DXVec3TransformCoord(&vRectPos, &vRectPos, &m_pTransformCom->Get_WorldMatrix());
 
 	CTerrainRect::RECTINFO m_tRectInfo;
 	m_tRectInfo.vPos = vRectPos;
-	m_tRectInfo.vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	//m_tRectInfo.vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 	m_tRectInfo.iTex = _iTile;
 
 	_uint i = 0;
-	CTerrainRect* pObject;
-	while (nullptr != (pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i)))
+	CTerrainRect* pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
+	while (nullptr != pObject)
 	{
 		CTransform* pTransform = (CTransform*)pObject->Find_Component(TEXT("Com_Transform"));
-		if (m_tRectInfo.vPos == *(_float3*)&pTransform->Get_WorldMatrix().m[3][0])
+		if ((round(m_tRectInfo.vPos.x * 10.f) / 10.f) == pTransform->Get_WorldMatrix().m[3][0] && (round(m_tRectInfo.vPos.z * 10.f) / 10.f) == pTransform->Get_WorldMatrix().m[3][2])
 		{
-			pObject->Set_RectInfo(m_tRectInfo);
+			//pObject->Set_RectInfo(m_tRectInfo);
 			Safe_Release(pInstance);
 			return;
 		}
 		
 		++i;
+		pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
 	}
 	
 	if (FAILED(pInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), &m_tRectInfo)))

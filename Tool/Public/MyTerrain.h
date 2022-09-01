@@ -43,7 +43,7 @@ private:
 
 private:
 	HRESULT SetUp_Components(void);
-	void Change_Terrain(_float3& LU, _int _iTile);
+	void Change_Terrain(_float3 LU, _int _iTile);
 
 public:
 	static CMyTerrain* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
