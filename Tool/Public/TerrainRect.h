@@ -13,8 +13,9 @@ class CTerrainRect final : public CGameObject
 public:
 	typedef struct tagRectInfo
 	{
+		LPDIRECT3DVERTEXBUFFER9 m_pVBuffer;
+		LPDIRECT3DINDEXBUFFER9 m_pIBuffer;
 		_float3 vPos;
-		_float3 vUp;
 		_uint iTex;
 	}RECTINFO;
 

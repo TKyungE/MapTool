@@ -32,8 +32,12 @@ HRESULT CTerrainRect::Initialize(void * pArg)
 		return E_FAIL;
 
 	memcpy(&m_tInfo, pArg, sizeof(RECTINFO));
-	if (nullptr != m_pTransformCom)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_tInfo.vPos);
+
+	if (FAILED(m_pGraphic_Device->CreateVertexBuffer(m_pVIBufferCom->Get_VIBInfo().m_iNumVertices * m_pVIBufferCom->Get_VIBInfo().m_iStride, 0, m_pVIBufferCom->Get_VIBInfo().m_dwFVF, D3DPOOL_MANAGED, &m_tInfo.m_pVBuffer, 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pGraphic_Device->CreateIndexBuffer(m_pVIBufferCom->Get_VIBInfo().m_iNumPrimitive * m_pVIBufferCom->Get_VIBInfo().m_iIndicesByte, 0, m_pVIBufferCom->Get_VIBInfo().m_eIndexFormat, D3DPOOL_MANAGED, &m_tInfo.m_pIBuffer, nullptr)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -70,16 +74,14 @@ void CTerrainRect::Tick(void)
 	Safe_AddRef(pVIBufferTerrain);
 
 	LPDIRECT3DVERTEXBUFFER9 VB = pVIBufferTerrain->Get_VB();
-	_float3 VerArray[4] = {
-		m_pVIBufferCom->Get_VertexArray(0),
-		m_pVIBufferCom->Get_VertexArray(1),
-		m_pVIBufferCom->Get_VertexArray(2),
-		m_pVIBufferCom->Get_VertexArray(3)
-	};
-
+	
 	VTXTEX* pVertices = nullptr;
+	VTXTEX* pVertex = nullptr;
+
+	FACEINDICES16* pIndex = nullptr;
 
 	VB->Lock(0, 0, (void**)&pVertices, 0);
+	m_tInfo.m_pVBuffer->Lock(0, 0, (void**)&pVertex, 0);
 
 	m_iIndex = pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX * (_uint)m_tInfo.vPos.z + (_uint)m_tInfo.vPos.x;
 	m_iIndices[0] = m_iIndex + pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX;
@@ -87,12 +89,36 @@ void CTerrainRect::Tick(void)
 	m_iIndices[2] = m_iIndex + 1;
 	m_iIndices[3] = m_iIndex;
 
-	VerArray[0].y = pVertices[m_iIndices[0]].vPosition.y;
-	VerArray[1].y = pVertices[m_iIndices[1]].vPosition.y;
-	VerArray[2].y = pVertices[m_iIndices[2]].vPosition.y;
-	VerArray[3].y = pVertices[m_iIndices[3]].vPosition.y;
+	pVertex[0].vPosition = pVertices[m_iIndices[0]].vPosition;
+	pVertex[0].vPosition.y += 0.001f;
+	pVertex[0].vTexture = pVertices[m_iIndices[0]].vTexture;
+
+	pVertex[1].vPosition = pVertices[m_iIndices[1]].vPosition;
+	pVertex[1].vPosition.y += 0.001f;
+	pVertex[1].vTexture = pVertices[m_iIndices[1]].vTexture;
+
+	pVertex[2].vPosition = pVertices[m_iIndices[2]].vPosition;
+	pVertex[2].vPosition.y += 0.001f;
+	pVertex[2].vTexture = pVertices[m_iIndices[2]].vTexture;
+
+	pVertex[3].vPosition = pVertices[m_iIndices[3]].vPosition;
+	pVertex[3].vPosition.y += 0.001f;
+	pVertex[3].vTexture = pVertices[m_iIndices[3]].vTexture;
 
 	VB->Unlock();
+	m_tInfo.m_pVBuffer->Unlock();
+
+	m_tInfo.m_pIBuffer->Lock(0, 0, (void**)&pIndex, 0);
+
+	pIndex[0]._0 = 0;
+	pIndex[0]._1 = 1;
+	pIndex[0]._2 = 2;
+
+	pIndex[1]._0 = 0;
+	pIndex[1]._1 = 2;
+	pIndex[1]._2 = 3;
+
+	m_tInfo.m_pIBuffer->Unlock();
 
 	Safe_Release(pVIBufferTerrain);
 	Safe_Release(pTerrain);
@@ -113,18 +139,14 @@ HRESULT CTerrainRect::Render(void)
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(m_tInfo.iTex)))
 		return E_FAIL;
 
-	LPDIRECT3DVERTEXBUFFER9 RectVB = m_pVIBufferCom->Get_VB();
-	VTXTEX* pRectVertices = nullptr;
-	RectVB->Lock(0, 0, (void**)&pRectVertices, 0);
+	if (nullptr == m_pGraphic_Device)
+		return E_FAIL;
 
-	_float3 a = pRectVertices[0].vPosition;
-	a = pRectVertices[1].vPosition;
-	a = pRectVertices[2].vPosition;
-	a = pRectVertices[3].vPosition;
+	m_pGraphic_Device->SetStreamSource(0, m_tInfo.m_pVBuffer, 0, m_pVIBufferCom->Get_VIBInfo().m_iStride);
+	m_pGraphic_Device->SetFVF(m_pVIBufferCom->Get_VIBInfo().m_dwFVF);
+	m_pGraphic_Device->SetIndices(m_tInfo.m_pIBuffer);
 
-	RectVB->Unlock();
-
-	m_pVIBufferCom->Render();
+	m_pGraphic_Device->DrawIndexedPrimitive(m_pVIBufferCom->Get_VIBInfo().m_ePrimitiveType, 0, 0, m_pVIBufferCom->Get_VIBInfo().m_iNumVertices, 0, m_pVIBufferCom->Get_VIBInfo().m_iNumPrimitive);
 
 	return S_OK;
 }
@@ -180,10 +202,18 @@ CGameObject * CTerrainRect::Clone(void * pArg)
 
 void CTerrainRect::Free(void)
 {
-	__super::Free();
+	Safe_Release(m_tInfo.m_pIBuffer);
+	Safe_Release(m_tInfo.m_pVBuffer);
+
+	for (auto& Pair : m_Components)
+		Safe_Release(Pair.second);
+
+	m_Components.clear();
 
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);
+
+	Safe_Release(m_pGraphic_Device);
 }
