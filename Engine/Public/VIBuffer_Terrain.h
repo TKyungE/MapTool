@@ -27,7 +27,9 @@ public:
 public:
 	virtual HRESULT Initialize_Prototype(_uint iNumVerticesX, _uint iNumVerticesZ);
 	virtual HRESULT Initialize(void* pArg) override;
-	
+public:
+	virtual _bool Picking(_float4x4 WorldMatrix, _float3* pPickPoint = nullptr) override;
+
 private:
 	VIBINFO_DERIVED m_tVIBInfo_Derived;
 

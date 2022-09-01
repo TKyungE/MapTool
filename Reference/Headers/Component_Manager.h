@@ -6,6 +6,7 @@
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Terrain.h"
 #include "Renderer.h"
+#include "VIBuffer_Cube.h"
 
 
 BEGIN(Engine)

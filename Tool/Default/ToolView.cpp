@@ -18,6 +18,7 @@
 #include "MyForm.h"
 #include "MonsterSpawn.h"
 #include "BackGruondObj.h"
+#include "Tree.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -190,6 +191,13 @@ void CToolView::OnInitialUpdate()
 		return;
 	}
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Tree"), CTree::Create(m_pGraphic_Device))))
+	{
+		ERR_MSG(TEXT("Prototype_GameObject_BackGround Failed"));
+		return;
+	}
+
+
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
 		CCamera_Dynamic::Create(m_pGraphic_Device))))
 		return;
@@ -276,6 +284,9 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Transform"), CTransform::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_VIBuffer_Cube"), CVIBuffer_Cube::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	/*For.Prototype_Component_Texture_Terrain*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_Terrain"),
 		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Terrain/Grass_%d.tga"), 1))))
@@ -291,11 +302,18 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Effect/UseSkill/Effect%d.png"), 3))))
 		return E_FAIL;
 
+
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Terrain/grass_%d.png"), m_iIndex = 2))))
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Terrain/grass_%d.png"), m_iBackIndex = 2))))
 		return E_FAIL;
 
-	m_iIndex -= 1;
+	m_iBackIndex -= 1;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_Tree"),
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../Bin/Resources/Textures/Tree/%d.dds"), m_iTreeIndex = 1))))
+		return E_FAIL;
+
+	m_iTreeIndex -= 1;
 
 	return S_OK;
 }
@@ -480,6 +498,17 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_Index.m_BackGroundPos = vPos;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_BackGround"), &m_Index)))
+			{
+				ERR_MSG(TEXT("Failed to Cloned : PlayerSpawn"));
+				return;
+			}
+		}
+		else if (!lstrcmp(pstr, TEXT("Tree")))
+		{
+			m_Index.m_iIndex = pMyForm->m_iIndex1;
+			m_Index.m_BackGroundPos = vPos;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_Tree"), &m_Index)))
 			{
 				ERR_MSG(TEXT("Failed to Cloned : PlayerSpawn"));
 				return;

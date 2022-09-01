@@ -94,6 +94,7 @@ void CMyForm::OnInitialUpdate()
 	m_ObejctListBox.AddString(TEXT("PlayerSpawn"));
 	m_ObejctListBox.AddString(TEXT("MonsterSpawn"));
 	m_ObejctListBox.AddString(TEXT("BackGround"));
+	m_ObejctListBox.AddString(TEXT("Tree"));
 
 	m_EditIndex.SetWindowText(TEXT("0"));
 	m_SpinIndex.SetRange(0, 100);
@@ -545,7 +546,11 @@ void CMyForm::OnListBox()
 
 	if (strFindName == TEXT("BackGround"))
 	{
-		SetDlgItemInt(IDC_STATIC1, pToolView->m_iIndex);
+		SetDlgItemInt(IDC_STATIC1, pToolView->m_iBackIndex);
+	}
+	else if (strFindName == TEXT("Tree"))
+	{
+		SetDlgItemInt(IDC_STATIC1, pToolView->m_iTreeIndex);
 	}
 	else
 	{
@@ -676,6 +681,27 @@ void CMyForm::OnSpinIndex(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 		SetDlgItemInt(IDC_EDIT4, m_iIndex1);
 	}
+	if (strFindName == TEXT("Tree"))
+	{
+		if (pNMUpDown->iDelta > 0)
+		{
+			if (m_iIndex1 >= GetDlgItemInt(IDC_STATIC1))
+				return;
+
+			++m_iIndex1;
+		}
+		else
+		{
+			if (m_iIndex1 <= 0)
+				return;
+
+			--m_iIndex1;
+
+		}
+		SetDlgItemInt(IDC_EDIT4, m_iIndex1);
+	}
+
+
 	*pResult = 0;
 
 	UpdateData(FALSE);

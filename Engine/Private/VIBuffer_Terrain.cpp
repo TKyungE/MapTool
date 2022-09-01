@@ -1,4 +1,6 @@
 #include "..\Public\VIBuffer_Terrain.h"
+#include "Picking.h"
+
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CVIBuffer(pGraphic_Device)
@@ -120,6 +122,44 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iNumVerticesX, _uint iNumV
 HRESULT CVIBuffer_Terrain::Initialize(void * pArg)
 {
 	return S_OK;
+}
+
+_bool CVIBuffer_Terrain::Picking(_float4x4 WorldMatrix, _float3 * pPickPoint)
+{
+	CPicking*			pPicking = CPicking::Get_Instance();
+	Safe_AddRef(pPicking);
+
+	_float4x4			WorldMatrixInv;
+	D3DXMatrixInverse(&WorldMatrixInv, nullptr, &WorldMatrix);
+
+	pPicking->Transform_ToLocalSpace(WorldMatrixInv);
+
+	for (_uint i = 0; i < m_tVIBInfo_Derived.m_iNumVerticesZ - 1; ++i)
+	{
+		for (_uint j = 0; j < m_tVIBInfo_Derived.m_iNumVerticesX - 1; ++j)
+		{
+			_uint		iIndex = i * m_tVIBInfo_Derived.m_iNumVerticesX + j;
+
+			_uint	iIndices[4] = {
+				iIndex + m_tVIBInfo_Derived.m_iNumVerticesX,
+				iIndex + m_tVIBInfo_Derived.m_iNumVerticesX + 1,
+				iIndex + 1,
+				iIndex
+			};
+
+			if (true == pPicking->Intersect_InLocalSpace(m_pVerticesPos[iIndices[0]], m_pVerticesPos[iIndices[1]], m_pVerticesPos[iIndices[2]], pPickPoint))
+				goto Coll;
+
+			else if (true == pPicking->Intersect_InLocalSpace(m_pVerticesPos[iIndices[0]], m_pVerticesPos[iIndices[2]], m_pVerticesPos[iIndices[3]], pPickPoint))
+				goto Coll;
+		}
+	}
+
+	Safe_Release(pPicking);
+	return false;
+
+Coll:
+
 }
 
 CVIBuffer_Terrain * CVIBuffer_Terrain::Create(LPDIRECT3DDEVICE9 pGraphic_Device, _uint iNumVerticesX, _uint iNumVerticesZ)

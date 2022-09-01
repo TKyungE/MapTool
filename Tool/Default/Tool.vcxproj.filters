@@ -46,6 +46,9 @@
     <Filter Include="02. Object\03. BackGround">
       <UniqueIdentifier>{0b6ad98f-c865-4e5c-a080-f2db16a8d9a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\03. BackGround\Tree">
+      <UniqueIdentifier>{ea9cc703-94e5-4dea-98e4-991e9b410710}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -93,6 +96,9 @@
     <ClInclude Include="..\Public\BackGruondObj.h">
       <Filter>02. Object\03. BackGround</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Tree.h">
+      <Filter>02. Object\03. BackGround\Tree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -127,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BackGruondObj.cpp">
       <Filter>02. Object\03. BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree.cpp">
+      <Filter>02. Object\03. BackGround\Tree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

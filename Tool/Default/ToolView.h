@@ -81,7 +81,8 @@ public:
 	
 	SAVEPOS m_SavePos;
 	INDEXPOS m_Index;
-	_uint m_iIndex;
+	_uint m_iBackIndex;
+	_uint m_iTreeIndex;
 	_bool m_bCheck = false;
 public:
 	void Set_ObjectName(CString _strObjectName) { m_strObjectName = _strObjectName; }
