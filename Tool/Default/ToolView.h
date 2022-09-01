@@ -74,9 +74,10 @@ public:
 		vector<_float3> m_vMonsterPos;
 
 		vector<INDEXPOS>	m_IndexPos;
-
+		vector<INDEXPOS>	m_TreePos;
 		_uint		m_iMSize;
 		_uint		m_IndexSize;
+		_uint		m_TreeSize;
 
 	}SAVEPOS;
 

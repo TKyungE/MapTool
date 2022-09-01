@@ -539,7 +539,8 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 		else if (!lstrcmp(pstr, TEXT("BackGround")))
 			m_SavePos.m_IndexPos.push_back(m_Index);
-		
+		else if(!lstrcmp(pstr, TEXT("Tree")))
+			m_SavePos.m_TreePos.push_back(m_Index);
 
 		if (!pMyForm->m_ResetX.GetCheck())
 			pMyForm->m_ObejctListBox.SetCurSel(-1);

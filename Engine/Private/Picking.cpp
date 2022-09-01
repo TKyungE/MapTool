@@ -64,15 +64,15 @@ void CPicking::Tick()
 
 HRESULT CPicking::Intersect(_float4x4 InvWorld, _float3* LU, _float3* RU, _float3* RD)
 {
-	D3DXVec3TransformCoord(&m_MouseRayPos, &m_MouseRayPos, &InvWorld);
-	D3DXVec3TransformNormal(&m_MouseRayDir, &m_MouseRayDir, &InvWorld);
+	D3DXVec3TransformCoord(&m_vRayPos, &m_vRayPos, &InvWorld);
+	D3DXVec3TransformNormal(&m_vRayDir, &m_vRayDir, &InvWorld);
 
-	D3DXVec3Normalize(&m_MouseRayDir, &m_MouseRayDir);
+	D3DXVec3Normalize(&m_vRayDir, &m_vRayDir);
 
 	_float Dist = 0.f;
 
-	if (D3DXIntersectTri(LU, RU, RD, &m_MouseRayPos, &m_MouseRayDir, nullptr, nullptr, &Dist))
-		m_TargetPos = m_MouseRayPos + m_MouseRayDir * Dist;
+	if (D3DXIntersectTri(LU, RU, RD, &m_vRayPos, &m_vRayDir, nullptr, nullptr, &Dist))
+		m_TargetPos = m_vRayPos + m_vRayDir * Dist;
 	else
 		return E_FAIL;
 

@@ -607,9 +607,12 @@ void CMyForm::OnObjectSaveButton()
 
 		_tchar str1[MAX_PATH];
 		_tchar str2[MAX_PATH];
+		_tchar str4[MAX_PATH];
 		pToolView->m_SavePos.m_iMSize = pToolView->m_SavePos.m_vMonsterPos.size();
 
 		pToolView->m_SavePos.m_IndexSize = pToolView->m_SavePos.m_IndexPos.size();
+
+		pToolView->m_SavePos.m_TreeSize = pToolView->m_SavePos.m_TreePos.size();
 
 		
 		WriteFile(hFile, pToolView->m_SavePos.m_vPlayerPos, sizeof(_float3), &dwByte, nullptr);
@@ -620,6 +623,8 @@ void CMyForm::OnObjectSaveButton()
 		wsprintf(str2, TEXT("%d"), pToolView->m_SavePos.m_IndexSize);
 		WriteFile(hFile, str2, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 
+		wsprintf(str4, TEXT("%d"), pToolView->m_SavePos.m_TreeSize);
+		WriteFile(hFile, str4, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 
 		for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
 			WriteFile(hFile, iter, sizeof(_float3), &dwByte, nullptr);
@@ -630,7 +635,18 @@ void CMyForm::OnObjectSaveButton()
 			wsprintf(str3, TEXT("%d"), iter.m_iIndex);
 
 			WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, iter.m_Scale, sizeof(_float3), &dwByte, nullptr);
 			WriteFile(hFile, str3, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		}
+
+		for (auto& iter : pToolView->m_SavePos.m_TreePos)
+		{
+			_tchar str4[MAX_PATH];
+			wsprintf(str4, TEXT("%d"), iter.m_iIndex);
+
+			WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, iter.m_Scale, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, str4, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		}
 
 		CloseHandle(hFile);

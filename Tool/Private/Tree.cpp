@@ -37,12 +37,12 @@ HRESULT CTree::Initialize(void * pArg)
 
 	_float3 vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	m_pRectTransform->Set_Scaled(_float3(m_iIndex.m_Scale.x + vPos.x, m_iIndex.m_Scale.y, m_iIndex.m_Scale.z));
+	m_pRectTransform->Set_Scaled(_float3(m_iIndex.m_Scale.x + 2.5f, m_iIndex.m_Scale.y, m_iIndex.m_Scale.z));
 
-	vPos.y += m_pTransformCom->Get_State(CTransform::STATE_POSITION).y * 0.5f;
+	vPos.y += m_pTransformCom->Get_State(CTransform::STATE_POSITION).y * 0.75f;
 	m_pRectTransform->Set_State(CTransform::STATE_POSITION, vPos);
 
-	m_pRectTransform2->Set_Scaled(_float3(m_iIndex.m_Scale.x + vPos.x, m_iIndex.m_Scale.y, m_iIndex.m_Scale.z));
+	m_pRectTransform2->Set_Scaled(_float3(m_iIndex.m_Scale.x + 2.5f, m_iIndex.m_Scale.y, m_iIndex.m_Scale.z));
 	m_pRectTransform2->Set_State(CTransform::STATE_POSITION, vPos);
 	m_pRectTransform2->Turn(_float3(0.f, 1.f, 0.f), 1.f);
 
@@ -82,6 +82,8 @@ HRESULT CTree::Render(void)
 		return E_FAIL;
 
 
+
+
 	_uint iIndex = 0;
 	if (FAILED(m_pRectTransform->Bind_OnGraphicDev()))
 		return E_FAIL;
@@ -96,6 +98,7 @@ HRESULT CTree::Render(void)
 
 	if (FAILED(Release_RenderState()))
 		return E_FAIL;
+
 
 
 
