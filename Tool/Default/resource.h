@@ -23,15 +23,12 @@
 #define IDC_BUTTON2                     1011
 #define IDC_BUTTON3                     1012
 #define IDC_CHECK1                      1013
-
 #define IDC_SPIN1                       1014
-#define IDC_EDIT4                       1015
-#define IDC_STATIC1                     1016
-
 #define IDC_LIST1                       1014
 #define IDC_TILELIST                    1014
+#define IDC_EDIT4                       1015
 #define IDC_TILEPREVIEW                 1015
-
+#define IDC_STATIC1                     1016
 
 // Next default values for new objects
 // 
@@ -39,9 +36,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        311
 #define _APS_NEXT_COMMAND_VALUE         32771
-
 #define _APS_NEXT_CONTROL_VALUE         1017
-
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif

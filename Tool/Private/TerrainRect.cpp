@@ -33,10 +33,10 @@ HRESULT CTerrainRect::Initialize(void * pArg)
 
 	memcpy(&m_tInfo, pArg, sizeof(RECTINFO));
 
-	if (FAILED(m_pGraphic_Device->CreateVertexBuffer(m_pVIBufferCom->Get_VIBInfo().m_iNumVertices * m_pVIBufferCom->Get_VIBInfo().m_iStride, 0, m_pVIBufferCom->Get_VIBInfo().m_dwFVF, D3DPOOL_MANAGED, &m_tInfo.m_pVBuffer, 0)))
+	if (FAILED(m_pGraphic_Device->CreateVertexBuffer(4 * sizeof(VTXTEX), 0, D3DFVF_XYZ | D3DFVF_TEX1, D3DPOOL_MANAGED, &m_pVBuffer, 0)))
 		return E_FAIL;
 
-	if (FAILED(m_pGraphic_Device->CreateIndexBuffer(m_pVIBufferCom->Get_VIBInfo().m_iNumPrimitive * m_pVIBufferCom->Get_VIBInfo().m_iIndicesByte, 0, m_pVIBufferCom->Get_VIBInfo().m_eIndexFormat, D3DPOOL_MANAGED, &m_tInfo.m_pIBuffer, nullptr)))
+	if (FAILED(m_pGraphic_Device->CreateIndexBuffer(2 * sizeof(FACEINDICES16), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_pIBuffer, nullptr)))
 		return E_FAIL;
 
 	return S_OK;
@@ -81,7 +81,7 @@ void CTerrainRect::Tick(void)
 	FACEINDICES16* pIndex = nullptr;
 
 	VB->Lock(0, 0, (void**)&pVertices, 0);
-	m_tInfo.m_pVBuffer->Lock(0, 0, (void**)&pVertex, 0);
+	m_pVBuffer->Lock(0, 0, (void**)&pVertex, 0);
 
 	m_iIndex = pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX * (_uint)m_tInfo.vPos.z + (_uint)m_tInfo.vPos.x;
 	m_iIndices[0] = m_iIndex + pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX;
@@ -106,9 +106,9 @@ void CTerrainRect::Tick(void)
 	pVertex[3].vTexture = pVertices[m_iIndices[3]].vTexture;
 
 	VB->Unlock();
-	m_tInfo.m_pVBuffer->Unlock();
+	m_pVBuffer->Unlock();
 
-	m_tInfo.m_pIBuffer->Lock(0, 0, (void**)&pIndex, 0);
+	m_pIBuffer->Lock(0, 0, (void**)&pIndex, 0);
 
 	pIndex[0]._0 = 0;
 	pIndex[0]._1 = 1;
@@ -118,7 +118,7 @@ void CTerrainRect::Tick(void)
 	pIndex[1]._1 = 2;
 	pIndex[1]._2 = 3;
 
-	m_tInfo.m_pIBuffer->Unlock();
+	m_pIBuffer->Unlock();
 
 	Safe_Release(pVIBufferTerrain);
 	Safe_Release(pTerrain);
@@ -142,11 +142,11 @@ HRESULT CTerrainRect::Render(void)
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
 
-	m_pGraphic_Device->SetStreamSource(0, m_tInfo.m_pVBuffer, 0, m_pVIBufferCom->Get_VIBInfo().m_iStride);
-	m_pGraphic_Device->SetFVF(m_pVIBufferCom->Get_VIBInfo().m_dwFVF);
-	m_pGraphic_Device->SetIndices(m_tInfo.m_pIBuffer);
+	m_pGraphic_Device->SetStreamSource(0, m_pVBuffer, 0, sizeof(VTXTEX));
+	m_pGraphic_Device->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
+	m_pGraphic_Device->SetIndices(m_pIBuffer);
 
-	m_pGraphic_Device->DrawIndexedPrimitive(m_pVIBufferCom->Get_VIBInfo().m_ePrimitiveType, 0, 0, m_pVIBufferCom->Get_VIBInfo().m_iNumVertices, 0, m_pVIBufferCom->Get_VIBInfo().m_iNumPrimitive);
+	m_pGraphic_Device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);
 
 	return S_OK;
 }
@@ -157,9 +157,6 @@ HRESULT CTerrainRect::SetUp_Components(void)
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Components(TEXT("Com_Texture"), TEXT("Prototype_Component_Texture_Terrain"), (CComponent**)&m_pTextureCom)))
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Components(TEXT("Com_VIBuffer"), TEXT("Prototype_Component_VIBuffer_TerrainRect"), (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
 	CTransform::TRANSFORMDESC TransformDesc;
@@ -202,8 +199,8 @@ CGameObject * CTerrainRect::Clone(void * pArg)
 
 void CTerrainRect::Free(void)
 {
-	Safe_Release(m_tInfo.m_pIBuffer);
-	Safe_Release(m_tInfo.m_pVBuffer);
+	Safe_Release(m_pIBuffer);
+	Safe_Release(m_pVBuffer);
 
 	for (auto& Pair : m_Components)
 		Safe_Release(Pair.second);
@@ -212,7 +209,6 @@ void CTerrainRect::Free(void)
 
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);
 
 	Safe_Release(m_pGraphic_Device);
