@@ -174,7 +174,6 @@
     <ClInclude Include="..\Public\VIBuffer.h" />
     <ClInclude Include="..\Public\VIBuffer_Rect.h" />
     <ClInclude Include="..\Public\VIBuffer_Terrain.h" />
-    <ClInclude Include="..\Public\VIBuffer_TerrainRect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp" />
@@ -194,7 +193,6 @@
     <ClCompile Include="..\Private\VIBuffer.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Rect.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp" />
-    <ClCompile Include="..\Private\VIBuffer_TerrainRect.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

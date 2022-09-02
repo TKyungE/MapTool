@@ -129,7 +129,7 @@ void CMyForm::OnSaveData()
 
 	PathRemoveFileSpec(szPath);
 
-	lstrcat(szPath, TEXT("\\Data"));
+	lstrcat(szPath, TEXT("\\Data\\Terrain"));
 
 	Dlg.m_ofn.lpstrInitialDir = szPath;
 
@@ -149,6 +149,7 @@ void CMyForm::OnSaveData()
 		CGameInstance* pInstance = CGameInstance::Get_Instance();
 		Safe_AddRef(pInstance);
 
+#pragma region TerrainRect
 		_int TerrainRectSize = pInstance->Get_LayerSize(TEXT("Layer_TerrainRect"));
 		CString strSize;
 		strSize.Format(TEXT("%d"), TerrainRectSize);
@@ -158,6 +159,28 @@ void CMyForm::OnSaveData()
 
 		WriteFile(hFile, &(szSize), sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 
+		for (_int i = 0; i < TerrainRectSize; ++i)
+		{
+			CTerrainRect* pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
+
+			WriteFile(hFile, &pObject->Get_RectInfo(), sizeof(CTerrainRect::RECTINFO), &dwByte, nullptr);
+
+			LPDIRECT3DVERTEXBUFFER9 VB = pObject->Get_VB();
+
+			VTXTEX* pVertices = nullptr;
+
+			VB->Lock(0, 0, (void**)&pVertices, 0);
+
+			for (_uint i = 0; i < 4; ++i)
+			{
+				WriteFile(hFile, &pVertices[i].vPosition, sizeof(_float3), &dwByte, nullptr);
+				WriteFile(hFile, &pVertices[i].vTexture, sizeof(_float2), &dwByte, nullptr);
+			}
+
+			VB->Unlock();
+		}
+#pragma endregion TerrainRect
+#pragma region Terrain
 		CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
 		if (nullptr == pTerrain)
 		{
@@ -195,22 +218,13 @@ void CMyForm::OnSaveData()
 		}
 
 		IB->Unlock();
-
-		_uint i = 0;
-		CTerrainRect* pObject;
-		while (nullptr != (pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i)))
-		{
-			WriteFile(hFile, &pObject->Get_RectInfo(), sizeof(CTerrainRect::RECTINFO), &dwByte, nullptr);
-
-			++i;
-		}
+#pragma endregion Terrain
 
 		Safe_Release(pInstance);
 
 		CloseHandle(hFile);
 	}
 }
-
 
 void CMyForm::OnLoadData()
 {
@@ -222,7 +236,7 @@ void CMyForm::OnLoadData()
 
 	PathRemoveFileSpec(szPath);
 
-	lstrcat(szPath, TEXT("\\Data"));
+	lstrcat(szPath, TEXT("\\Data\\Terrain"));
 
 	Dlg.m_ofn.lpstrInitialDir = szPath;
 
@@ -236,16 +250,53 @@ void CMyForm::OnLoadData()
 
 		if (INVALID_HANDLE_VALUE == hFile)
 			return;
-		
+
 		DWORD dwByte = 0;
 
 		CGameInstance* pInstance = CGameInstance::Get_Instance();
 		Safe_AddRef(pInstance);
 
+#pragma region TerrainRect
 		_tchar szSize[MAX_PATH];
 		ReadFile(hFile, &szSize, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		_int TerrainRectSize = _wtoi(szSize);
 
+		for (_int i = 0; i < TerrainRectSize; ++i)
+		{
+			CTerrainRect::RECTINFO tRectInfo;
+
+			ReadFile(hFile, &tRectInfo, sizeof(tRectInfo), &dwByte, nullptr);
+
+			if (FAILED(pInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), &tRectInfo)))
+			{
+				ERR_MSG(TEXT("Failed to Cloned : CTerrainRect"));
+				return;
+			}
+
+			CTerrainRect* pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
+
+			LPDIRECT3DVERTEXBUFFER9 VB = pObject->Get_VB();
+
+			VTXTEX* pVertices = nullptr;
+
+			VB->Lock(0, 0, (void**)&pVertices, 0);
+
+			for (_uint i = 0; i < 4; ++i)
+			{
+				_float3 vPos;
+				_float2 vTex;
+
+				ReadFile(hFile, &vPos, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, &vTex, sizeof(_float2), &dwByte, nullptr);
+
+				pVertices[i].vPosition = vPos;
+				pVertices[i].vTexture = vTex;
+			}
+
+			VB->Unlock();
+		}
+#pragma endregion TerrainRect
+#pragma region Terrain
 		CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
 		if (nullptr == pTerrain)
 		{
@@ -290,7 +341,7 @@ void CMyForm::OnLoadData()
 			pVertices[i].vPosition = vPos;
 			pVertices[i].vTexture = vTex;
 		}
-		
+
 		VB->Unlock();
 
 		IB->Lock(0, 0, (void**)&pIndices, 0);
@@ -303,20 +354,7 @@ void CMyForm::OnLoadData()
 		}
 
 		IB->Unlock();
-
-		CTerrainRect::RECTINFO tRectInfo;
-
-		for (_int i = 0; i < TerrainRectSize; ++i)
-		{
-			ReadFile(hFile, &tRectInfo, sizeof(CTerrainRect::RECTINFO), &dwByte, nullptr);
-
-			if (FAILED(pInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), &tRectInfo)))
-			{
-				ERR_MSG(TEXT("Failed to Cloned : CTerrainRect"));
-				return;
-			}
-		}
-
+#pragma endregion Terrain
 		Safe_Release(pInstance);
 
 		CloseHandle(hFile);

@@ -272,9 +272,6 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pGraphic_Device))))
 		return E_FAIL;
 	
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_VIBuffer_TerrainRect"), CVIBuffer_TerrainRect::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
 	//Prototype_Component_Transform
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Transform"), CTransform::Create(m_pGraphic_Device))))
 		return E_FAIL;
