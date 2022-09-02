@@ -10,8 +10,6 @@ class CVIBuffer_Cube;
 class CTexture;
 END
 
-
-
 class CHouse final : public CGameObject
 {
 public:

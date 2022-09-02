@@ -49,11 +49,11 @@
     <Filter Include="02. Object\04. BackGroundObj">
       <UniqueIdentifier>{ced98bec-c077-4a05-943f-01dec818966f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\03. BackGround\Tree">
-      <UniqueIdentifier>{ea9cc703-94e5-4dea-98e4-991e9b410710}</UniqueIdentifier>
+    <Filter Include="02. Object\05. Tree">
+      <UniqueIdentifier>{fcd1ac7d-5c67-4a28-a367-8ffbb83084f4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\03. BackGround\House">
-      <UniqueIdentifier>{082b6b8a-958a-49dc-b1af-e0abc74484ce}</UniqueIdentifier>
+    <Filter Include="02. Object\06. House">
+      <UniqueIdentifier>{cf436fcc-65e4-43b1-b239-87bc81a5ced9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -99,17 +99,17 @@
     <ClInclude Include="..\..\Engine\Public\MonsterSpawn.h">
       <Filter>02. Object\02. MonsterSpawn</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\TerrainRect.h">
-      <Filter>02. Object\03. TerrainRect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\BackGruondObj.h">
       <Filter>02. Object\04. BackGroundObj</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tree.h">
-      <Filter>02. Object\03. BackGround\Tree</Filter>
+      <Filter>02. Object\05. Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\House.h">
-      <Filter>02. Object\03. BackGround\House</Filter>
+      <Filter>02. Object\06. House</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TerrainRect.h">
+      <Filter>02. Object\03. TerrainRect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -140,20 +140,20 @@
     <ClCompile Include="..\..\Engine\Private\MonsterSpawn.cpp">
       <Filter>02. Object\02. MonsterSpawn</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\TerrainRect.cpp">
-      <Filter>02. Object\03. TerrainRect</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\BackGruondObj.cpp">
       <Filter>02. Object\04. BackGroundObj</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Tree.cpp">
-      <Filter>02. Object\03. BackGround\Tree</Filter>
     </ClCompile>
     <ClCompile Include="ToolView.cpp">
       <Filter>00. Window\01. View</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Tree.cpp">
+      <Filter>02. Object\05. Tree</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\House.cpp">
-      <Filter>02. Object\03. BackGround\House</Filter>
+      <Filter>02. Object\06. House</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TerrainRect.cpp">
+      <Filter>02. Object\03. TerrainRect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

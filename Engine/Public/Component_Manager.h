@@ -27,7 +27,7 @@ private:
 	map<const _tchar*, class CComponent*> m_Prototypes;
 	typedef map<const _tchar*, class CComponent*> PROTOTYPES;
 
-private:
+public:
 	class CComponent* Find_Component(const _tchar* pPrototypeTag);
 
 public:

@@ -1,12 +1,25 @@
-﻿  MyForm.cpp
+﻿cl : 명령줄 warning D9028: 최소 다시 빌드에 실패했습니다. 정상 빌드로 되돌립니다.
+  MonsterSpawn.cpp
+  BackGruondObj.cpp
+  Camera_Dynamic.cpp
+  House.cpp
+  MyTerrain.cpp
+c:\users\태경\desktop\maptool\tool\private\myterrain.cpp(46): warning C4806: '&': 안전하지 않은 연산입니다. 'bool' 형식의 값('int' 형식으로 확장)이 주어진 상수와 같을 수 없습니다.
+  PlayerSpawn.cpp
+  TerrainRect.cpp
+  Tree.cpp
+  MainFrm.cpp
+  MyForm.cpp
+c:\users\태경\desktop\maptool\tool\default\myform.cpp(714): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\태경\desktop\maptool\tool\default\myform.cpp(716): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 c:\users\태경\desktop\maptool\tool\default\myform.cpp(718): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 c:\users\태경\desktop\maptool\tool\default\myform.cpp(720): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(722): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(724): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(816): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(835): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
-MyForm.obj : error LNK2019: "__declspec(dllimport) public: int __cdecl Engine::CGameInstance::Get_LayerSize(wchar_t const *)" (__imp_?Get_LayerSize@CGameInstance@Engine@@QEAAHPEB_W@Z) 외부 기호(참조 위치: "public: void __cdecl CMyForm::OnSaveData(void)" (?OnSaveData@CMyForm@@QEAAXXZ) 함수)에서 확인하지 못했습니다.
-ToolView.obj : error LNK2001: "__declspec(dllimport) public: int __cdecl Engine::CGameInstance::Get_LayerSize(wchar_t const *)" (__imp_?Get_LayerSize@CGameInstance@Engine@@QEAAHPEB_W@Z) 외부 기호를 확인할 수 없습니다.
-ToolView.obj : error LNK2019: "__declspec(dllimport) public: class Engine::CComponent * __cdecl Engine::CGameObject::Find_Component(wchar_t const *)" (__imp_?Find_Component@CGameObject@Engine@@QEAAPEAVCComponent@2@PEB_W@Z) 외부 기호(참조 위치: "public: void __cdecl CToolView::OnLButtonUp(unsigned int,class CPoint)" (?OnLButtonUp@CToolView@@QEAAXIVCPoint@@@Z) 함수)에서 확인하지 못했습니다.
-ToolView.obj : error LNK2019: "public: static class CTerrainRect * __cdecl CTerrainRect::Create(struct IDirect3DDevice9 *)" (?Create@CTerrainRect@@SAPEAV1@PEAUIDirect3DDevice9@@@Z) 외부 기호(참조 위치: "public: virtual void __cdecl CToolView::OnInitialUpdate(void)" (?OnInitialUpdate@CToolView@@UEAAXXZ) 함수)에서 확인하지 못했습니다.
-..\Bin\Tool.exe : fatal error LNK1120: 3개의 확인할 수 없는 외부 참조입니다.
+c:\users\태경\desktop\maptool\tool\default\myform.cpp(812): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\태경\desktop\maptool\tool\default\myform.cpp(831): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
+  Tool.cpp
+  ToolView.cpp
+c:\users\태경\desktop\maptool\tool\default\toolview.cpp(440): warning C4800: 'BOOL': 'true' 또는 'false'로 bool 값을 강제하고 있습니다(성능 경고).
+  코드를 생성하고 있습니다...
+c:\users\태경\desktop\maptool\tool\private\house.cpp(237): warning C4715: 'CHouse::House_Render': 모든 제어 경로에서 값을 반환하지는 않습니다.
+  Tool.vcxproj -> C:\Users\태경\Desktop\MapTool\Tool\Default\..\Bin\Tool.exe
+  Tool.vcxproj -> ..\Bin\Tool.pdb (Partial PDB)

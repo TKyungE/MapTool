@@ -477,6 +477,8 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 	if (pMyForm->m_ObejctListBox.GetCurSel() != -1)
 	{
+		pMyForm->m_TileList.SetCurSel(-1);
+
 		if (nullptr == m_pGameInstance)
 		{
 			ERR_MSG(TEXT("Failed to Created"));

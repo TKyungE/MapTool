@@ -118,7 +118,7 @@ void CMyForm::OnInitialUpdate()
 
 	CString strTexFilePath = pToolView->Get_TexFilePath();
 	_uint iNumTex = pToolView->Get_NumTex();
-	
+
 	for (_uint i = 0; i < iNumTex; ++i)
 	{
 		CString strInt;
@@ -283,8 +283,6 @@ void CMyForm::OnLoadData()
 		ReadFile(hFile, &szSize, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		_int TerrainRectSize = _wtoi(szSize);
 
-		CTerrainRect::RECTINFO tRectInfo;
-
 		for (_int i = 0; i < TerrainRectSize; ++i)
 		{
 			CTerrainRect::RECTINFO tRectInfo;
@@ -297,32 +295,28 @@ void CMyForm::OnLoadData()
 				return;
 			}
 
-			for (_int i = 0; i < TerrainRectSize; ++i)
+
+
+			CTerrainRect* pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
+
+			LPDIRECT3DVERTEXBUFFER9 VB = pObject->Get_VB();
+
+			VTXTEX* pVertices = nullptr;
+
+			VB->Lock(0, 0, (void**)&pVertices, 0);
+
+			for (_uint i = 0; i < 4; ++i)
 			{
+				_float3 vPos;
+				_float2 vTex;
 
-				CTerrainRect* pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
+				ReadFile(hFile, &vPos, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, &vTex, sizeof(_float2), &dwByte, nullptr);
 
-				LPDIRECT3DVERTEXBUFFER9 VB = pObject->Get_VB();
-
-				VTXTEX* pVertices = nullptr;
-
-				VB->Lock(0, 0, (void**)&pVertices, 0);
-
-				for (_uint i = 0; i < 4; ++i)
-				{
-					_float3 vPos;
-					_float2 vTex;
-
-					ReadFile(hFile, &vPos, sizeof(_float3), &dwByte, nullptr);
-					ReadFile(hFile, &vTex, sizeof(_float2), &dwByte, nullptr);
-
-					pVertices[i].vPosition = vPos;
-					pVertices[i].vTexture = vTex;
-				}
-				VB->Unlock();
+				pVertices[i].vPosition = vPos;
+				pVertices[i].vTexture = vTex;
 			}
-
-		
+			VB->Unlock();
 		}
 #pragma endregion TerrainRect
 #pragma region Terrain
@@ -645,6 +639,8 @@ void CMyForm::OnListBox()
 
 	UpdateData(TRUE);
 
+	m_TileList.SetCurSel(-1);
+
 	CString strFindName;
 
 	int iSelect = m_ObejctListBox.GetCurSel();
@@ -722,7 +718,7 @@ void CMyForm::OnObjectSaveButton()
 		pToolView->m_SavePos.m_TreeSize = pToolView->m_SavePos.m_TreePos.size();
 
 		pToolView->m_SavePos.m_HouseSize = pToolView->m_SavePos.m_HousePos.size();
-		
+
 		WriteFile(hFile, pToolView->m_SavePos.m_vPlayerPos, sizeof(_float3), &dwByte, nullptr);
 
 		wsprintf(str1, TEXT("%d"), pToolView->m_SavePos.m_iMSize);
@@ -860,6 +856,7 @@ void CMyForm::OnSelectTile()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
 
+	m_ObejctListBox.SetCurSel(-1);
 
 	int iSelect = m_TileList.GetCurSel();
 
@@ -880,7 +877,7 @@ void CMyForm::OnScaleButton()
 
 
 	CString strPosX, strPosY, strPosZ;
-	
+
 
 	m_EditSizeX.GetWindowText(strPosX);
 	float fPosX = _float(_wtof(strPosX));
