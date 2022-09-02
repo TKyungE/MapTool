@@ -15,6 +15,7 @@ public:
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
 	void Tick(void);
 	class CGameObject* Find_GameObject(_uint iIndex);
+	_int Get_GameObjectsSize(void) { return m_GameObjects.size(); }
 	
 private:
 	list<class CGameObject*> m_GameObjects;

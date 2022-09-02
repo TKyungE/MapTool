@@ -121,6 +121,14 @@ CGameObject * CGameInstance::Find_Object(const _tchar * pLayerTag, _uint iIndex)
 	return m_pObject_Manager->Find_Object(pLayerTag, iIndex);
 }
 
+_int CGameInstance::Get_LayerSize(const _tchar * pLayerTag)
+{
+	if (nullptr == m_pObject_Manager)
+		return 0;
+	
+	return m_pObject_Manager->Get_LayerSize(pLayerTag);
+}
+
 HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CComponent * pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)

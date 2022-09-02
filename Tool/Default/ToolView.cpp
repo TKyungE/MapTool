@@ -18,6 +18,7 @@
 #include "MyForm.h"
 #include "MonsterSpawn.h"
 #include "BackGruondObj.h"
+#include "TerrainRect.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -172,6 +173,12 @@ void CToolView::OnInitialUpdate()
 		return;
 	}
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TerrainRect"), CTerrainRect::Create(m_pGraphic_Device))))
+	{
+		ERR_MSG(TEXT("Prototype_GameObject_TerrainRect Failed"));
+		return;
+	}
+
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_PlayerSpawn"), CPlayerSpawn::Create(m_pGraphic_Device))))
 	{
 		ERR_MSG(TEXT("Prototype_GameObject_PlayerSpawn Failed"));
@@ -272,14 +279,20 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pGraphic_Device))))
 		return E_FAIL;
 	
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_VIBuffer_TerrainRect"), CVIBuffer_TerrainRect::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	//Prototype_Component_Transform
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Transform"), CTransform::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/*For.Prototype_Component_Texture_Terrain*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Terrain/Grass_%d.tga"), 1))))
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/LookMap/Map%d.png"), 10))))
 		return E_FAIL;
+
+	m_strTexFilePath = TEXT("Map");
+	m_iNumTex = 10;
 
 	/*For.Prototype_Component_Texture_PlayerSpawn*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_PlayerSpawn"),
@@ -421,7 +434,6 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 	const _tchar* pstr = (_tchar*)(LPCTSTR)m_strObjectName;
 
-
 	if (pMyForm->m_ObejctListBox.GetCurSel() != -1)
 	{
 		if (nullptr == m_pGameInstance)
@@ -441,10 +453,10 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 		if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
 		{
-			if (m_bCheck == false)
-				m_bCheck = true;
+			if (m_bObjectCheck == false)
+				m_bObjectCheck = true;
 
-			else if (m_bCheck)
+			else if (m_bObjectCheck)
 			{
 				CPlayerSpawn* PlayerSpawn = (CPlayerSpawn*)m_pGameInstance->Find_Object(TEXT("Layer_PlayerSpawn"), 0);
 				vPos.y += 0.01f;
@@ -498,5 +510,63 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 		if (!pMyForm->m_ResetX.GetCheck())
 			pMyForm->m_ObejctListBox.SetCurSel(-1);
+	}
+
+	if (pMyForm->m_TileList.GetCurSel() != -1)
+	{
+		if (nullptr == m_pGameInstance)
+		{
+			ERR_MSG(TEXT("Failed to Created"));
+			return;
+		}
+
+		_float3 mPoint = m_pGameInstance->Get_TargetPos();
+		CMyTerrain* pTerrain = (CMyTerrain*)m_pGameInstance->Find_Object(TEXT("Layer_BackGround"), 0);
+		_uint iIndex = pTerrain->Get_VIBufferCom()->Get_VIBInfoDerived().m_iNumVerticesX * (_uint)mPoint.z + (_uint)mPoint.x;
+		_uint iIndices[4] = {
+			iIndex + pTerrain->Get_VIBufferCom()->Get_VIBInfoDerived().m_iNumVerticesX,
+			iIndex + pTerrain->Get_VIBufferCom()->Get_VIBInfoDerived().m_iNumVerticesX + 1,
+			iIndex + 1,
+			iIndex
+		};
+
+		LPDIRECT3DVERTEXBUFFER9 VB = pTerrain->Get_VIBufferCom()->Get_VB();
+		LPDIRECT3DINDEXBUFFER9 IB = pTerrain->Get_VIBufferCom()->Get_IB();
+
+		VTXTEX* pVertices = nullptr;
+		FACEINDICES32* pIndices = nullptr;
+
+		VB->Lock(0, 0, (void**)&pVertices, 0);
+		IB->Lock(0, 0, (void**)&pIndices, 0);
+
+		CTerrainRect::RECTINFO m_tRectInfo;
+		m_tRectInfo.vPos = pVertices[iIndex].vPosition;
+		m_tRectInfo.iTex = pMyForm->m_TileList.GetCurSel();
+
+		VB->Unlock();
+		IB->Unlock();
+
+		_uint LayerSize = m_pGameInstance->Get_LayerSize(TEXT("Layer_TerrainRect"));
+
+		for (_uint i = 0; i < LayerSize; ++i)
+		{
+			CTerrainRect* pObject = (CTerrainRect*)m_pGameInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
+
+			CTransform* pTransform = (CTransform*)pObject->Find_Component(TEXT("Com_Transform"));
+
+			_float3 ObjectWorldPos = *D3DXVec3TransformCoord(&ObjectWorldPos, &_float3(0.f, 0.f, 0.f), &pTransform->Get_WorldMatrix());
+
+			if (pVertices[iIndex].vPosition.x == ObjectWorldPos.x && pVertices[iIndex].vPosition.z == ObjectWorldPos.z)
+			{
+				pObject->Set_RectTex(m_tRectInfo.iTex);
+				return;
+			}
+		}
+
+		if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), (CTerrainRect::RECTINFO*)&m_tRectInfo)))
+		{
+			ERR_MSG(TEXT("Failed to Cloned : TerrainRect"));
+			return;
+		}
 	}
 }

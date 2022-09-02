@@ -196,6 +196,7 @@
     <ClInclude Include="..\Public\Camera_Dynamic.h" />
     <ClInclude Include="..\Public\MyTerrain.h" />
     <ClInclude Include="..\Public\PlayerSpawn.h" />
+    <ClInclude Include="..\Public\TerrainRect.h" />
     <ClInclude Include="..\Public\Tool_Defines.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MyForm.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
     <ClCompile Include="..\Private\MyTerrain.cpp" />
     <ClCompile Include="..\Private\PlayerSpawn.cpp" />
+    <ClCompile Include="..\Private\TerrainRect.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="stdafx.cpp">

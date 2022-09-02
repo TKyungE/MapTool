@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\MyTerrain.h"
+
 #include "GameInstance.h"
-
-
 
 CMyTerrain::CMyTerrain(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
@@ -18,7 +17,7 @@ HRESULT CMyTerrain::Initialize_Prototype(void)
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
-	
+
 	return S_OK;
 }
 
@@ -30,12 +29,7 @@ HRESULT CMyTerrain::Initialize(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
-
 	return S_OK;
-
-	
 }
 
 void CMyTerrain::Tick(void)
@@ -46,10 +40,10 @@ void CMyTerrain::Tick(void)
 
 	if (nullptr == pInstance)
 		return;
-	
+
 	Safe_AddRef(pInstance);
 
-	if (pInstance->Get_DIMKeyState(DIMK_LBUTTON) < 0)
+	if ((GetKeyState(VK_LBUTTON) < 0) & 0x8001)
 	{
 		_float4x4 matWorld = m_pTransformCom->Get_WorldMatrix();
 		D3DXMatrixInverse(&matWorld, nullptr, &matWorld);
@@ -74,13 +68,13 @@ void CMyTerrain::Tick(void)
 				/*_tchar m_szFPS[MAX_PATH] = L"";
 				wsprintf(m_szFPS, L"ÁÂÇ¥ : %d, %d, %d", (int)pInstance->Get_TargetPos().x, (int)pInstance->Get_TargetPos().y, (int)pInstance->Get_TargetPos().z);
 				ERR_MSG(m_szFPS);*/
-				if (!m_bCheck)
+				if (!m_bObjectCheck)
 				{
 					pVertices[pIndices[i]._0].vPosition.y = m_fValue;
 					pVertices[pIndices[i]._1].vPosition.y = m_fValue;
 					pVertices[pIndices[i]._2].vPosition.y = m_fValue;
 				}
-				
+
 				break;
 			}
 		}
@@ -103,7 +97,7 @@ HRESULT CMyTerrain::Render(void)
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(0)))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(6)))
 		return E_FAIL;
 
 	m_pVIBufferCom->Render();

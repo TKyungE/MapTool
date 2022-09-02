@@ -69,6 +69,15 @@ CGameObject * CObject_Manager::Find_Object(const _tchar * pLayerTag, _uint iInde
 	return pGameObject;
 }
 
+_int CObject_Manager::Get_LayerSize(const _tchar * pLayerTag)
+{
+	CLayer* pLayer = Find_Layer(pLayerTag);
+	if (nullptr == pLayer)
+		return 0;
+	
+	return pLayer->Get_GameObjectsSize();
+}
+
 CLayer * CObject_Manager::Find_Layer(const _tchar * pLayerTag)
 {
 	auto iter = find_if(m_Layers.begin(), m_Layers.end(), CTag_Finder(pLayerTag));

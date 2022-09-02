@@ -59,6 +59,10 @@ private:
 	bool m_bTrack = false;
 	
 	CString m_strObjectName = TEXT("");
+
+	CString m_strTexFilePath = TEXT("");
+	_uint m_iNumTex = 0;
+
 public:
 	typedef struct tagIndexPos
 	{
@@ -80,11 +84,18 @@ public:
 
 	
 	SAVEPOS m_SavePos;
+
 	INDEXPOS m_Index;
 	_uint m_iIndex;
 	_bool m_bCheck = false;
+
+	_bool m_bObjectCheck = false;
+
 public:
 	void Set_ObjectName(CString _strObjectName) { m_strObjectName = _strObjectName; }
+
+	CString Get_TexFilePath(void) { return m_strTexFilePath; }
+	_uint Get_NumTex(void) { return m_iNumTex; }
 
 public:
 	virtual void OnInitialUpdate();

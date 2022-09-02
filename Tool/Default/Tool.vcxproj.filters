@@ -43,8 +43,8 @@
     <Filter Include="02. Object\02. MonsterSpawn">
       <UniqueIdentifier>{9df4afdb-20fd-414a-8d87-0f65eb52c461}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\03. BackGround">
-      <UniqueIdentifier>{0b6ad98f-c865-4e5c-a080-f2db16a8d9a0}</UniqueIdentifier>
+    <Filter Include="02. Object\03. TerrainRect">
+      <UniqueIdentifier>{8f07eff2-3ef6-479a-95e7-aed1ad891cbd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,8 +90,8 @@
     <ClInclude Include="..\..\Engine\Public\MonsterSpawn.h">
       <Filter>02. Object\02. MonsterSpawn</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\BackGruondObj.h">
-      <Filter>02. Object\03. BackGround</Filter>
+    <ClInclude Include="..\Public\TerrainRect.h">
+      <Filter>02. Object\03. TerrainRect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,8 +125,8 @@
     <ClCompile Include="..\..\Engine\Private\MonsterSpawn.cpp">
       <Filter>02. Object\02. MonsterSpawn</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\BackGruondObj.cpp">
-      <Filter>02. Object\03. BackGround</Filter>
+    <ClCompile Include="..\Private\TerrainRect.cpp">
+      <Filter>02. Object\03. TerrainRect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
