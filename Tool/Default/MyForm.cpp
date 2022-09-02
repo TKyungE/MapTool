@@ -566,6 +566,10 @@ void CMyForm::OnListBox()
 	{
 		SetDlgItemInt(IDC_STATIC1, pToolView->m_iTreeIndex);
 	}
+	else if (strFindName == TEXT("House"))
+	{
+		SetDlgItemInt(IDC_STATIC1, pToolView->m_iHouseIndex);
+	}
 	else
 	{
 		SetDlgItemInt(IDC_STATIC1, 0);
@@ -608,6 +612,7 @@ void CMyForm::OnObjectSaveButton()
 
 		_tchar str1[MAX_PATH];
 		_tchar str2[MAX_PATH];
+		_tchar str3[MAX_PATH];
 		_tchar str4[MAX_PATH];
 		pToolView->m_SavePos.m_iMSize = pToolView->m_SavePos.m_vMonsterPos.size();
 
@@ -615,6 +620,7 @@ void CMyForm::OnObjectSaveButton()
 
 		pToolView->m_SavePos.m_TreeSize = pToolView->m_SavePos.m_TreePos.size();
 
+		pToolView->m_SavePos.m_HouseSize = pToolView->m_SavePos.m_HousePos.size();
 		
 		WriteFile(hFile, pToolView->m_SavePos.m_vPlayerPos, sizeof(_float3), &dwByte, nullptr);
 
@@ -624,7 +630,10 @@ void CMyForm::OnObjectSaveButton()
 		wsprintf(str2, TEXT("%d"), pToolView->m_SavePos.m_IndexSize);
 		WriteFile(hFile, str2, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 
-		wsprintf(str4, TEXT("%d"), pToolView->m_SavePos.m_TreeSize);
+		wsprintf(str3, TEXT("%d"), pToolView->m_SavePos.m_TreeSize);
+		WriteFile(hFile, str3, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+		wsprintf(str4, TEXT("%d"), pToolView->m_SavePos.m_HouseSize);
 		WriteFile(hFile, str4, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 
 		for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
@@ -648,6 +657,16 @@ void CMyForm::OnObjectSaveButton()
 			WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
 			WriteFile(hFile, iter.m_Scale, sizeof(_float3), &dwByte, nullptr);
 			WriteFile(hFile, str4, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		}
+
+		for (auto& iter : pToolView->m_SavePos.m_HousePos)
+		{
+			_tchar str5[MAX_PATH];
+			wsprintf(str5, TEXT("%d"), iter.m_iIndex);
+
+			WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, iter.m_Scale, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, str5, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		}
 
 		CloseHandle(hFile);

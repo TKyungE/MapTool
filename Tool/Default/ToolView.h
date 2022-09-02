@@ -63,9 +63,10 @@ public:
 	typedef struct tagIndexPos
 	{
 		_float3 m_BackGroundPos;
+		_float3 m_Scale;
 		_uint m_iIndex;
 
-		_float3 m_Scale;
+		
 	}INDEXPOS;
 
 	typedef struct tagPos
@@ -87,9 +88,9 @@ public:
 	
 	SAVEPOS m_SavePos;
 	INDEXPOS m_Index;
-	_uint m_iBackIndex;
-	_uint m_iTreeIndex;
-	_uint m_iHouseIndex;
+	_uint m_iBackIndex = 0;
+	_uint m_iTreeIndex = 0;
+	_uint m_iHouseIndex = 0;
 
 	_bool m_bCheck = false;
 public:

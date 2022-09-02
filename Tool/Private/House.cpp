@@ -181,31 +181,32 @@ void CHouse::OnBillBoard(void)
 
 void CHouse::Set_vPos()
 {
-	_float3 vIndexPos = m_IndexPos.vPos;
-	m_pTransformCom->Set_Scaled({ vIndexPos.x,vIndexPos.y,vIndexPos.z});
+	_float3 vIndexScale = m_IndexPos.vScale;
+	m_pTransformCom->Set_Scaled({ vIndexScale.x,vIndexScale.y,vIndexScale.z});
+	m_IndexPos.vPos.y += 0.5f * vIndexScale.y;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_IndexPos.vPos);
 
 	_float3 vUp = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vUp.y += vIndexPos.y + 1.f;
-	m_pTransformCom2->Set_Scaled({ vIndexPos.x,vIndexPos.y,vIndexPos.z });
+	vUp.y += vIndexScale.y;
+	m_pTransformCom2->Set_Scaled({ vIndexScale.x,vIndexScale.y,vIndexScale.z });
 	m_pTransformCom2->Set_State(CTransform::STATE_POSITION, vUp);
 
 
 	_float3 vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_float3 vPos2 = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	vPos.x = vPos.x + (vIndexPos.x * 0.5f) - (vIndexPos.x * 0.25f);// -0.1f;
-	vPos.y = vPos.y + (1.f + vIndexPos.y) - 0.1f;
-	m_pTransformCom3->Set_Scaled({ vIndexPos.x,vIndexPos.y + 0.1f * vIndexPos.y,vIndexPos.z });
+	vPos.x = vPos.x + (vIndexScale.x * 0.5f) - (vIndexScale.x * 0.25f);// -0.1f;
+	vPos.y = vPos.y + vIndexScale.y - 0.1f;
+	m_pTransformCom3->Set_Scaled({ vIndexScale.x,vIndexScale.y + 0.1f * vIndexScale.y,vIndexScale.z });
 	m_pTransformCom3->Set_State(CTransform::STATE_POSITION, vPos);
 	m_pTransformCom3->Turn(_float3(0.f,1.f,0.f), 1.f);
 	m_pTransformCom3->Turn(_float3(0.f,0.f,1.f), 0.3f);
 	
 
-	vPos2.x = vPos2.x - (vIndexPos.x * 0.5f) + (vIndexPos.x * 0.25f);
-	vPos2.y = vPos2.y + (1.f + vIndexPos.y) - 0.1f;
-	m_pTransformCom4->Set_Scaled({ vIndexPos.x,vIndexPos.y + 0.1f * vIndexPos.y,vIndexPos.z });
-	m_pTransformCom4->Set_State(CTransform::STATE_POSITION, vPos);
+	vPos2.x = vPos2.x - (vIndexScale.x * 0.5f) + (vIndexScale.x * 0.25f);
+	vPos2.y = vPos2.y + vIndexScale.y - 0.1f;
+	m_pTransformCom4->Set_Scaled({ vIndexScale.x,vIndexScale.y + 0.1f * vIndexScale.y,vIndexScale.z });
+	m_pTransformCom4->Set_State(CTransform::STATE_POSITION, vPos2);
 	m_pTransformCom4->Turn(_float3(0.f, 1.f, 0.f), -1.f);
 	m_pTransformCom4->Turn(_float3(0.f, 0.f, 1.f), -0.3f);
 }

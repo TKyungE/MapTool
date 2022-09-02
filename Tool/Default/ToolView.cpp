@@ -521,9 +521,7 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		{
 			m_Index.m_iIndex = pMyForm->m_iIndex1;
 			m_Index.m_BackGroundPos = vPos;
-			m_Index.m_Scale.x = pMyForm->m_fScaleX;
-			m_Index.m_Scale.y = pMyForm->m_fScaleY;
-			m_Index.m_Scale.z = pMyForm->m_fScaleZ;
+			m_Index.m_Scale = _float3(pMyForm->m_fScaleX, pMyForm->m_fScaleY, pMyForm->m_fScaleZ);
 
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_BackGround"), &m_Index)))
 			{
@@ -536,9 +534,7 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_Index.m_iIndex = pMyForm->m_iIndex1;
 			m_Index.m_BackGroundPos = vPos;
 
-			m_Index.m_Scale.x = pMyForm->m_fScaleX;
-			m_Index.m_Scale.y = pMyForm->m_fScaleY;
-			m_Index.m_Scale.z = pMyForm->m_fScaleZ;
+			m_Index.m_Scale = _float3(pMyForm->m_fScaleX, pMyForm->m_fScaleY, pMyForm->m_fScaleZ);
 
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_Tree"), &m_Index)))
 			{
@@ -552,9 +548,11 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_Index.m_iIndex = pMyForm->m_iIndex1;
 			m_Index.m_BackGroundPos = vPos;
 
-			m_Index.m_Scale.x = pMyForm->m_fScaleX;
-			m_Index.m_Scale.y = pMyForm->m_fScaleY;
-			m_Index.m_Scale.z = pMyForm->m_fScaleZ;
+			m_Index.m_Scale = _float3(pMyForm->m_fScaleX, pMyForm->m_fScaleY, pMyForm->m_fScaleZ);
+
+			//m_Index.m_Scale.x = pMyForm->m_fScaleX;
+			//m_Index.m_Scale.y = pMyForm->m_fScaleY;
+			//m_Index.m_Scale.z = pMyForm->m_fScaleZ;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_House"), &m_Index)))
 			{
