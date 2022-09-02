@@ -32,6 +32,8 @@
 #define IDC_BUTTON4                     1020
 #define IDC_TILELIST                    1021
 #define IDC_EDIT8                       1022
+#define IDC_TILEPIC                     1023
+#define IDC_OBJPIC                      1024
 
 // Next default values for new objects
 // 
@@ -39,7 +41,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        311
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1023
+#define _APS_NEXT_CONTROL_VALUE         1025
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif

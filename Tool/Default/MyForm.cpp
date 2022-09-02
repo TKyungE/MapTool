@@ -45,6 +45,8 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT7, m_EditSizeZ);
 	DDX_Control(pDX, IDC_TILELIST, m_TileList);
 	DDX_Control(pDX, IDC_EDIT8, m_EditTrun);
+	DDX_Control(pDX, IDC_TILEPIC, m_TilePicture);
+	DDX_Control(pDX, IDC_OBJPIC, m_ObjPicture);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
@@ -117,16 +119,15 @@ void CMyForm::OnInitialUpdate()
 	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
 	CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
 
-	CString strTexFilePath = pToolView->Get_TexFilePath();
+	//CString strTexFilePath = pToolView->Get_TexFilePath();
 	_uint iNumTex = pToolView->Get_NumTex();
-
-	for (_uint i = 0; i < iNumTex; ++i)
+	/*for (_uint i = 0; i < iNumTex; ++i)
 	{
 		CString strInt;
 		strInt.Format(TEXT("%d"), i);
 
 		m_TileList.AddString(strTexFilePath + strInt);
-	}
+	}*/
 
 	Safe_Release(pInstance);
 
@@ -138,8 +139,121 @@ void CMyForm::OnInitialUpdate()
 	m_fScaleY = 1.f;
 	m_fScaleZ = 1.f;
 
+
+	m_TileList.InitStorage(10000, 10);
+
+
+	CString strMapTool;
+	HTREEITEM	h_root;
+	HTREEITEM   h_Tile;
+	CString pFilePath = TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/LookMap/Map%d.png");
+	TCHAR	szFullPath[MAX_PATH] = L"";
+	TCHAR	szPathBuf[MAX_PATH] = L"";
+
+	strMapTool.Format(L"Tile");
+	
+	lstrcpy(szPathBuf, pFilePath);
+
+	PathRemoveFileSpec(szPathBuf);
+
+	for (int i = 0; i < iNumTex; ++i)
+	{
+		pFilePath.Format(TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/LookMap/Map%d.png"), i);
+		swprintf_s(szFullPath, pFilePath, i);
+	
+		CString strFileName = PathFindFileName(szFullPath);
+
+		lstrcpy(szFullPath, strFileName.GetString());
+
+		PathRemoveExtension(szFullPath);
+
+		strFileName = szFullPath;
+
+		auto iter = m_MapPngImg.find(strFileName);
+
+		if (iter == m_MapPngImg.end())
+		{
+			CImage*	pPngImage = new CImage;
+
+			pPngImage->Load(pFilePath);
+
+			m_MapPngImg.insert({ strFileName, pPngImage });
+			m_TileList.InsertString(-1, strFileName);
+		}
+	}
+
+
+	CString strMapTool1;
+	HTREEITEM	h_root1;
+	HTREEITEM   h_Tile1;
+	CString pFilePath1 = TEXT("../Bin/Resources/Textures/BackGround/%d.png");
+	TCHAR	szFullPath1[MAX_PATH] = L"";
+	TCHAR	szPathBuf1[MAX_PATH] = L"";
+
+	strMapTool.Format(L"BackGround");
+
+	lstrcpy(szPathBuf1, pFilePath1);
+
+	PathRemoveFileSpec(szPathBuf1);
+
+	_uint iNumIndex = pToolView->m_iBackIndex;
+
+	for (int i = 0; i < iNumIndex; ++i)
+	{
+		pFilePath1.Format(TEXT("../Bin/Resources/Textures/BackGround/%d.png"), i);
+		swprintf_s(szFullPath1, pFilePath1, i);
+
+		CString strFileName = PathFindFileName(szFullPath1);
+
+		lstrcpy(szFullPath1, strFileName.GetString());
+
+		PathRemoveExtension(szFullPath1);
+
+		strFileName = szFullPath1;
+
+		auto iter = m_MapPngImg2.find(strFileName);
+
+		if (iter == m_MapPngImg2.end())
+		{
+			CImage*	pPngImage = new CImage;
+
+			pPngImage->Load(pFilePath);
+
+			m_MapPngImg2.insert({ strFileName, pPngImage });
+			m_ObejctListBox.InsertString(-1, strFileName);
+		}
+	}
+
+
+
 	UpdateData(FALSE);
 }
+
+int CMyForm::DirFileCount(const wstring & wstrPath)
+{
+	wstring	wstrFilePath = wstrPath + L"\\*.*";
+
+	CFileFind	Find;
+	BOOL bContinue = Find.FindFile(wstrFilePath.c_str());
+
+	int iFIleCnt = 0;
+
+	while (bContinue)
+	{
+		bContinue = Find.FindNextFile();
+
+		if (Find.IsDots())
+			continue;
+		if (Find.IsSystem())
+			continue;
+
+		++iFIleCnt;
+	}
+
+	return iFIleCnt;
+}
+
+
 
 void CMyForm::OnSaveData()
 {
@@ -675,6 +789,46 @@ void CMyForm::OnListBox()
 		m_iIndex1 = 0;
 	}
 
+	CString strstr; //리스트박스에서 선택한 값을 가져올 변수 지정
+	CListBox *p_list = (CListBox *)GetDlgItem(IDC_OBJECTLIST);
+	int index = p_list->GetCurSel();
+	if (index != LB_ERR)
+	{
+		p_list->GetText(index, strstr);
+
+		auto iter = m_MapPngImg.find(strstr);
+		if (iter == m_MapPngImg.end())
+			return;
+		//m_TilePicture.SetBitmap(*(iter)->second);
+
+
+		CStatic* staticSize = (CStatic*)GetDlgItem(IDC_OBJPIC);
+		CRect rect;
+
+		staticSize->GetClientRect(rect);
+
+		int iWidth = rect.Width();
+		int iHeight = rect.Height();
+
+		CDC* dc;
+		dc = m_ObjPicture.GetDC();
+		dc->SetStretchBltMode(COLORONCOLOR);
+		iter->second->StretchBlt(dc->m_hDC, 0, 0, iWidth, iHeight, SRCCOPY);
+
+		ReleaseDC(dc);
+
+
+		int i = 0;
+
+		for (; i < strstr.GetLength(); ++i)
+		{
+			if (0 != isdigit(strstr[i]))
+				break;
+		}
+		strstr.Delete(0, i);
+	}
+
+
 	UpdateData(FALSE);
 }
 
@@ -864,10 +1018,46 @@ void CMyForm::OnSelectTile()
 	if (-1 == iSelect)
 		return;
 
-	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
-	CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
+	CString strstr; //리스트박스에서 선택한 값을 가져올 변수 지정
+	CListBox *p_list = (CListBox *)GetDlgItem(IDC_TILELIST);
+	int index = p_list->GetCurSel();
+	if (index != LB_ERR)
+	{
+		p_list->GetText(index, strstr);
+
+		auto iter = m_MapPngImg.find(strstr);
+		if (iter == m_MapPngImg.end())
+			return;
+		//m_TilePicture.SetBitmap(*(iter)->second);
+		
+
+		CStatic* staticSize = (CStatic*)GetDlgItem(IDC_TILEPIC);
+		CRect rect;
+
+		staticSize->GetClientRect(rect);
+
+		int iWidth = rect.Width();
+		int iHeight = rect.Height();
+
+		CDC* dc;
+		dc = m_TilePicture.GetDC();
+		dc->SetStretchBltMode(COLORONCOLOR);
+		iter->second->StretchBlt(dc->m_hDC, 0,0,iWidth, iHeight, SRCCOPY);
+
+		ReleaseDC(dc);
+
+		
+		int i = 0;
+
+		for (; i < strstr.GetLength(); ++i)
+		{
+			if (0 != isdigit(strstr[i]))
+				break;
+		}
+		strstr.Delete(0, i);
 
 
+	}
 	UpdateData(FALSE);
 }
 

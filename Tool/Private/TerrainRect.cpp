@@ -40,6 +40,8 @@ HRESULT CTerrainRect::Initialize(void * pArg)
 		return E_FAIL;
 
 	return S_OK;
+
+
 }
 
 void CTerrainRect::Tick(void)
@@ -119,6 +121,7 @@ void CTerrainRect::Tick(void)
 	pIndex[1]._2 = 3;
 
 	m_pIBuffer->Unlock();
+	
 
 	Safe_Release(pVIBufferTerrain);
 	Safe_Release(pTerrain);
