@@ -33,9 +33,13 @@ public:
 	virtual HRESULT Initialize_Prototype(void) override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Render(void);
+public:
+	virtual _bool Picking(_float4x4 WorldMatrix, _float3* vPickPoint = nullptr) { return true; };
 
 protected:
 	LPDIRECT3DVERTEXBUFFER9 m_pVB = nullptr;
+	_float3*					m_pVerticesPos = nullptr;
+	FACEINDICES16*					m_pIndicesPos = nullptr;
 
 protected:
 	LPDIRECT3DINDEXBUFFER9 m_pIB = nullptr;

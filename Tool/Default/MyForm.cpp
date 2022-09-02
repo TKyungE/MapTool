@@ -41,6 +41,9 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT4, m_EditIndex);
 	DDX_Control(pDX, IDC_SPIN1, m_SpinIndex);
 	DDX_Control(pDX, IDC_TILELIST, m_TileList);
+	DDX_Control(pDX, IDC_EDIT5, m_EditSizeX);
+	DDX_Control(pDX, IDC_EDIT6, m_EditSizeY);
+	DDX_Control(pDX, IDC_EDIT7, m_EditSizeZ);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
@@ -55,6 +58,7 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_CHECK1, &CMyForm::OnResetXButton)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN1, &CMyForm::OnSpinIndex)
 	ON_LBN_SELCHANGE(IDC_TILELIST, &CMyForm::OnSelectTile)
+	ON_BN_CLICKED(IDC_BUTTON4, &CMyForm::OnScaleButton)
 END_MESSAGE_MAP()
 
 
@@ -96,6 +100,8 @@ void CMyForm::OnInitialUpdate()
 	m_ObejctListBox.AddString(TEXT("PlayerSpawn"));
 	m_ObejctListBox.AddString(TEXT("MonsterSpawn"));
 	m_ObejctListBox.AddString(TEXT("BackGround"));
+	m_ObejctListBox.AddString(TEXT("Tree"));
+	m_ObejctListBox.AddString(TEXT("House"));
 
 	m_EditIndex.SetWindowText(TEXT("0"));
 	m_SpinIndex.SetRange(0, 100);
@@ -122,6 +128,14 @@ void CMyForm::OnInitialUpdate()
 	}
 
 	Safe_Release(pInstance);
+
+	m_EditSizeX.SetWindowText(TEXT("1"));
+	m_EditSizeY.SetWindowText(TEXT("1"));
+	m_EditSizeZ.SetWindowText(TEXT("1"));
+
+	m_fScaleX = 1.f;
+	m_fScaleY = 1.f;
+	m_fScaleZ = 1.f;
 
 	UpdateData(FALSE);
 }
@@ -646,7 +660,15 @@ void CMyForm::OnListBox()
 
 	if (strFindName == TEXT("BackGround"))
 	{
-		SetDlgItemInt(IDC_STATIC1, pToolView->m_iIndex);
+		SetDlgItemInt(IDC_STATIC1, pToolView->m_iBackIndex);
+	}
+	else if (strFindName == TEXT("Tree"))
+	{
+		SetDlgItemInt(IDC_STATIC1, pToolView->m_iTreeIndex);
+	}
+	else if (strFindName == TEXT("House"))
+	{
+		SetDlgItemInt(IDC_STATIC1, pToolView->m_iHouseIndex);
 	}
 	else
 	{
@@ -690,10 +712,15 @@ void CMyForm::OnObjectSaveButton()
 
 		_tchar str1[MAX_PATH];
 		_tchar str2[MAX_PATH];
+		_tchar str3[MAX_PATH];
+		_tchar str4[MAX_PATH];
 		pToolView->m_SavePos.m_iMSize = pToolView->m_SavePos.m_vMonsterPos.size();
 
 		pToolView->m_SavePos.m_IndexSize = pToolView->m_SavePos.m_IndexPos.size();
 
+		pToolView->m_SavePos.m_TreeSize = pToolView->m_SavePos.m_TreePos.size();
+
+		pToolView->m_SavePos.m_HouseSize = pToolView->m_SavePos.m_HousePos.size();
 		
 		WriteFile(hFile, pToolView->m_SavePos.m_vPlayerPos, sizeof(_float3), &dwByte, nullptr);
 
@@ -703,6 +730,11 @@ void CMyForm::OnObjectSaveButton()
 		wsprintf(str2, TEXT("%d"), pToolView->m_SavePos.m_IndexSize);
 		WriteFile(hFile, str2, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 
+		wsprintf(str3, TEXT("%d"), pToolView->m_SavePos.m_TreeSize);
+		WriteFile(hFile, str3, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+		wsprintf(str4, TEXT("%d"), pToolView->m_SavePos.m_HouseSize);
+		WriteFile(hFile, str4, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 
 		for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
 			WriteFile(hFile, iter, sizeof(_float3), &dwByte, nullptr);
@@ -713,7 +745,28 @@ void CMyForm::OnObjectSaveButton()
 			wsprintf(str3, TEXT("%d"), iter.m_iIndex);
 
 			WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, iter.m_Scale, sizeof(_float3), &dwByte, nullptr);
 			WriteFile(hFile, str3, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		}
+
+		for (auto& iter : pToolView->m_SavePos.m_TreePos)
+		{
+			_tchar str4[MAX_PATH];
+			wsprintf(str4, TEXT("%d"), iter.m_iIndex);
+
+			WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, iter.m_Scale, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, str4, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		}
+
+		for (auto& iter : pToolView->m_SavePos.m_HousePos)
+		{
+			_tchar str5[MAX_PATH];
+			wsprintf(str5, TEXT("%d"), iter.m_iIndex);
+
+			WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, iter.m_Scale, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, str5, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		}
 
 		CloseHandle(hFile);
@@ -774,6 +827,27 @@ void CMyForm::OnSpinIndex(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 		SetDlgItemInt(IDC_EDIT4, m_iIndex1);
 	}
+	if (strFindName == TEXT("Tree"))
+	{
+		if (pNMUpDown->iDelta > 0)
+		{
+			if (m_iIndex1 >= GetDlgItemInt(IDC_STATIC1))
+				return;
+
+			++m_iIndex1;
+		}
+		else
+		{
+			if (m_iIndex1 <= 0)
+				return;
+
+			--m_iIndex1;
+
+		}
+		SetDlgItemInt(IDC_EDIT4, m_iIndex1);
+	}
+
+
 	*pResult = 0;
 
 	UpdateData(FALSE);
@@ -785,6 +859,7 @@ void CMyForm::OnSelectTile()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
 
+
 	int iSelect = m_TileList.GetCurSel();
 
 	if (-1 == iSelect)
@@ -795,4 +870,27 @@ void CMyForm::OnSelectTile()
 
 
 	UpdateData(FALSE);
+}
+
+
+void CMyForm::OnScaleButton()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+
+	CString strPosX, strPosY, strPosZ;
+	
+
+	m_EditSizeX.GetWindowText(strPosX);
+	float fPosX = _float(_wtof(strPosX));
+
+	m_EditSizeY.GetWindowText(strPosY);
+	float fPosY = _float(_wtof(strPosY));
+
+	m_EditSizeZ.GetWindowText(strPosZ);
+	float fPosZ = _float(_wtof(strPosZ));
+
+	m_fScaleX = fPosX;
+	m_fScaleY = fPosY;
+	m_fScaleZ = fPosZ;
 }

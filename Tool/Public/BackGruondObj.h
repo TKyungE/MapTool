@@ -34,6 +34,7 @@ private:
 	typedef struct tagIndexPos
 	{
 		_float3 m_BackGroundPos;
+		_float3 m_Scale;
 		_uint m_iIndex;
 	}INDEXPOS;
 

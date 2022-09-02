@@ -14,6 +14,8 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype(void) override;
 	virtual HRESULT Initialize(void* pArg) override;
+public:
+	virtual _bool Picking(_float4x4 WorldMatrix, _float3* pPickPoint = nullptr) override;
 
 public:
 	static CVIBuffer_Rect* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

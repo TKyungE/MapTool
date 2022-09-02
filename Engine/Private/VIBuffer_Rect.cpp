@@ -1,4 +1,6 @@
 #include "..\Public\VIBuffer_Rect.h"
+#include "Picking.h"
+
 
 CVIBuffer_Rect::CVIBuffer_Rect(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CVIBuffer(pGraphic_Device)
@@ -65,6 +67,34 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype(void)
 HRESULT CVIBuffer_Rect::Initialize(void * pArg)
 {
 	return S_OK;
+}
+
+_bool CVIBuffer_Rect::Picking(_float4x4 WorldMatrix, _float3 * pPickPoint)
+{
+	CPicking*			pPicking = CPicking::Get_Instance();
+	Safe_AddRef(pPicking);
+
+	_float4x4			WorldMatrixInv;
+	D3DXMatrixInverse(&WorldMatrixInv, nullptr, &WorldMatrix);
+
+	pPicking->Transform_ToLocalSpace(WorldMatrixInv);
+
+	if (true == pPicking->Intersect_InLocalSpace(m_pVerticesPos[0], m_pVerticesPos[1], m_pVerticesPos[2], pPickPoint))
+		goto Coll;
+
+	else if (true == pPicking->Intersect_InLocalSpace(m_pVerticesPos[0], m_pVerticesPos[2], m_pVerticesPos[3], pPickPoint))
+		goto Coll;
+
+	Safe_Release(pPicking);
+	return false;
+
+Coll:
+	D3DXVec3TransformCoord(pPickPoint, pPickPoint, &WorldMatrix);
+
+	Safe_Release(pPicking);
+
+	return true;
+
 }
 
 CVIBuffer_Rect * CVIBuffer_Rect::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

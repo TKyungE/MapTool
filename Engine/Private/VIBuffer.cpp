@@ -10,6 +10,7 @@ CVIBuffer::CVIBuffer(const CVIBuffer & rhs)
 	: CComponent(rhs)
 	, m_pVB(rhs.m_pVB)
 	, m_pIB(rhs.m_pIB)
+	, m_pVerticesPos(rhs.m_pVerticesPos)
 {
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
