@@ -74,7 +74,7 @@ void CTerrainRect::Tick(void)
 	Safe_AddRef(pVIBufferTerrain);
 
 	LPDIRECT3DVERTEXBUFFER9 VB = pVIBufferTerrain->Get_VB();
-	
+
 	VTXTEX* pVertices = nullptr;
 	VTXTEX* pVertex = nullptr;
 

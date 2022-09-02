@@ -234,7 +234,6 @@ void CMyForm::OnSaveData()
 	}
 }
 
-
 void CMyForm::OnLoadData()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
@@ -274,29 +273,38 @@ void CMyForm::OnLoadData()
 
 		for (_int i = 0; i < TerrainRectSize; ++i)
 		{
-			ReadFile(hFile, &tRectInfo, sizeof(CTerrainRect::RECTINFO), &dwByte, nullptr);
+			CTerrainRect::RECTINFO tRectInfo;
+
+			ReadFile(hFile, &tRectInfo, sizeof(tRectInfo), &dwByte, nullptr);
 
 			if (FAILED(pInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), &tRectInfo)))
 			{
 				ERR_MSG(TEXT("Failed to Cloned : CTerrainRect"));
 				return;
 			}
-		}
 
-		for (_int i = 0; i < TerrainRectSize; ++i)
-		{
-			CTerrainRect* pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
-
-			LPDIRECT3DVERTEXBUFFER9 VB = pObject->Get_VB();
-
-			VTXTEX* pVertices = nullptr;
-
-			VB->Lock(0, 0, (void**)&pVertices, 0);
-
-			for (_uint i = 0; i < 4; ++i)
+			for (_int i = 0; i < TerrainRectSize; ++i)
 			{
-				ReadFile(hFile, &pVertices[i].vPosition, sizeof(_float3), &dwByte, nullptr);
-				ReadFile(hFile, &pVertices[i].vTexture, sizeof(_float2), &dwByte, nullptr);
+
+				CTerrainRect* pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
+
+				LPDIRECT3DVERTEXBUFFER9 VB = pObject->Get_VB();
+
+				VTXTEX* pVertices = nullptr;
+
+				VB->Lock(0, 0, (void**)&pVertices, 0);
+
+				for (_uint i = 0; i < 4; ++i)
+				{
+					_float3 vPos;
+					_float2 vTex;
+
+					ReadFile(hFile, &vPos, sizeof(_float3), &dwByte, nullptr);
+					ReadFile(hFile, &vTex, sizeof(_float2), &dwByte, nullptr);
+
+					pVertices[i].vPosition = vPos;
+					pVertices[i].vTexture = vTex;
+				}
 			}
 
 			VB->Unlock();
