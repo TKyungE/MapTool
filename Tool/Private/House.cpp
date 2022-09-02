@@ -185,11 +185,26 @@ void CHouse::Set_vPos()
 	m_pTransformCom->Set_Scaled({ vIndexScale.x,vIndexScale.y,vIndexScale.z});
 	m_IndexPos.vPos.y += 0.5f * vIndexScale.y;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_IndexPos.vPos);
+	if (m_IndexPos.iTrun > 0)
+	{
+		for (_uint i = 1; i < m_IndexPos.iTrun + 1; ++i)
+		{
+			m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), 1);
+		}
+	}
 
 	_float3 vUp = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vUp.y += vIndexScale.y;
 	m_pTransformCom2->Set_Scaled({ vIndexScale.x,vIndexScale.y,vIndexScale.z });
 	m_pTransformCom2->Set_State(CTransform::STATE_POSITION, vUp);
+	if (m_IndexPos.iTrun > 0)
+	{
+		for (_uint i = 1; i < m_IndexPos.iTrun + 1; ++i)
+		{
+			m_pTransformCom2->Turn(_float3(0.f, 1.f, 0.f), 1);
+		}
+	}
+
 
 
 	_float3 vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -200,6 +215,13 @@ void CHouse::Set_vPos()
 	m_pTransformCom3->Set_Scaled({ vIndexScale.x,vIndexScale.y + 0.1f * vIndexScale.y,vIndexScale.z });
 	m_pTransformCom3->Set_State(CTransform::STATE_POSITION, vPos);
 	m_pTransformCom3->Turn(_float3(0.f,1.f,0.f), 1.f);
+	if (m_IndexPos.iTrun > 0)
+	{
+		for (_uint i = 1; i < m_IndexPos.iTrun + 1; ++i)
+		{
+			m_pTransformCom3->Turn(_float3(0.f, 1.f, 0.f), 1);
+		}
+	}
 	m_pTransformCom3->Turn(_float3(0.f,0.f,1.f), 0.3f);
 	
 
@@ -208,7 +230,15 @@ void CHouse::Set_vPos()
 	m_pTransformCom4->Set_Scaled({ vIndexScale.x,vIndexScale.y + 0.1f * vIndexScale.y,vIndexScale.z });
 	m_pTransformCom4->Set_State(CTransform::STATE_POSITION, vPos2);
 	m_pTransformCom4->Turn(_float3(0.f, 1.f, 0.f), -1.f);
+	if (m_IndexPos.iTrun > 0)
+	{
+		for (_int i = 1; i < m_IndexPos.iTrun + 1; ++i)
+		{
+			m_pTransformCom4->Turn(_float3(0.f, 1.f, 0.f), -1);
+		}
+	}
 	m_pTransformCom4->Turn(_float3(0.f, 0.f, 1.f), -0.3f);
+
 }
 
 HRESULT CHouse::House_Render()

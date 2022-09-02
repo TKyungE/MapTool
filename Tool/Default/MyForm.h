@@ -92,6 +92,7 @@ public:
 
 	afx_msg void OnScaleButton();
 	CListBox m_TileList;
+	CEdit m_EditTrun;
 };
 
 

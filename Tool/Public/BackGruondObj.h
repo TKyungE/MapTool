@@ -36,6 +36,7 @@ private:
 		_float3 m_BackGroundPos;
 		_float3 m_Scale;
 		_uint m_iIndex;
+		_uint iTrun;
 	}INDEXPOS;
 
 	INDEXPOS m_iIndex;

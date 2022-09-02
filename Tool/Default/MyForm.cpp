@@ -44,6 +44,7 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT6, m_EditSizeY);
 	DDX_Control(pDX, IDC_EDIT7, m_EditSizeZ);
 	DDX_Control(pDX, IDC_TILELIST, m_TileList);
+	DDX_Control(pDX, IDC_EDIT8, m_EditTrun);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)

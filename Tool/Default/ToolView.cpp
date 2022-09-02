@@ -376,8 +376,6 @@ HRESULT CToolView::SetUp_SamplerState(void)
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
-
-
 	return S_OK;
 }
 
@@ -534,6 +532,7 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_Index.m_iIndex = pMyForm->m_iIndex1;
 			m_Index.m_BackGroundPos = vPos;
 			m_Index.m_Scale = _float3(pMyForm->m_fScaleX, pMyForm->m_fScaleY, pMyForm->m_fScaleZ);
+			m_Index.m_iTrun = 0;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_BackGround"), &m_Index)))
 			{
@@ -547,6 +546,7 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_Index.m_BackGroundPos = vPos;
 
 			m_Index.m_Scale = _float3(pMyForm->m_fScaleX, pMyForm->m_fScaleY, pMyForm->m_fScaleZ);
+			m_Index.m_iTrun = 0;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_Tree"), &m_Index)))
 			{
@@ -562,10 +562,10 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 			m_Index.m_Scale = _float3(pMyForm->m_fScaleX, pMyForm->m_fScaleY, pMyForm->m_fScaleZ);
 
-			//m_Index.m_Scale.x = pMyForm->m_fScaleX;
-			//m_Index.m_Scale.y = pMyForm->m_fScaleY;
-			//m_Index.m_Scale.z = pMyForm->m_fScaleZ;
-
+			CString strTrun;
+			pMyForm->m_EditTrun.GetWindowText(strTrun);
+			m_Index.m_iTrun = _float(_wtof(strTrun));
+			
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_House"), &m_Index)))
 			{
 				ERR_MSG(TEXT("Failed to Cloned : Layer_House"));
