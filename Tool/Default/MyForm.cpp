@@ -186,7 +186,16 @@ void CMyForm::OnSaveData()
 		{
 			CTerrainRect* pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
 
-			WriteFile(hFile, &pObject->Get_RectInfo(), sizeof(CTerrainRect::RECTINFO), &dwByte, nullptr);
+			WriteFile(hFile, pObject->Get_RectInfo().vPos, sizeof(_float3), &dwByte, nullptr);
+
+			_int TerrainTex = pObject->Get_RectInfo().iTex;
+			CString strTex;
+			strTex.Format(TEXT("%d"), TerrainTex);
+
+			_tchar szTex[MAX_PATH];
+			_tcscpy_s(szTex, MAX_PATH, strTex.GetBuffer(0));
+
+			WriteFile(hFile, &szTex, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 
 			LPDIRECT3DVERTEXBUFFER9 VB = pObject->Get_VB();
 

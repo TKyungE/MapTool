@@ -91,19 +91,19 @@ void CTerrainRect::Tick(void)
 
 	pVertex[0].vPosition = pVertices[m_iIndices[0]].vPosition;
 	pVertex[0].vPosition.y += 0.001f;
-	pVertex[0].vTexture = pVertices[m_iIndices[0]].vTexture;
+	pVertex[0].vTexture = _float2(-1.f, -1.f);//pVertices[m_iIndices[0]].vTexture;
 
 	pVertex[1].vPosition = pVertices[m_iIndices[1]].vPosition;
 	pVertex[1].vPosition.y += 0.001f;
-	pVertex[1].vTexture = pVertices[m_iIndices[1]].vTexture;
+	pVertex[1].vTexture = _float2(0.f, -1.f);//pVertices[m_iIndices[1]].vTexture;
 
 	pVertex[2].vPosition = pVertices[m_iIndices[2]].vPosition;
 	pVertex[2].vPosition.y += 0.001f;
-	pVertex[2].vTexture = pVertices[m_iIndices[2]].vTexture;
+	pVertex[2].vTexture = _float2(0.f, 0.f);//pVertices[m_iIndices[2]].vTexture;
 
 	pVertex[3].vPosition = pVertices[m_iIndices[3]].vPosition;
 	pVertex[3].vPosition.y += 0.001f;
-	pVertex[3].vTexture = pVertices[m_iIndices[3]].vTexture;
+	pVertex[3].vTexture = _float2(-1.f, 0.f);//pVertices[m_iIndices[3]].vTexture;
 
 	VB->Unlock();
 	m_pVBuffer->Unlock();
