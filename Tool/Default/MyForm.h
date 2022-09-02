@@ -83,7 +83,7 @@ public:
 	CSpinButtonCtrl m_SpinIndex;
 	afx_msg void OnSpinIndex(NMHDR *pNMHDR, LRESULT *pResult);
 
-	CListBox m_TileList;
+	
 	afx_msg void OnSelectTile();
 
 	CEdit m_EditSizeX;
@@ -91,7 +91,7 @@ public:
 	CEdit m_EditSizeZ;
 
 	afx_msg void OnScaleButton();
-
+	CListBox m_TileList;
 };
 
 

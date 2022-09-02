@@ -40,10 +40,10 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK1, m_ResetX);
 	DDX_Control(pDX, IDC_EDIT4, m_EditIndex);
 	DDX_Control(pDX, IDC_SPIN1, m_SpinIndex);
-	DDX_Control(pDX, IDC_TILELIST, m_TileList);
 	DDX_Control(pDX, IDC_EDIT5, m_EditSizeX);
 	DDX_Control(pDX, IDC_EDIT6, m_EditSizeY);
 	DDX_Control(pDX, IDC_EDIT7, m_EditSizeZ);
+	DDX_Control(pDX, IDC_TILELIST, m_TileList);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
@@ -319,9 +319,10 @@ void CMyForm::OnLoadData()
 					pVertices[i].vPosition = vPos;
 					pVertices[i].vTexture = vTex;
 				}
+				VB->Unlock();
 			}
 
-			VB->Unlock();
+		
 		}
 #pragma endregion TerrainRect
 #pragma region Terrain
@@ -894,3 +895,4 @@ void CMyForm::OnScaleButton()
 	m_fScaleY = fPosY;
 	m_fScaleZ = fPosZ;
 }
+
