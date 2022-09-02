@@ -42,8 +42,6 @@
 
 #define _APS_NEXT_CONTROL_VALUE         1017
 
-#define _APS_NEXT_CONTROL_VALUE         1016
-
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif

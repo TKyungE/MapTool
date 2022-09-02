@@ -708,16 +708,6 @@ void CMyForm::OnSpinIndex(NMHDR *pNMHDR, LRESULT *pResult)
 
 	int iSelect = m_ObejctListBox.GetCurSel();
 
-void CMyForm::OnSelectTile()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(TRUE);
-
-	int iSelect = m_TileList.GetCurSel();
-
-	if (-1 == iSelect)
-		return;
-
 	m_ObejctListBox.GetText(iSelect, strFindName);
 
 
@@ -744,6 +734,17 @@ void CMyForm::OnSelectTile()
 
 	UpdateData(FALSE);
 }
+
+
+void CMyForm::OnSelectTile()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+
+	int iSelect = m_TileList.GetCurSel();
+
+	if (-1 == iSelect)
+		return;
 
 	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
 	CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));

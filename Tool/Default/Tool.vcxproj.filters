@@ -46,6 +46,9 @@
     <Filter Include="02. Object\03. TerrainRect">
       <UniqueIdentifier>{8f07eff2-3ef6-479a-95e7-aed1ad891cbd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\04. BackGroundObj">
+      <UniqueIdentifier>{ced98bec-c077-4a05-943f-01dec818966f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -93,6 +96,9 @@
     <ClInclude Include="..\Public\TerrainRect.h">
       <Filter>02. Object\03. TerrainRect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BackGruondObj.h">
+      <Filter>02. Object\04. BackGroundObj</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -127,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TerrainRect.cpp">
       <Filter>02. Object\03. TerrainRect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BackGruondObj.cpp">
+      <Filter>02. Object\04. BackGroundObj</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
