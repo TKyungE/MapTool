@@ -183,7 +183,7 @@ void CHouse::Set_vPos()
 {
 	_float3 vIndexScale = m_IndexPos.vScale;
 
-	m_IndexPos.vPos.y += (m_IndexPos.vScale.y * m_IndexPos.vPos.y + 0.5f);
+	m_IndexPos.vPos.y += m_IndexPos.vScale.y * (m_IndexPos.vPos.y + 0.5f);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_IndexPos.vPos);
 
