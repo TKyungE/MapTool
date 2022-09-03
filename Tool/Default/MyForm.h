@@ -1,7 +1,14 @@
 #pragma once
 
 #include "afxwin.h"
+#include <atlimage.h>
 #include "afxcmn.h"
+#include <vector>
+#include <map>
+#include <list>
+#include <algorithm>
+using namespace std;
+
 
 // CMyForm 폼 뷰입니다.
 
@@ -49,7 +56,7 @@ public:
 	float m_fScaleZ;
 public:
 	virtual void OnInitialUpdate();
-
+	int	DirFileCount(const wstring& wstrPath);
 public:
 	afx_msg void OnSaveData();
 	afx_msg void OnLoadData();
@@ -93,6 +100,13 @@ public:
 	afx_msg void OnScaleButton();
 	CListBox m_TileList;
 	CEdit m_EditTrun;
+	CStatic m_TilePicture;
+	
+	map<CString, CImage*>	m_MapPngImg;		//타일
+
+	map<CString, CImage*>	m_MapPngImg2;		//백그라운드
+	CStatic m_ObjPicture;
+
 };
 
 

@@ -48,7 +48,7 @@ private:
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVBuffer;
 	LPDIRECT3DINDEXBUFFER9 m_pIBuffer;
-
+	
 public:
 	static CTerrainRect* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

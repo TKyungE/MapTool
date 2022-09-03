@@ -20,6 +20,7 @@ public:
 		_uint	iIndex;
 		_uint iTrun;
 	}INDEXPOS;
+	
 
 private:
 	CHouse(LPDIRECT3DDEVICE9 _pGraphic_Device);
