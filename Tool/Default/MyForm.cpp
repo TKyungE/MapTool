@@ -220,7 +220,6 @@ void CMyForm::OnInitialUpdate()
 			pPngImage->Load(pFilePath);
 
 			m_MapPngImg2.insert({ strFileName, pPngImage });
-			m_ObejctListBox.InsertString(-1, strFileName);
 		}
 	}
 
@@ -796,8 +795,13 @@ void CMyForm::OnListBox()
 	{
 		p_list->GetText(index, strstr);
 
-		auto iter = m_MapPngImg.find(strstr);
-		if (iter == m_MapPngImg.end())
+		CString str;
+		if (strstr == TEXT("BackGround"))
+		{
+			m_EditIndex.GetWindowText(str);
+		}
+		auto iter = m_MapPngImg2.find(str);
+		if (iter == m_MapPngImg2.end())
 			return;
 		//m_TilePicture.SetBitmap(*(iter)->second);
 
