@@ -325,7 +325,7 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/BackGround/%d.png"), m_iBackIndex = 5))))
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/BackGround/%d.png"), m_iBackIndex = 6))))
 		return E_FAIL;
 
 	m_iBackIndex -= 1;

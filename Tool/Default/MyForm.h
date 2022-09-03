@@ -106,6 +106,7 @@ public:
 
 	map<CString, CImage*>	m_MapPngImg2;		//백그라운드
 	CStatic m_ObjPicture;
+
 };
 
 

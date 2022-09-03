@@ -198,7 +198,7 @@ void CMyForm::OnInitialUpdate()
 
 	_uint iNumIndex = pToolView->m_iBackIndex;
 
-	for (int i = 0; i < iNumIndex; ++i)
+	for (int i = 0; i < iNumIndex + 1; ++i)
 	{
 		pFilePath1.Format(TEXT("../Bin/Resources/Textures/BackGround/%d.png"), i);
 		swprintf_s(szFullPath1, pFilePath1, i);
@@ -217,7 +217,7 @@ void CMyForm::OnInitialUpdate()
 		{
 			CImage*	pPngImage = new CImage;
 
-			pPngImage->Load(pFilePath);
+			pPngImage->Load(pFilePath1);
 
 			m_MapPngImg2.insert({ strFileName, pPngImage });
 		}
@@ -1002,8 +1002,49 @@ void CMyForm::OnSpinIndex(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 		SetDlgItemInt(IDC_EDIT4, m_iIndex1);
 	}
+	CString strstr; //리스트박스에서 선택한 값을 가져올 변수 지정
+	CListBox *p_list = (CListBox *)GetDlgItem(IDC_OBJECTLIST);
+	int index = p_list->GetCurSel();
+	if (index != LB_ERR)
+	{
+		p_list->GetText(index, strstr);
+
+		CString str;
+		if (strstr == TEXT("BackGround"))
+		{
+			m_EditIndex.GetWindowText(str);
+		}
+		auto iter = m_MapPngImg2.find(str);
+		if (iter == m_MapPngImg2.end())
+			return;
+		//m_TilePicture.SetBitmap(*(iter)->second);
 
 
+		CStatic* staticSize = (CStatic*)GetDlgItem(IDC_OBJPIC);
+		CRect rect;
+
+		staticSize->GetClientRect(rect);
+
+		int iWidth = rect.Width();
+		int iHeight = rect.Height();
+
+		CDC* dc;
+		dc = m_ObjPicture.GetDC();
+		dc->SetStretchBltMode(COLORONCOLOR);
+		iter->second->StretchBlt(dc->m_hDC, 0, 0, iWidth, iHeight, SRCCOPY);
+
+		ReleaseDC(dc);
+
+
+		int i = 0;
+
+		for (; i < strstr.GetLength(); ++i)
+		{
+			if (0 != isdigit(strstr[i]))
+				break;
+		}
+		strstr.Delete(0, i);
+	}
 	*pResult = 0;
 
 	UpdateData(FALSE);
@@ -1087,4 +1128,3 @@ void CMyForm::OnScaleButton()
 	m_fScaleY = fPosY;
 	m_fScaleZ = fPosZ;
 }
-
