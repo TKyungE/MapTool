@@ -22,6 +22,7 @@
 #include "Tree.h"
 #include "House.h"
 #include "House2.h"
+#include "Portal.h"
 
 
 #ifdef _DEBUG
@@ -218,7 +219,13 @@ void CToolView::OnInitialUpdate()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_House2"), CHouse2::Create(m_pGraphic_Device))))
 	{
-		ERR_MSG(TEXT("Prototype_GameObject_House Failed"));
+		ERR_MSG(TEXT("Prototype_GameObject_House2 Failed"));
+		return;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Portal"), CPortal::Create(m_pGraphic_Device))))
+	{
+		ERR_MSG(TEXT("Prototype_GameObject_Portal Failed"));
 		return;
 	}
 
@@ -364,6 +371,10 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_HouseRect"),
 		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/House/2/%d.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_Portal"),
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Portal/Portal%d.png"), 24))))
 		return E_FAIL;
 
 	return S_OK;
@@ -603,10 +614,28 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_House2"), &m_Index)))
 			{
-				ERR_MSG(TEXT("Failed to Cloned : Layer_House"));
+				ERR_MSG(TEXT("Failed to Cloned : Layer_House2"));
 				return;
 			}
 		}
+		else if (!lstrcmp(pstr, TEXT("Portal")))
+		{
+			m_Index.m_iIndex = pMyForm->m_iIndex1;
+			m_Index.m_BackGroundPos = vPos;
+
+			m_Index.m_Scale = _float3(pMyForm->m_fScaleX, pMyForm->m_fScaleY, pMyForm->m_fScaleZ);
+
+			CString strTrun;
+			pMyForm->m_EditTrun.GetWindowText(strTrun);
+			m_Index.m_iTurn = _float(_wtof(strTrun));
+
+			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_Portal"), &m_Index)))
+			{
+				ERR_MSG(TEXT("Failed to Cloned : Layer_Portal"));
+				return;
+			}
+		}
+
 
 
 		if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
@@ -623,6 +652,9 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_SavePos.m_HousePos.push_back(m_Index);
 		else if (!lstrcmp(pstr, TEXT("House2")))
 			m_SavePos.m_House2Pos.push_back(m_Index);
+		else if (!lstrcmp(pstr, TEXT("Portal")))
+			m_SavePos.m_PortalPos.push_back(m_Index);
+
 
 		if (!pMyForm->m_ResetX.GetCheck())
 			pMyForm->m_ObejctListBox.SetCurSel(-1);

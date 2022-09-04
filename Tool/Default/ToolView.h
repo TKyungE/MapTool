@@ -82,12 +82,14 @@ public:
 		vector<INDEXPOS>	m_TreePos;
 		vector<INDEXPOS>	m_HousePos;
 		vector<INDEXPOS>	m_House2Pos;
+		vector<INDEXPOS>	m_PortalPos;
 
 		_uint		m_iMSize;
 		_uint		m_IndexSize;
 		_uint		m_TreeSize;
 		_uint		m_HouseSize;
 		_uint		m_House2Size;
+		_uint		m_PortalSize;
 
 	}SAVEPOS;
 

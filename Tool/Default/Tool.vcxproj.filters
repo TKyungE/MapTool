@@ -58,6 +58,9 @@
     <Filter Include="02. Object\07. House2">
       <UniqueIdentifier>{d4256cc1-0485-4cbc-981e-15b314b443c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\08. Portal">
+      <UniqueIdentifier>{2fd0b693-fbd7-46ef-863f-e80429d6b552}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -117,6 +120,9 @@
     <ClInclude Include="..\Public\House2.h">
       <Filter>02. Object\07. House2</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Portal.h">
+      <Filter>02. Object\08. Portal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -163,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\House2.cpp">
       <Filter>02. Object\07. House2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Portal.cpp">
+      <Filter>02. Object\08. Portal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
