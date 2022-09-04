@@ -21,6 +21,7 @@
 #include "TerrainRect.h"
 #include "Tree.h"
 #include "House.h"
+#include "House2.h"
 
 
 #ifdef _DEBUG
@@ -215,6 +216,12 @@ void CToolView::OnInitialUpdate()
 		return;
 	}
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_House2"), CHouse2::Create(m_pGraphic_Device))))
+	{
+		ERR_MSG(TEXT("Prototype_GameObject_House Failed"));
+		return;
+	}
+
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
 		CCamera_Dynamic::Create(m_pGraphic_Device))))
@@ -298,6 +305,8 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pGraphic_Device))))
 		return E_FAIL;
 	
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_VIBuffer_Rect2"), CVIBuffer_Rect2::Create(m_pGraphic_Device))))
+		return E_FAIL;
 	//Prototype_Component_Transform
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Transform"), CTransform::Create(m_pGraphic_Device))))
 		return E_FAIL;
@@ -348,6 +357,14 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 		return E_FAIL;
 
 	m_iHouseIndex -= 1;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_HouseCube"),
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../Bin/Resources/Textures/House/2/%d.dds"), 1))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_HouseRect"),
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/House/2/%d.png"), 1))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -532,7 +549,7 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_Index.m_iIndex = pMyForm->m_iIndex1;
 			m_Index.m_BackGroundPos = vPos;
 			m_Index.m_Scale = _float3(pMyForm->m_fScaleX, pMyForm->m_fScaleY, pMyForm->m_fScaleZ);
-			m_Index.m_iTrun = 0;
+			m_Index.m_iTurn = 0;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_BackGround"), &m_Index)))
 			{
@@ -546,7 +563,7 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_Index.m_BackGroundPos = vPos;
 
 			m_Index.m_Scale = _float3(pMyForm->m_fScaleX, pMyForm->m_fScaleY, pMyForm->m_fScaleZ);
-			m_Index.m_iTrun = 0;
+			m_Index.m_iTurn = 0;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_Tree"), &m_Index)))
 			{
@@ -564,7 +581,7 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 			CString strTrun;
 			pMyForm->m_EditTrun.GetWindowText(strTrun);
-			m_Index.m_iTrun = _float(_wtof(strTrun));
+			m_Index.m_iTurn = _float(_wtof(strTrun));
 			
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_House"), &m_Index)))
 			{
@@ -572,6 +589,25 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 				return;
 			}
 		}
+
+		else if (!lstrcmp(pstr, TEXT("House2")))
+		{
+			m_Index.m_iIndex = pMyForm->m_iIndex1;
+			m_Index.m_BackGroundPos = vPos;
+
+			m_Index.m_Scale = _float3(pMyForm->m_fScaleX, pMyForm->m_fScaleY, pMyForm->m_fScaleZ);
+
+			CString strTrun;
+			pMyForm->m_EditTrun.GetWindowText(strTrun);
+			m_Index.m_iTurn = _float(_wtof(strTrun));
+
+			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_House2"), &m_Index)))
+			{
+				ERR_MSG(TEXT("Failed to Cloned : Layer_House"));
+				return;
+			}
+		}
+
 
 		if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
 			m_SavePos.m_vPlayerPos = vPos;
@@ -585,6 +621,8 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_SavePos.m_TreePos.push_back(m_Index);
 		else if (!lstrcmp(pstr, TEXT("House")))
 			m_SavePos.m_HousePos.push_back(m_Index);
+		else if (!lstrcmp(pstr, TEXT("House2")))
+			m_SavePos.m_House2Pos.push_back(m_Index);
 
 		if (!pMyForm->m_ResetX.GetCheck())
 			pMyForm->m_ObejctListBox.SetCurSel(-1);

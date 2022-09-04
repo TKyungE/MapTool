@@ -55,6 +55,9 @@
     <Filter Include="02. Object\06. House">
       <UniqueIdentifier>{cf436fcc-65e4-43b1-b239-87bc81a5ced9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\07. House2">
+      <UniqueIdentifier>{d4256cc1-0485-4cbc-981e-15b314b443c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -111,6 +114,9 @@
     <ClInclude Include="..\Public\TerrainRect.h">
       <Filter>02. Object\03. TerrainRect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\House2.h">
+      <Filter>02. Object\07. House2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -154,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TerrainRect.cpp">
       <Filter>02. Object\03. TerrainRect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\House2.cpp">
+      <Filter>02. Object\07. House2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

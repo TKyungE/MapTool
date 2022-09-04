@@ -105,6 +105,7 @@ void CMyForm::OnInitialUpdate()
 	m_ObejctListBox.AddString(TEXT("BackGround"));
 	m_ObejctListBox.AddString(TEXT("Tree"));
 	m_ObejctListBox.AddString(TEXT("House"));
+	m_ObejctListBox.AddString(TEXT("House2"));
 
 	m_EditIndex.SetWindowText(TEXT("0"));
 	m_SpinIndex.SetRange(0, 100);
@@ -879,6 +880,7 @@ void CMyForm::OnObjectSaveButton()
 		_tchar str2[MAX_PATH];
 		_tchar str3[MAX_PATH];
 		_tchar str4[MAX_PATH];
+		_tchar str5[MAX_PATH];
 		pToolView->m_SavePos.m_iMSize = pToolView->m_SavePos.m_vMonsterPos.size();
 
 		pToolView->m_SavePos.m_IndexSize = pToolView->m_SavePos.m_IndexPos.size();
@@ -886,6 +888,9 @@ void CMyForm::OnObjectSaveButton()
 		pToolView->m_SavePos.m_TreeSize = pToolView->m_SavePos.m_TreePos.size();
 
 		pToolView->m_SavePos.m_HouseSize = pToolView->m_SavePos.m_HousePos.size();
+
+		pToolView->m_SavePos.m_House2Size = pToolView->m_SavePos.m_House2Pos.size();
+		
 
 		WriteFile(hFile, pToolView->m_SavePos.m_vPlayerPos, sizeof(_float3), &dwByte, nullptr);
 
@@ -900,6 +905,9 @@ void CMyForm::OnObjectSaveButton()
 
 		wsprintf(str4, TEXT("%d"), pToolView->m_SavePos.m_HouseSize);
 		WriteFile(hFile, str4, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+		wsprintf(str5, TEXT("%d"), pToolView->m_SavePos.m_House2Size);
+		WriteFile(hFile, str5, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 
 		for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
 			WriteFile(hFile, iter, sizeof(_float3), &dwByte, nullptr);
@@ -928,11 +936,30 @@ void CMyForm::OnObjectSaveButton()
 		{
 			_tchar str5[MAX_PATH];
 			wsprintf(str5, TEXT("%d"), iter.m_iIndex);
+			
+			_tchar str6[MAX_PATH];
+			wsprintf(str6, TEXT("%d"), iter.m_iTurn);
 
 			WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
 			WriteFile(hFile, iter.m_Scale, sizeof(_float3), &dwByte, nullptr);
 			WriteFile(hFile, str5, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+			WriteFile(hFile, str6, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		}
+
+		for (auto& iter : pToolView->m_SavePos.m_HousePos)
+		{
+			_tchar str7[MAX_PATH];
+			wsprintf(str7, TEXT("%d"), iter.m_iIndex);
+
+			_tchar str8[MAX_PATH];
+			wsprintf(str8, TEXT("%d"), iter.m_iTurn);
+
+			WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, iter.m_Scale, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, str7, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+			WriteFile(hFile, str8, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		}
+
 
 		CloseHandle(hFile);
 	}

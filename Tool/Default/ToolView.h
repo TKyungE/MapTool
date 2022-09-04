@@ -69,7 +69,7 @@ public:
 		_float3 m_BackGroundPos;
 		_float3 m_Scale;
 		_uint m_iIndex;
-		_uint m_iTrun;
+		_uint m_iTurn;
 		
 	}INDEXPOS;
 
@@ -81,11 +81,13 @@ public:
 		vector<INDEXPOS>	m_IndexPos;
 		vector<INDEXPOS>	m_TreePos;
 		vector<INDEXPOS>	m_HousePos;
+		vector<INDEXPOS>	m_House2Pos;
 
 		_uint		m_iMSize;
 		_uint		m_IndexSize;
 		_uint		m_TreeSize;
 		_uint		m_HouseSize;
+		_uint		m_House2Size;
 
 	}SAVEPOS;
 

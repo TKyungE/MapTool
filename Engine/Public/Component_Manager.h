@@ -7,6 +7,7 @@
 #include "VIBuffer_Terrain.h"
 #include "Renderer.h"
 #include "VIBuffer_Cube.h"
+#include "VIBuffer_Rect2.h"
 
 
 BEGIN(Engine)
