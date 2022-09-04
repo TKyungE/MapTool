@@ -216,11 +216,11 @@ void CHouse::Set_vPos()
 	m_pTransformCom3->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pTransformCom4->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	_float3 vPos = _float3(0.f, vIndexScale.y - 0.1f, -0.25f);
+	_float3 vPos = _float3(0.f, vIndexScale.y - 0.1f - (vIndexScale.y - 1.f), -0.25f);
 	D3DXVec3TransformCoord(&vPos, &vPos, &m_pTransformCom3->Get_WorldMatrix());
 	m_pTransformCom3->Set_State(CTransform::STATE_POSITION, vPos);
 	
-	_float3 vPos4 = _float3(0.f, vIndexScale.y - 0.1f, -0.25f);
+	_float3 vPos4 = _float3(0.f, vIndexScale.y - 0.1f- (vIndexScale.y - 1.f), -0.25f);
 	D3DXVec3TransformCoord(&vPos4, &vPos4, &m_pTransformCom4->Get_WorldMatrix());
 	m_pTransformCom4->Set_State(CTransform::STATE_POSITION, vPos4);
 
