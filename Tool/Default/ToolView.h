@@ -73,6 +73,12 @@ public:
 		
 	}INDEXPOS;
 
+	typedef struct tagIndex
+	{
+		_float3 m_BackGroundPos;
+		_uint m_iIndex;
+	}INDEX;
+	
 	typedef struct tagPos
 	{
 		_float3 m_vPlayerPos;
@@ -84,22 +90,26 @@ public:
 		vector<INDEXPOS>	m_House2Pos;
 		vector<INDEXPOS>	m_PortalPos;
 
+		vector<INDEX>	m_NPCPos;
+
 		_uint		m_iMSize;
 		_uint		m_IndexSize;
 		_uint		m_TreeSize;
 		_uint		m_HouseSize;
 		_uint		m_House2Size;
 		_uint		m_PortalSize;
-
+		_uint		m_NPCSize;
 	}SAVEPOS;
 
 	
 	SAVEPOS m_SavePos;
 
 	INDEXPOS m_Index;
+	INDEX	m_Index2;
 	_uint m_iBackIndex = 0;
 	_uint m_iTreeIndex = 0;
 	_uint m_iHouseIndex = 0;
+	_uint m_iNPCIndex = 0;
 
 	_bool m_bCheck = false;
 

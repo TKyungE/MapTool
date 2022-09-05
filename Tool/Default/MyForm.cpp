@@ -107,6 +107,7 @@ void CMyForm::OnInitialUpdate()
 	m_ObejctListBox.AddString(TEXT("House"));
 	m_ObejctListBox.AddString(TEXT("House2"));
 	m_ObejctListBox.AddString(TEXT("Portal"));
+	m_ObejctListBox.AddString(TEXT("NPC"));
 
 	m_EditIndex.SetWindowText(TEXT("0"));
 	m_SpinIndex.SetRange(0, 100);
@@ -145,14 +146,13 @@ void CMyForm::OnInitialUpdate()
 	m_TileList.InitStorage(10000, 10);
 
 
-	CString strMapTool;
+	
 	HTREEITEM	h_root;
 	HTREEITEM   h_Tile;
 	CString pFilePath = TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/LookMap/Map%d.png");
 	TCHAR	szFullPath[MAX_PATH] = L"";
 	TCHAR	szPathBuf[MAX_PATH] = L"";
 
-	strMapTool.Format(L"Tile");
 	
 	lstrcpy(szPathBuf, pFilePath);
 
@@ -185,14 +185,10 @@ void CMyForm::OnInitialUpdate()
 	}
 
 
-	CString strMapTool1;
-	HTREEITEM	h_root1;
-	HTREEITEM   h_Tile1;
-	CString pFilePath1 = TEXT("../Bin/Resources/Textures/BackGround/%d.png");
+
+	CString pFilePath1 = TEXT("../Bin/Resources/Textures/BackGround/BackGround%d.png");
 	TCHAR	szFullPath1[MAX_PATH] = L"";
 	TCHAR	szPathBuf1[MAX_PATH] = L"";
-
-	strMapTool.Format(L"BackGround");
 
 	lstrcpy(szPathBuf1, pFilePath1);
 
@@ -202,7 +198,7 @@ void CMyForm::OnInitialUpdate()
 
 	for (int i = 0; i < iNumIndex + 1; ++i)
 	{
-		pFilePath1.Format(TEXT("../Bin/Resources/Textures/BackGround/%d.png"), i);
+		pFilePath1.Format(TEXT("../Bin/Resources/Textures/BackGround/BackGround%d.png"), i);
 		swprintf_s(szFullPath1, pFilePath1, i);
 
 		CString strFileName = PathFindFileName(szFullPath1);
@@ -220,6 +216,44 @@ void CMyForm::OnInitialUpdate()
 			CImage*	pPngImage = new CImage;
 
 			pPngImage->Load(pFilePath1);
+
+			m_MapPngImg2.insert({ strFileName, pPngImage });
+		}
+	}
+
+
+
+	CString pFilePath2 = TEXT("../Bin/Resources/Textures/NPC/NPC%d.png");
+	TCHAR	szFullPath2[MAX_PATH] = L"";
+	TCHAR	szPathBuf2[MAX_PATH] = L"";
+
+
+	lstrcpy(szPathBuf2, pFilePath2);
+
+	PathRemoveFileSpec(szPathBuf2);
+
+	iNumIndex = pToolView->m_iNPCIndex;
+
+	for (int i = 0; i < iNumIndex + 1; ++i)
+	{
+		pFilePath2.Format(TEXT("../Bin/Resources/Textures/NPC/NPC%d.png"), i);
+		swprintf_s(szFullPath2, pFilePath2, i);
+
+		CString strFileName = PathFindFileName(szFullPath2);
+
+		lstrcpy(szFullPath2, strFileName.GetString());
+
+		PathRemoveExtension(szFullPath2);
+
+		strFileName = szFullPath2;
+
+		auto iter = m_MapPngImg2.find(strFileName);
+
+		if (iter == m_MapPngImg2.end())
+		{
+			CImage*	pPngImage = new CImage;
+
+			pPngImage->Load(pFilePath2);
 
 			m_MapPngImg2.insert({ strFileName, pPngImage });
 		}
@@ -412,7 +446,12 @@ void CMyForm::OnLoadData()
 		{
 			CTerrainRect::RECTINFO tRectInfo;
 
-			ReadFile(hFile, &tRectInfo, sizeof(tRectInfo), &dwByte, nullptr);
+			ReadFile(hFile, &tRectInfo.vPos, sizeof(tRectInfo.vPos), &dwByte, nullptr);
+
+			_tchar szTex[MAX_PATH];
+			ReadFile(hFile, &szTex, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+			tRectInfo.iTex = _wtoi(szTex);
 
 			if (FAILED(pInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), &tRectInfo)))
 			{
@@ -792,6 +831,10 @@ void CMyForm::OnListBox()
 	{
 		SetDlgItemInt(IDC_STATIC1, pToolView->m_iHouseIndex);
 	}
+	else if (strFindName == TEXT("NPC"))
+	{
+		SetDlgItemInt(IDC_STATIC1, pToolView->m_iNPCIndex);
+	}
 	else
 	{
 		SetDlgItemInt(IDC_STATIC1, 0);
@@ -810,11 +853,17 @@ void CMyForm::OnListBox()
 		if (strstr == TEXT("BackGround"))
 		{
 			m_EditIndex.GetWindowText(str);
+			strstr = strstr + str;
 		}
-		auto iter = m_MapPngImg2.find(str);
+		else if (strstr == TEXT("NPC"))
+		{
+			m_EditIndex.GetWindowText(str);
+
+			strstr = strstr + str;
+		}
+		auto iter = m_MapPngImg2.find(strstr);
 		if (iter == m_MapPngImg2.end())
 			return;
-		//m_TilePicture.SetBitmap(*(iter)->second);
 
 
 		CStatic* staticSize = (CStatic*)GetDlgItem(IDC_OBJPIC);
@@ -883,6 +932,7 @@ void CMyForm::OnObjectSaveButton()
 		_tchar str4[MAX_PATH];
 		_tchar str5[MAX_PATH];
 		_tchar str6[MAX_PATH];
+		_tchar str7[MAX_PATH];
 
 		pToolView->m_SavePos.m_iMSize = pToolView->m_SavePos.m_vMonsterPos.size();
 
@@ -895,6 +945,8 @@ void CMyForm::OnObjectSaveButton()
 		pToolView->m_SavePos.m_House2Size = pToolView->m_SavePos.m_House2Pos.size();
 		
 		pToolView->m_SavePos.m_PortalSize = pToolView->m_SavePos.m_PortalPos.size();
+
+		pToolView->m_SavePos.m_NPCSize = pToolView->m_SavePos.m_NPCPos.size();
 
 		WriteFile(hFile, pToolView->m_SavePos.m_vPlayerPos, sizeof(_float3), &dwByte, nullptr);
 
@@ -915,6 +967,9 @@ void CMyForm::OnObjectSaveButton()
 
 		wsprintf(str6, TEXT("%d"), pToolView->m_SavePos.m_PortalSize);
 		WriteFile(hFile, str6, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+		wsprintf(str7, TEXT("%d"), pToolView->m_SavePos.m_NPCSize);
+		WriteFile(hFile, str7, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 
 		for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
 			WriteFile(hFile, iter, sizeof(_float3), &dwByte, nullptr);
@@ -981,10 +1036,17 @@ void CMyForm::OnObjectSaveButton()
 			WriteFile(hFile, str10, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		}
 
+		for (auto& iter : pToolView->m_SavePos.m_NPCPos)
+		{
+			_tchar str11[MAX_PATH];
+			wsprintf(str11, TEXT("%d"), iter.m_iIndex);
+
+			WriteFile(hFile, iter.m_BackGroundPos, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, str11, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		}
 
 		CloseHandle(hFile);
 	}
-
 }
 
 
@@ -1059,6 +1121,26 @@ void CMyForm::OnSpinIndex(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 		SetDlgItemInt(IDC_EDIT4, m_iIndex1);
 	}
+	if (strFindName == TEXT("NPC"))
+	{
+		if (pNMUpDown->iDelta > 0)
+		{
+			if (m_iIndex1 >= GetDlgItemInt(IDC_STATIC1))
+				return;
+
+			++m_iIndex1;
+		}
+		else
+		{
+			if (m_iIndex1 <= 0)
+				return;
+
+			--m_iIndex1;
+
+		}
+		SetDlgItemInt(IDC_EDIT4, m_iIndex1);
+	}
+
 	CString strstr; //리스트박스에서 선택한 값을 가져올 변수 지정
 	CListBox *p_list = (CListBox *)GetDlgItem(IDC_OBJECTLIST);
 	int index = p_list->GetCurSel();
@@ -1070,11 +1152,18 @@ void CMyForm::OnSpinIndex(NMHDR *pNMHDR, LRESULT *pResult)
 		if (strstr == TEXT("BackGround"))
 		{
 			m_EditIndex.GetWindowText(str);
+
+			strstr = strstr + str;
 		}
-		auto iter = m_MapPngImg2.find(str);
+		else if (strstr == TEXT("NPC"))
+		{
+			m_EditIndex.GetWindowText(str);
+
+			strstr = strstr + str;
+		}
+		auto iter = m_MapPngImg2.find(strstr);
 		if (iter == m_MapPngImg2.end())
 			return;
-		//m_TilePicture.SetBitmap(*(iter)->second);
 
 
 		CStatic* staticSize = (CStatic*)GetDlgItem(IDC_OBJPIC);
@@ -1130,8 +1219,7 @@ void CMyForm::OnSelectTile()
 		auto iter = m_MapPngImg.find(strstr);
 		if (iter == m_MapPngImg.end())
 			return;
-		//m_TilePicture.SetBitmap(*(iter)->second);
-		
+
 
 		CStatic* staticSize = (CStatic*)GetDlgItem(IDC_TILEPIC);
 		CRect rect;

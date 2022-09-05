@@ -23,7 +23,7 @@
 #include "House.h"
 #include "House2.h"
 #include "Portal.h"
-
+#include "Default_NPC.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -229,6 +229,12 @@ void CToolView::OnInitialUpdate()
 		return;
 	}
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_NPC"), CDefault_NPC::Create(m_pGraphic_Device))))
+	{
+		ERR_MSG(TEXT("Prototype_GameObject_NPC Failed"));
+		return;
+	}
+
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
 		CCamera_Dynamic::Create(m_pGraphic_Device))))
@@ -341,7 +347,7 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/BackGround/%d.png"), m_iBackIndex = 7))))
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/BackGround/BackGround%d.png"), m_iBackIndex = 7))))
 		return E_FAIL;
 
 	m_iBackIndex -= 1;
@@ -377,6 +383,10 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Portal/Portal%d.png"), 24))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_NPC"),
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/NPC/NPC%d.png"), m_iNPCIndex= 7))))
+		return E_FAIL;
+	m_iNPCIndex -= 1;
 	return S_OK;
 }
 
@@ -636,6 +646,17 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			}
 		}
 
+		else if (!lstrcmp(pstr, TEXT("NPC")))
+		{
+			m_Index2.m_iIndex = pMyForm->m_iIndex1;
+			m_Index2.m_BackGroundPos = vPos;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_Portal"), &m_Index2)))
+			{
+				ERR_MSG(TEXT("Failed to Cloned : Layer_Portal"));
+				return;
+			}
+		}
 
 
 		if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
@@ -654,7 +675,8 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_SavePos.m_House2Pos.push_back(m_Index);
 		else if (!lstrcmp(pstr, TEXT("Portal")))
 			m_SavePos.m_PortalPos.push_back(m_Index);
-
+		else if (!lstrcmp(pstr, TEXT("NPC")))
+			m_SavePos.m_NPCPos.push_back(m_Index2);
 
 		if (!pMyForm->m_ResetX.GetCheck())
 			pMyForm->m_ObejctListBox.SetCurSel(-1);
