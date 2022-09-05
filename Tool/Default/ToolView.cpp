@@ -691,6 +691,11 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		m_tRectInfo.vPos = pVertices[iIndex].vPosition;
 		m_tRectInfo.iTex = pMyForm->m_TileList.GetCurSel();
 
+		CString strTrun;
+		pMyForm->m_EditTrun.GetWindowText(strTrun);
+
+		m_tRectInfo.iTurn = _float(_wtof(strTrun));
+
 		VB->Unlock();
 		IB->Unlock();
 

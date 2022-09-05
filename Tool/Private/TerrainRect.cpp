@@ -39,6 +39,12 @@ HRESULT CTerrainRect::Initialize(void * pArg)
 	if (FAILED(m_pGraphic_Device->CreateIndexBuffer(2 * sizeof(FACEINDICES16), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_pIBuffer, nullptr)))
 		return E_FAIL;
 
+	/*for (_uint i = 0; i < m_tInfo.iTurn; ++i)
+	{
+		m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f),1);
+	}*/
+	
+
 	return S_OK;
 
 

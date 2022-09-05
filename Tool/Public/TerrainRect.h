@@ -14,6 +14,7 @@ public:
 	{
 		_float3 vPos;
 		_uint iTex;
+		_uint iTurn;
 	}RECTINFO;
 
 private:

@@ -24,6 +24,7 @@ HRESULT CCamera_Dynamic::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(&((CAMERADESC_DERIVED*)pArg)->CameraDesc)))
 		return E_FAIL;
+	
 
 	return S_OK;
 }
@@ -31,6 +32,15 @@ HRESULT CCamera_Dynamic::Initialize(void* pArg)
 void CCamera_Dynamic::Tick()
 {
 	__super::Tick();
+
+	if (GetKeyState(VK_LSHIFT) < 0)
+	{
+		m_pTransform->Set_TransformDesc_Speed(100.f);
+	}
+	else
+	{
+		m_pTransform->Set_TransformDesc_Speed(10.f);
+	}
 
 	if (GetKeyState('W') < 0)
 	{
@@ -53,6 +63,8 @@ void CCamera_Dynamic::Tick()
 		m_pTransform->Go_Right();
 	}
 
+
+
 	CGameInstance*			pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
@@ -70,6 +82,7 @@ void CCamera_Dynamic::Tick()
 
 	Safe_Release(pGameInstance);
 
+	m_pTransform->Bind_OnGraphicDev();
 
 	if (FAILED(Bind_OnGraphicDev()))
 		return;

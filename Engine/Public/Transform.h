@@ -28,6 +28,8 @@ public:
 	
 	void Set_State(STATE eState, _float3 vState) { memcpy(&m_WorldMatrix.m[eState][0], &vState, sizeof(_float3)); }
 	void Set_TransformDesc(const TRANSFORMDESC& TransformDesc) { m_TransformDesc = TransformDesc; }
+	void Set_TransformDesc_Speed(_float fSpeed) { m_TransformDesc.fSpeedPerSec = fSpeed; }
+
 
 	_float3 Get_Scale(void);
 	void Set_Scaled(_float3 vScale);

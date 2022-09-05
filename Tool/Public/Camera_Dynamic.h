@@ -23,7 +23,6 @@ public:
 	virtual HRESULT Initialize(void* pArg)override;
 	virtual void Tick()override;
 	virtual HRESULT Render() override;
-
 public:
 	static CCamera_Dynamic* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
