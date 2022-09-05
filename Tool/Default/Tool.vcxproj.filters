@@ -64,6 +64,9 @@
     <Filter Include="02. Object\09. NPC">
       <UniqueIdentifier>{32876e2a-d8f4-4545-a95e-aaf721c19981}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\01. PlayerSpawn\BackSpawn">
+      <UniqueIdentifier>{b1a9cbdf-cddb-4fe4-9cb5-6e172f909fcc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -129,6 +132,9 @@
     <ClInclude Include="..\Public\Default_NPC.h">
       <Filter>02. Object\09. NPC</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BackSpawn.h">
+      <Filter>02. Object\01. PlayerSpawn\BackSpawn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -181,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Default_NPC.cpp">
       <Filter>02. Object\09. NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BackSpawn.cpp">
+      <Filter>02. Object\01. PlayerSpawn\BackSpawn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

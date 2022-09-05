@@ -24,6 +24,7 @@
 #include "House2.h"
 #include "Portal.h"
 #include "Default_NPC.h"
+#include "BackSpawn.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -193,6 +194,12 @@ void CToolView::OnInitialUpdate()
 		return;
 	}
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackSpawn"), CBackSpawn::Create(m_pGraphic_Device))))
+	{
+		ERR_MSG(TEXT("Prototype_GameObject_BackSpawn Failed"));
+		return;
+	}
+
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MonsterSpawn"), CMonsterSpawn::Create(m_pGraphic_Device))))
 	{
 		ERR_MSG(TEXT("Prototype_GameObject_MonsterSpawn Failed"));
@@ -337,12 +344,12 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 
 	/*For.Prototype_Component_Texture_PlayerSpawn*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_PlayerSpawn"),
-		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Effect/UseSkill/Effect%d.png"), 3))))
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Effect/UseSkill/Effect%d.png"), 4))))
 		return E_FAIL;
 
 	///*For.Prototype_Component_Texture_MonsterSpawn*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_MonsterSpawn"),
-		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Effect/UseSkill/Effect%d.png"), 3))))
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Effect/UseSkill/Effect%d.png"), 4))))
 		return E_FAIL;
 
 
@@ -657,17 +664,27 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 				return;
 			}
 		}
+		else if (!lstrcmp(pstr, TEXT("BackSpawn")))
+		{
+			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_BackSpawn"), &vPos)))
+			{
+				ERR_MSG(TEXT("Failed to Cloned : Layer_BackSpawn"));
+				return;
+			}
 
+		}
+
+		// 왜 이렇게 하고있을까 그냥 박으면 됐는데... 하아.. ㅇㅈ?
 
 		if (!lstrcmp(pstr, TEXT("PlayerSpawn")))
 			m_SavePos.m_vPlayerPos = vPos;
 
-		else if(!lstrcmp(pstr, TEXT("MonsterSpawn")))
+		else if (!lstrcmp(pstr, TEXT("MonsterSpawn")))
 			m_SavePos.m_vMonsterPos.push_back(vPos);
 
 		else if (!lstrcmp(pstr, TEXT("BackGround")))
 			m_SavePos.m_IndexPos.push_back(m_Index);
-		else if(!lstrcmp(pstr, TEXT("Tree")))
+		else if (!lstrcmp(pstr, TEXT("Tree")))
 			m_SavePos.m_TreePos.push_back(m_Index);
 		else if (!lstrcmp(pstr, TEXT("House")))
 			m_SavePos.m_HousePos.push_back(m_Index);
@@ -677,6 +694,9 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_SavePos.m_PortalPos.push_back(m_Index);
 		else if (!lstrcmp(pstr, TEXT("NPC")))
 			m_SavePos.m_NPCPos.push_back(m_Index2);
+		else if (!lstrcmp(pstr, TEXT("BackSpawn")))
+			m_SavePos.m_vBackPos = vPos;
+
 
 		if (!pMyForm->m_ResetX.GetCheck())
 			pMyForm->m_ObejctListBox.SetCurSel(-1);

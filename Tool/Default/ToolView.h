@@ -50,7 +50,7 @@ private:
 	
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
-private:
+public:
 	CGameInstance* m_pGameInstance = nullptr;
 	LPDIRECT3DDEVICE9 m_pGraphic_Device = nullptr;
 
@@ -82,6 +82,7 @@ public:
 	typedef struct tagPos
 	{
 		_float3 m_vPlayerPos;
+		_float3 m_vBackPos;
 		vector<_float3> m_vMonsterPos;
 
 		vector<INDEXPOS>	m_IndexPos;

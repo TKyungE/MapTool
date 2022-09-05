@@ -15,6 +15,7 @@ IMPLEMENT_DYNCREATE(CMyForm, CFormView)
 #include "ToolView.h"
 #include "PlayerSpawn.h"
 #include "Transform.h"
+#include <string>
 
 CMyForm::CMyForm()
 	: CFormView(IDD_MYFORM)
@@ -101,6 +102,7 @@ void CMyForm::OnInitialUpdate()
 	UpdateData(TRUE);
 
 	m_ObejctListBox.AddString(TEXT("PlayerSpawn"));
+	m_ObejctListBox.AddString(TEXT("BackSpawn"));
 	m_ObejctListBox.AddString(TEXT("MonsterSpawn"));
 	m_ObejctListBox.AddString(TEXT("BackGround"));
 	m_ObejctListBox.AddString(TEXT("Tree"));
@@ -949,6 +951,7 @@ void CMyForm::OnObjectSaveButton()
 		pToolView->m_SavePos.m_NPCSize = pToolView->m_SavePos.m_NPCPos.size();
 
 		WriteFile(hFile, pToolView->m_SavePos.m_vPlayerPos, sizeof(_float3), &dwByte, nullptr);
+		WriteFile(hFile, pToolView->m_SavePos.m_vBackPos, sizeof(_float3), &dwByte, nullptr);
 
 		wsprintf(str1, TEXT("%d"), pToolView->m_SavePos.m_iMSize);
 		WriteFile(hFile, str1, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
@@ -1053,6 +1056,315 @@ void CMyForm::OnObjectSaveButton()
 void CMyForm::OnObjectLoadButton()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+
+
+	CFileDialog Dlg(TRUE, TEXT("dat"), TEXT("*.dat"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, TEXT("Data File(*.dat) | *.dat||"), this);
+
+	TCHAR szPath[MAX_PATH] = TEXT("");
+	GetCurrentDirectory(MAX_PATH, szPath);
+
+	PathRemoveFileSpec(szPath);
+
+	lstrcat(szPath, TEXT("\\Data\\"));
+
+	Dlg.m_ofn.lpstrInitialDir = szPath;
+
+	if (IDOK == Dlg.DoModal())
+	{
+		CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+		CToolView*		pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
+
+		CString str = Dlg.GetPathName();
+
+		const TCHAR* pGetPath = str.GetString();
+
+		HANDLE hFile = CreateFile(pGetPath, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+		DWORD dwByte = 0;
+
+		CGameInstance* m_pGameInstance = CGameInstance::Get_Instance();
+		Safe_AddRef(m_pGameInstance);
+
+		_float3 vPos1, m_vPlayerPos,vPos2,iBackPos;
+		_uint iMSize, iIndexSize, iTreeSize, iHouseSize, iHouse2Size, iPortalSize, iNPCSize;
+		_tchar str1[MAX_PATH];
+		_tchar str2[MAX_PATH];
+		_tchar str3[MAX_PATH];
+		_tchar str4[MAX_PATH];
+		_tchar str5[MAX_PATH];
+		_tchar str6[MAX_PATH];
+		_tchar str7[MAX_PATH];
+
+		ReadFile(hFile, vPos1, sizeof(_float3), &dwByte, nullptr);
+		m_vPlayerPos = vPos1;
+
+		ReadFile(hFile, vPos2, sizeof(_float3), &dwByte, nullptr);
+		iBackPos = vPos2;
+
+		ReadFile(hFile, str1, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, str2, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, str3, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, str4, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, str5, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, str6, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, str7, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+		iMSize = stoi(str1);
+		iIndexSize = stoi(str2);
+		iTreeSize = stoi(str3);
+		iHouseSize = stoi(str4);
+		iHouse2Size = stoi(str5);
+		iPortalSize = stoi(str6);
+		iNPCSize = stoi(str7);
+
+		pToolView->m_SavePos.m_vPlayerPos = m_vPlayerPos;
+
+		if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_PlayerSpawn"), TEXT("Layer_PlayerSpawn"), &m_vPlayerPos)))
+		{
+			ERR_MSG(TEXT("Failed to Cloned : PlayerSpawn"));
+			return;
+		}
+
+
+		pToolView->m_SavePos.m_vBackPos = iBackPos;
+		if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_BackSpawn"), TEXT("Layer_BackSpawn"), &iBackPos)))
+		{
+			ERR_MSG(TEXT("Failed to Cloned : Layer_BackSpawn"));
+			return;
+		}
+
+
+		while (true)
+		{
+			for (_uint i = 0; i < iMSize; ++i)
+			{
+				if (0 == dwByte)
+					break;
+
+				_float3 Pos;
+
+				ReadFile(hFile, &Pos, sizeof(_float3), &dwByte, nullptr);
+
+				_float3 vPos;
+
+				vPos = Pos;
+
+				pToolView->m_SavePos.m_vMonsterPos.push_back(vPos);
+
+				if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_MonsterSpawn"), TEXT("Layer_MonsterSpawn"), &vPos)))
+				{
+					ERR_MSG(TEXT("Failed to Cloned : MonsterSpawn"));
+					return;
+				}
+			}
+
+			for (_uint i = 0; i < iIndexSize; ++i)
+			{
+				if (0 == dwByte)
+					break;
+
+				_float3 BackPos, Scale;
+				_tchar str3[MAX_PATH];
+				_uint Index;
+
+				ReadFile(hFile, &BackPos, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, &Scale, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, str3, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+				Index = stoi(str3);
+
+				CToolView::INDEXPOS IndexPos;
+				ZeroMemory(&IndexPos, sizeof(CToolView::INDEXPOS));
+				IndexPos.m_BackGroundPos = BackPos;
+				IndexPos.m_Scale = Scale;
+				IndexPos.m_iIndex = Index;
+
+				pToolView->m_SavePos.m_IndexPos.push_back(IndexPos);
+
+				if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_BackGround"), TEXT("Layer_BackGround"), &IndexPos)))
+				{
+					ERR_MSG(TEXT("Failed to Cloned : Layer_BackGround"));
+					return;
+				}
+
+				
+			}
+
+			for (_uint i = 0; i < iTreeSize; ++i)
+			{
+				if (0 == dwByte)
+					break;
+
+				_float3 BackPos, Scale;
+				_tchar str3[MAX_PATH];
+				_uint Index;
+
+				ReadFile(hFile, &BackPos, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, &Scale, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, str3, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+				Index = stoi(str3);
+
+				CToolView::INDEXPOS IndexPos;
+				ZeroMemory(&IndexPos, sizeof(CToolView::INDEXPOS));
+				IndexPos.m_BackGroundPos = BackPos;
+				IndexPos.m_Scale = Scale;
+				IndexPos.m_iIndex = Index;
+
+				pToolView->m_SavePos.m_TreePos.push_back(IndexPos);
+
+				if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Tree"), TEXT("Layer_Tree"), &IndexPos)))
+				{
+					ERR_MSG(TEXT("Failed to Cloned : Layer_Tree"));
+					return;
+				}
+
+				
+			}
+
+			for (_uint i = 0; i < iHouseSize; ++i)
+			{
+				if (0 == dwByte)
+					break;
+
+				_float3 BackPos, Scale;
+				_tchar str3[MAX_PATH];
+				_tchar str4[MAX_PATH];
+				_uint Index, turn;
+
+				ReadFile(hFile, &BackPos, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, &Scale, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, str3, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+				ReadFile(hFile, str4, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+				Index = stoi(str3);
+				turn = stoi(str4);
+
+				CToolView::INDEXPOS IndexPos;
+				ZeroMemory(&IndexPos, sizeof(CToolView::INDEXPOS));
+				IndexPos.m_BackGroundPos = BackPos;
+				IndexPos.m_Scale = Scale;
+				IndexPos.m_iIndex = Index;
+				IndexPos.m_iTurn = turn;
+
+				pToolView->m_SavePos.m_HousePos.push_back(IndexPos);
+
+				if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_House"), TEXT("Layer_House"), &IndexPos)))
+				{
+					ERR_MSG(TEXT("Failed to Cloned : Layer_House"));
+					return;
+				}
+
+				
+			}
+
+			for (_uint i = 0; i < iHouse2Size; ++i)
+			{
+				if (0 == dwByte)
+					break;
+
+				_float3 BackPos, Scale;
+				_tchar str3[MAX_PATH];
+				_tchar str4[MAX_PATH];
+				_uint Index, turn;
+
+				ReadFile(hFile, &BackPos, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, &Scale, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, str3, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+				ReadFile(hFile, str4, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+				Index = stoi(str3);
+				turn = stoi(str4);
+
+				CToolView::INDEXPOS IndexPos;
+				ZeroMemory(&IndexPos, sizeof(CToolView::INDEXPOS));
+				IndexPos.m_BackGroundPos = BackPos;
+				IndexPos.m_Scale = Scale;
+				IndexPos.m_iIndex = Index;
+				IndexPos.m_iTurn = turn;
+
+				pToolView->m_SavePos.m_House2Pos.push_back(IndexPos);
+
+				if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_House2"), TEXT("Layer_House2"), &IndexPos)))
+				{
+					ERR_MSG(TEXT("Failed to Cloned : Layer_House2"));
+					return;
+				}
+			}
+
+			for (_uint i = 0; i < iPortalSize; ++i)
+			{
+				if (0 == dwByte)
+					break;
+
+				_float3 BackPos, Scale;
+				_tchar str3[MAX_PATH];
+				_tchar str4[MAX_PATH];
+				_uint Index, turn;
+
+				ReadFile(hFile, &BackPos, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, &Scale, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, str3, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+				ReadFile(hFile, str4, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+				Index = stoi(str3);
+				turn = stoi(str4);
+
+				CToolView::INDEXPOS IndexPos;
+				ZeroMemory(&IndexPos, sizeof(CToolView::INDEXPOS));
+				IndexPos.m_BackGroundPos = BackPos;
+				IndexPos.m_Scale = Scale;
+				IndexPos.m_iIndex = Index;
+				IndexPos.m_iTurn = turn;
+
+				pToolView->m_SavePos.m_PortalPos.push_back(IndexPos);
+
+
+				if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Portal"), TEXT("Layer_Portal"), &IndexPos)))
+				{
+					ERR_MSG(TEXT("Failed to Cloned : Layer_Portal"));
+					return;
+				}
+			}
+
+			for (_uint i = 0; i < iNPCSize; ++i)
+			{
+				if (0 == dwByte)
+					break;
+				_float3 BackPos;
+				_tchar str3[MAX_PATH];
+				_uint Index;
+
+				ReadFile(hFile, &BackPos, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, str3, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+				Index = stoi(str3);
+
+				CToolView::INDEX IndexPos;
+				ZeroMemory(&IndexPos, sizeof(CToolView::INDEX));
+				IndexPos.m_BackGroundPos = BackPos;
+				IndexPos.m_iIndex = Index;
+
+				pToolView->m_SavePos.m_NPCPos.push_back(IndexPos);
+
+				if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_NPC"), TEXT("Layer_NPC"), &IndexPos)))
+				{
+					ERR_MSG(TEXT("Failed to Cloned : Layer_Portal"));
+					return;
+				}
+			}
+
+			if (0 == dwByte)
+				break;
+		}
+
+		Safe_Release(m_pGameInstance);
+		CloseHandle(hFile);
+	}
 }
 
 
