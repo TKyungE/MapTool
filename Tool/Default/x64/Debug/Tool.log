@@ -1,18 +1,2 @@
-﻿  MyForm.cpp
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(163): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(201): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(239): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(152): warning C4101: 'h_root' :참조되지 않은 지역 변수입니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(153): warning C4101: 'h_Tile' :참조되지 않은 지역 변수입니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(939): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(941): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(943): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(945): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(947): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(949): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(951): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(1402): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(1421): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(1440): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
-  Tool.vcxproj -> C:\Users\태경\Desktop\MapTool\Tool\Default\..\Bin\Tool.exe
+﻿  Tool.vcxproj -> C:\Users\태경\Desktop\MapTool\Tool\Default\..\Bin\Tool.exe
   Tool.vcxproj -> ..\Bin\Tool.pdb (Partial PDB)
