@@ -25,6 +25,7 @@ private:
 public:
 	RECTINFO Get_RectInfo(void) { return m_tInfo; }
 	void Set_RectTex(_uint iTex) { m_tInfo.iTex = iTex; }
+	void Set_RectTurn(_uint iTurn) { m_tInfo.iTurn = iTurn; }
 
 	LPDIRECT3DVERTEXBUFFER9 Get_VB(void) { return m_pVBuffer; }
 

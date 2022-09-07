@@ -754,6 +754,7 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			if (pVertices[iIndex].vPosition.x == ObjectWorldPos.x && pVertices[iIndex].vPosition.z == ObjectWorldPos.z)
 			{
 				pObject->Set_RectTex(m_tRectInfo.iTex);
+				pObject->Set_RectTurn(m_tRectInfo.iTurn);
 				return;
 			}
 		}
