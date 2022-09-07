@@ -702,7 +702,7 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			pMyForm->m_ObejctListBox.SetCurSel(-1);
 	}
 
-	if (pMyForm->m_TileList.GetCurSel() != -1)
+	if (pMyForm->m_TileList.GetCurSel() != -1 && (TRUE == pMyForm->m_TileEditCheck.GetCheck()))
 	{
 		if (nullptr == m_pGameInstance)
 		{

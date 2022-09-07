@@ -107,6 +107,8 @@ public:
 	map<CString, CImage*>	m_MapPngImg2;		//백그라운드
 	CStatic m_ObjPicture;
 
+	CButton m_TileEditCheck;
+	afx_msg void OnTileEdit();
 };
 
 

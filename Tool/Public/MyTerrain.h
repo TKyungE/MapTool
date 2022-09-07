@@ -22,6 +22,7 @@ public:
 	CTransform*		Get_Transform(void) { return m_pTransformCom; }
 	void	Set_Value(_float fValue) { m_fValue = fValue; }
 	void	Set_Check(_bool bCheck) { m_bObjectCheck = bCheck; }
+	void	Set_TileCheck(_bool bCheck) { m_bTileCheck = bCheck; }
 
 public:
 	virtual HRESULT Initialize_Prototype(void) override;
@@ -38,6 +39,7 @@ private:
 private:
 	_float m_fValue = 0.f;
 	_bool m_bObjectCheck = false;
+	_bool m_bTileCheck = false;
 
 private:
 	HRESULT SetUp_Components(void);
