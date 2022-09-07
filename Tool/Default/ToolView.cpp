@@ -764,5 +764,10 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			ERR_MSG(TEXT("Failed to Cloned : TerrainRect"));
 			return;
 		}
+		
+		LayerSize = m_pGameInstance->Get_LayerSize(TEXT("Layer_TerrainRect"));
+		CString szSize;
+		szSize.Format(_T("%d"), LayerSize);
+		pMyForm->m_NumRect.SetWindowText(szSize);
 	}
 }

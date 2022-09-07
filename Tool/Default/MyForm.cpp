@@ -49,6 +49,7 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_TILEPIC, m_TilePicture);
 	DDX_Control(pDX, IDC_OBJPIC, m_ObjPicture);
 	DDX_Control(pDX, IDC_TILECHECK, m_TileEditCheck);
+	DDX_Control(pDX, IDC_NUMRECT, m_NumRect);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
@@ -486,6 +487,11 @@ void CMyForm::OnLoadData()
 			}
 			VB->Unlock();
 		}
+
+		_int LayerSize = pInstance->Get_LayerSize(TEXT("Layer_TerrainRect"));
+		CString szLayerSize;
+		szLayerSize.Format(_T("%d"), LayerSize);
+		m_NumRect.SetWindowText(szSize);
 #pragma endregion TerrainRect
 #pragma region Terrain
 		CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
@@ -1597,13 +1603,7 @@ void CMyForm::OnTileEdit()
 	CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
 
 	if (TRUE == m_TileEditCheck.GetCheck())
-	{
 		pTerrain->Set_TileCheck(true);
-	}
 	else
-	{
 		pTerrain->Set_TileCheck(false);
-	}
-	
-
 }

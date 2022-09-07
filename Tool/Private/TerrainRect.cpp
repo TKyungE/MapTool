@@ -2,6 +2,8 @@
 #include "..\Public\TerrainRect.h"
 #include "GameInstance.h"
 #include "MyTerrain.h"
+#include "..\Default\MyForm.h"
+#include "..\Default\MainFrm.h"
 
 CTerrainRect::CTerrainRect(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
@@ -54,108 +56,114 @@ void CTerrainRect::Tick(void)
 {
 	__super::Tick();
 
-	CGameInstance* pInstance = CGameInstance::Get_Instance();
-	if (nullptr == pInstance)
+	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	CMyForm*		pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
+
+	if (!pMyForm->m_TileEditCheck.GetCheck())
 	{
-		ERR_MSG(TEXT("Failed to Get : CGameInstance"));
-		return;
+		CGameInstance* pInstance = CGameInstance::Get_Instance();
+		if (nullptr == pInstance)
+		{
+			ERR_MSG(TEXT("Failed to Get : CGameInstance"));
+			return;
+		}
+
+		Safe_AddRef(pInstance);
+
+		CMyTerrain* pTerrain = (CMyTerrain*)pInstance->Find_Object(TEXT("Layer_BackGround"), 0);
+		if (nullptr == pTerrain)
+		{
+			ERR_MSG(TEXT("Failed to Get : CMyTerrain"));
+			return;
+		}
+
+		Safe_AddRef(pTerrain);
+
+		CVIBuffer_Terrain* pVIBufferTerrain = (CVIBuffer_Terrain*)pTerrain->Find_Component(TEXT("Com_VIBuffer"));
+		if (nullptr == pVIBufferTerrain)
+		{
+			ERR_MSG(TEXT("Failed to Get : CVIBuffer_Terrain"));
+			return;
+		}
+
+		Safe_AddRef(pVIBufferTerrain);
+
+		LPDIRECT3DVERTEXBUFFER9 VB = pVIBufferTerrain->Get_VB();
+
+		VTXTEX* pVertices = nullptr;
+		VTXTEX* pVertex = nullptr;
+
+		FACEINDICES16* pIndex = nullptr;
+
+		VB->Lock(0, 0, (void**)&pVertices, 0);
+		m_pVBuffer->Lock(0, 0, (void**)&pVertex, 0);
+
+		m_iIndex = pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX * (_uint)m_tInfo.vPos.z + (_uint)m_tInfo.vPos.x;
+		m_iIndices[0] = m_iIndex + pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX;
+		m_iIndices[1] = m_iIndex + pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX + 1;
+		m_iIndices[2] = m_iIndex + 1;
+		m_iIndices[3] = m_iIndex;
+
+		pVertex[0].vPosition = pVertices[m_iIndices[0]].vPosition;
+		pVertex[0].vPosition.y += 0.001f;
+
+		pVertex[1].vPosition = pVertices[m_iIndices[1]].vPosition;
+		pVertex[1].vPosition.y += 0.001f;
+
+		pVertex[2].vPosition = pVertices[m_iIndices[2]].vPosition;
+		pVertex[2].vPosition.y += 0.001f;
+
+		pVertex[3].vPosition = pVertices[m_iIndices[3]].vPosition;
+		pVertex[3].vPosition.y += 0.001f;
+
+		switch (m_tInfo.iTurn)
+		{
+		case 0:
+			pVertex[0].vTexture = _float2(-1.f, -1.f);
+			pVertex[1].vTexture = _float2(0.f, -1.f);
+			pVertex[2].vTexture = _float2(0.f, 0.f);
+			pVertex[3].vTexture = _float2(-1.f, 0.f);
+			break;
+		case 1:
+			pVertex[0].vTexture = _float2(-1.f, 0.f);
+			pVertex[1].vTexture = _float2(-1.f, -1.f);
+			pVertex[2].vTexture = _float2(0.f, -1.f);
+			pVertex[3].vTexture = _float2(0.f, 0.f);
+			break;
+		case 2:
+			pVertex[0].vTexture = _float2(0.f, 0.f);
+			pVertex[1].vTexture = _float2(-1.f, 0.f);
+			pVertex[2].vTexture = _float2(-1.f, -1.f);
+			pVertex[3].vTexture = _float2(0.f, -1.f);
+			break;
+		case 3:
+			pVertex[0].vTexture = _float2(0.f, -1.f);
+			pVertex[1].vTexture = _float2(0.f, 0.f);
+			pVertex[2].vTexture = _float2(-1.f, 0.f);
+			pVertex[3].vTexture = _float2(-1.f, -1.f);
+			break;
+		}
+
+		VB->Unlock();
+		m_pVBuffer->Unlock();
+
+		m_pIBuffer->Lock(0, 0, (void**)&pIndex, 0);
+
+		pIndex[0]._0 = 0;
+		pIndex[0]._1 = 1;
+		pIndex[0]._2 = 2;
+
+		pIndex[1]._0 = 0;
+		pIndex[1]._1 = 2;
+		pIndex[1]._2 = 3;
+
+		m_pIBuffer->Unlock();
+
+
+		Safe_Release(pVIBufferTerrain);
+		Safe_Release(pTerrain);
+		Safe_Release(pInstance);
 	}
-
-	Safe_AddRef(pInstance);
-
-	CMyTerrain* pTerrain = (CMyTerrain*)pInstance->Find_Object(TEXT("Layer_BackGround"), 0);
-	if (nullptr == pTerrain)
-	{
-		ERR_MSG(TEXT("Failed to Get : CMyTerrain"));
-		return;
-	}
-
-	Safe_AddRef(pTerrain);
-
-	CVIBuffer_Terrain* pVIBufferTerrain = (CVIBuffer_Terrain*)pTerrain->Find_Component(TEXT("Com_VIBuffer"));
-	if (nullptr == pVIBufferTerrain)
-	{
-		ERR_MSG(TEXT("Failed to Get : CVIBuffer_Terrain"));
-		return;
-	}
-
-	Safe_AddRef(pVIBufferTerrain);
-
-	LPDIRECT3DVERTEXBUFFER9 VB = pVIBufferTerrain->Get_VB();
-
-	VTXTEX* pVertices = nullptr;
-	VTXTEX* pVertex = nullptr;
-
-	FACEINDICES16* pIndex = nullptr;
-
-	VB->Lock(0, 0, (void**)&pVertices, 0);
-	m_pVBuffer->Lock(0, 0, (void**)&pVertex, 0);
-
-	m_iIndex = pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX * (_uint)m_tInfo.vPos.z + (_uint)m_tInfo.vPos.x;
-	m_iIndices[0] = m_iIndex + pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX;
-	m_iIndices[1] = m_iIndex + pVIBufferTerrain->Get_VIBInfoDerived().m_iNumVerticesX + 1;
-	m_iIndices[2] = m_iIndex + 1;
-	m_iIndices[3] = m_iIndex;
-
-	pVertex[0].vPosition = pVertices[m_iIndices[0]].vPosition;
-	pVertex[0].vPosition.y += 0.001f;
-
-	pVertex[1].vPosition = pVertices[m_iIndices[1]].vPosition;
-	pVertex[1].vPosition.y += 0.001f;
-
-	pVertex[2].vPosition = pVertices[m_iIndices[2]].vPosition;
-	pVertex[2].vPosition.y += 0.001f;
-
-	pVertex[3].vPosition = pVertices[m_iIndices[3]].vPosition;
-	pVertex[3].vPosition.y += 0.001f;
-
-	switch (m_tInfo.iTurn)
-	{
-	case 0:
-		pVertex[0].vTexture = _float2(-1.f, -1.f);
-		pVertex[1].vTexture = _float2(0.f, -1.f);
-		pVertex[2].vTexture = _float2(0.f, 0.f);
-		pVertex[3].vTexture = _float2(-1.f, 0.f);
-		break;
-	case 1:
-		pVertex[0].vTexture = _float2(-1.f, 0.f);
-		pVertex[1].vTexture = _float2(-1.f, -1.f); 
-		pVertex[2].vTexture = _float2(0.f, -1.f); 
-		pVertex[3].vTexture = _float2(0.f, 0.f); 
-		break;
-	case 2:
-		pVertex[0].vTexture = _float2(0.f, 0.f);
-		pVertex[1].vTexture = _float2(-1.f, 0.f); 
-		pVertex[2].vTexture = _float2(-1.f, -1.f); 
-		pVertex[3].vTexture = _float2(0.f, -1.f); 
-		break;
-	case 3:
-		pVertex[0].vTexture = _float2(0.f, -1.f);
-		pVertex[1].vTexture = _float2(0.f, 0.f); 
-		pVertex[2].vTexture = _float2(-1.f, 0.f); 
-		pVertex[3].vTexture = _float2(-1.f, -1.f); 
-		break;
-	}
-
-	VB->Unlock();
-	m_pVBuffer->Unlock();
-
-	m_pIBuffer->Lock(0, 0, (void**)&pIndex, 0);
-
-	pIndex[0]._0 = 0;
-	pIndex[0]._1 = 1;
-	pIndex[0]._2 = 2;
-
-	pIndex[1]._0 = 0;
-	pIndex[1]._1 = 2;
-	pIndex[1]._2 = 3;
-
-	m_pIBuffer->Unlock();
-	
-
-	Safe_Release(pVIBufferTerrain);
-	Safe_Release(pTerrain);
-	Safe_Release(pInstance);
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
