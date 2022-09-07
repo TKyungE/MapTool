@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿  ToolView.cpp
 c:\users\jjh\desktop\maptool\tool\default\toolview.cpp(483): warning C4800: 'BOOL': 'true' 또는 'false'로 bool 값을 강제하고 있습니다(성능 경고).
 c:\users\jjh\desktop\maptool\tool\default\toolview.cpp(612): warning C4244: '=': 'Engine::_float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
@@ -25,4 +26,7 @@ c:\users\jjh\desktop\maptool\tool\default\myform.cpp(1448): warning C4018: '>=':
   MainFrm.cpp
   코드를 생성하고 있습니다...
   Tool.vcxproj -> C:\Users\JJH\Desktop\MapTool\Tool\Default\..\Bin\Tool.exe
+=======
+﻿  Tool.vcxproj -> C:\Users\태경\Desktop\MapTool\Tool\Default\..\Bin\Tool.exe
+>>>>>>> 3ad99fd12c8d509960333452b266dcf1bdd21207
   Tool.vcxproj -> ..\Bin\Tool.pdb (Partial PDB)
