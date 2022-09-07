@@ -41,15 +41,7 @@ HRESULT CTerrainRect::Initialize(void * pArg)
 	if (FAILED(m_pGraphic_Device->CreateIndexBuffer(2 * sizeof(FACEINDICES16), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_pIBuffer, nullptr)))
 		return E_FAIL;
 
-	/*for (_uint i = 0; i < m_tInfo.iTurn; ++i)
-	{
-		m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f),1);
-	}*/
-	
-
 	return S_OK;
-
-
 }
 
 void CTerrainRect::Tick(void)
@@ -59,8 +51,8 @@ void CTerrainRect::Tick(void)
 	CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
 	CMyForm*		pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
 
-	if (!pMyForm->m_TileEditCheck.GetCheck())
-	{
+	//if (!pMyForm->m_TileEditCheck.GetCheck())
+	//{
 		CGameInstance* pInstance = CGameInstance::Get_Instance();
 		if (nullptr == pInstance)
 		{
@@ -163,7 +155,7 @@ void CTerrainRect::Tick(void)
 		Safe_Release(pVIBufferTerrain);
 		Safe_Release(pTerrain);
 		Safe_Release(pInstance);
-	}
+	//}
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);

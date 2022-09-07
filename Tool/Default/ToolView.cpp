@@ -747,16 +747,23 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		{
 			CTerrainRect* pObject = (CTerrainRect*)m_pGameInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
 
-			CTransform* pTransform = (CTransform*)pObject->Find_Component(TEXT("Com_Transform"));
+			LPDIRECT3DVERTEXBUFFER9 pObjectVB = pObject->Get_VB();
+			
+			VTXTEX* pObjVertices;
 
-			_float3 ObjectWorldPos = *D3DXVec3TransformCoord(&ObjectWorldPos, &_float3(0.f, 0.f, 0.f), &pTransform->Get_WorldMatrix());
+			pObjectVB->Lock(0, 0, (void**)&pObjVertices, 0);
 
-			if (pVertices[iIndex].vPosition.x == ObjectWorldPos.x && pVertices[iIndex].vPosition.z == ObjectWorldPos.z)
+			_float3 LeftDownPos = pObjVertices[3].vPosition;
+
+			if (pVertices[iIndex].vPosition.x == LeftDownPos.x && pVertices[iIndex].vPosition.z == LeftDownPos.z)
 			{
 				pObject->Set_RectTex(m_tRectInfo.iTex);
 				pObject->Set_RectTurn(m_tRectInfo.iTurn);
+				pObjectVB->Unlock();
 				return;
 			}
+
+			pObjectVB->Unlock();
 		}
 
 		if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), (CTerrainRect::RECTINFO*)&m_tRectInfo)))
