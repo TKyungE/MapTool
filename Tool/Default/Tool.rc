@@ -223,6 +223,8 @@ BEGIN
     CONTROL         "",IDC_TILEPIC,"Static",SS_BITMAP,80,140,46,40
     CONTROL         "",IDC_OBJPIC,"Static",SS_BITMAP,7,250,41,40
     CONTROL         "OnlyTile",IDC_TILECHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,130,79,42,10
+    LTEXT           "·ºÆ® ¼ö",IDC_RECT,127,98,23,8
+    LTEXT           "0",IDC_NUMRECT,152,98,8,8
 END
 
 

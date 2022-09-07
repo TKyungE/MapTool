@@ -109,6 +109,8 @@ public:
 
 	CButton m_TileEditCheck;
 	afx_msg void OnTileEdit();
+
+	CStatic m_NumRect;
 };
 
 
