@@ -35,7 +35,7 @@ void CCamera_Dynamic::Tick()
 
 	if (GetKeyState(VK_LSHIFT) < 0)
 	{
-		m_pTransform->Set_TransformDesc_Speed(100.f);
+		m_pTransform->Set_TransformDesc_Speed(1000.f);
 	}
 	else
 	{

@@ -54,7 +54,7 @@ HRESULT CPortal::Render(void)
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
-	Off_SamplerState();
+	
 
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
 		return E_FAIL;
@@ -78,8 +78,6 @@ HRESULT CPortal::Render(void)
 
 	if (FAILED(Release_RenderState()))
 		return E_FAIL;
-
-	On_SamplerState();
 
 	return S_OK;
 }
@@ -116,6 +114,8 @@ HRESULT CPortal::SetUp_RenderState(void)
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
+	Off_SamplerState();
 	return S_OK;
 }
 
@@ -125,7 +125,9 @@ HRESULT CPortal::Release_RenderState(void)
 		return E_FAIL;
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	m_pGraphic_Device->SetTexture(0, nullptr);
+
+	Off_SamplerState();
+
 	return S_OK;
 }
 HRESULT CPortal::On_SamplerState()
