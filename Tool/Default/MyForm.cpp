@@ -151,7 +151,7 @@ void CMyForm::OnInitialUpdate()
 	
 	HTREEITEM	h_root;
 	HTREEITEM   h_Tile;
-	CString pFilePath = TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/LookMap/Map%d.png");
+	CString pFilePath = TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/Map/Map%d.png");
 	TCHAR	szFullPath[MAX_PATH] = L"";
 	TCHAR	szPathBuf[MAX_PATH] = L"";
 
@@ -162,7 +162,7 @@ void CMyForm::OnInitialUpdate()
 
 	for (int i = 0; i < iNumTex; ++i)
 	{
-		pFilePath.Format(TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/LookMap/Map%d.png"), i);
+		pFilePath.Format(TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/Map/Map%d.png"), i);
 		swprintf_s(szFullPath, pFilePath, i);
 	
 		CString strFileName = PathFindFileName(szFullPath);
