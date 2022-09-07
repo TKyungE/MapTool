@@ -447,6 +447,8 @@ void CMyForm::OnLoadData()
 		ReadFile(hFile, &szSize, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		_int TerrainRectSize = _wtoi(szSize);
 
+		_int iLastRect = 0;
+
 		for (_int i = 0; i < TerrainRectSize; ++i)
 		{
 			CTerrainRect::RECTINFO tRectInfo;
@@ -458,34 +460,72 @@ void CMyForm::OnLoadData()
 
 			tRectInfo.iTex = _wtoi(szTex);
 
-			if (FAILED(pInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), &tRectInfo)))
+			_bool bDoubleCheck = false;
+			_int LayerSize = pInstance->Get_LayerSize(TEXT("Layer_TerrainRect"));
+
+			for (_int j = 0; j < LayerSize; ++j)
 			{
-				ERR_MSG(TEXT("Failed to Cloned : CTerrainRect"));
-				return;
+				CTerrainRect* pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), j);
+
+				LPDIRECT3DVERTEXBUFFER9 pObjectVB = pObject->Get_VB();
+
+				VTXTEX* pObjVertices = nullptr;
+
+				pObjectVB->Lock(0, 0, (void**)&pObjVertices, 0);
+
+				_float3 LeftDownPos = pObjVertices[3].vPosition;
+
+				if (tRectInfo.vPos.x == LeftDownPos.x && tRectInfo.vPos.z == LeftDownPos.z)
+				{
+					bDoubleCheck = true;
+
+					for (_uint k = 0; k < 4; ++k)
+					{
+						_float3 vPos;
+						_float2 vTex;
+
+						ReadFile(hFile, &vPos, sizeof(_float3), &dwByte, nullptr);
+						ReadFile(hFile, &vTex, sizeof(_float2), &dwByte, nullptr);
+					}
+
+					break;
+				}
+
+				pObjectVB->Unlock();
 			}
 
-
-
-			CTerrainRect* pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), i);
-
-			LPDIRECT3DVERTEXBUFFER9 VB = pObject->Get_VB();
-
-			VTXTEX* pVertices = nullptr;
-
-			VB->Lock(0, 0, (void**)&pVertices, 0);
-
-			for (_uint i = 0; i < 4; ++i)
+			if (!bDoubleCheck)
 			{
-				_float3 vPos;
-				_float2 vTex;
+				if (FAILED(pInstance->Add_GameObject(TEXT("Prototype_GameObject_TerrainRect"), TEXT("Layer_TerrainRect"), &tRectInfo)))
+				{
+					ERR_MSG(TEXT("Failed to Cloned : CTerrainRect"));
+					return;
+				}
 
-				ReadFile(hFile, &vPos, sizeof(_float3), &dwByte, nullptr);
-				ReadFile(hFile, &vTex, sizeof(_float2), &dwByte, nullptr);
+				CTerrainRect* pObject = (CTerrainRect*)pInstance->Find_Object(TEXT("Layer_TerrainRect"), iLastRect);
 
-				pVertices[i].vPosition = vPos;
-				pVertices[i].vTexture = vTex;
+				LPDIRECT3DVERTEXBUFFER9 VB = pObject->Get_VB();
+
+				VTXTEX* pVertices = nullptr;
+
+				VB->Lock(0, 0, (void**)&pVertices, 0);
+
+				for (_uint j = 0; j < 4; ++j)
+				{
+					_float3 vPos;
+					_float2 vTex;
+
+					ReadFile(hFile, &vPos, sizeof(_float3), &dwByte, nullptr);
+					ReadFile(hFile, &vTex, sizeof(_float2), &dwByte, nullptr);
+
+					pVertices[j].vPosition = vPos;
+					pVertices[j].vTexture = vTex;
+				}
+
+				VB->Unlock();
+
+				++iLastRect;
 			}
-			VB->Unlock();
 		}
 
 		_int LayerSize = pInstance->Get_LayerSize(TEXT("Layer_TerrainRect"));
