@@ -48,6 +48,7 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT8, m_EditTrun);
 	DDX_Control(pDX, IDC_TILEPIC, m_TilePicture);
 	DDX_Control(pDX, IDC_OBJPIC, m_ObjPicture);
+	DDX_Control(pDX, IDC_TILECHECK, m_TileEditCheck);
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
@@ -63,6 +64,7 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN1, &CMyForm::OnSpinIndex)
 	ON_LBN_SELCHANGE(IDC_TILELIST, &CMyForm::OnSelectTile)
 	ON_BN_CLICKED(IDC_BUTTON4, &CMyForm::OnScaleButton)
+	ON_BN_CLICKED(IDC_TILECHECK, &CMyForm::OnTileEdit)
 END_MESSAGE_MAP()
 
 
@@ -1584,4 +1586,24 @@ void CMyForm::OnScaleButton()
 	m_fScaleX = fPosX;
 	m_fScaleY = fPosY;
 	m_fScaleZ = fPosZ;
+}
+
+
+void CMyForm::OnTileEdit()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CGameInstance* pInstance = CGameInstance::Get_Instance();
+
+	CMyTerrain* pTerrain = dynamic_cast<CMyTerrain*>(pInstance->Find_Object(TEXT("Layer_BackGround"), 0));
+
+	if (TRUE == m_TileEditCheck.GetCheck())
+	{
+		pTerrain->Set_TileCheck(true);
+	}
+	else
+	{
+		pTerrain->Set_TileCheck(false);
+	}
+	
+
 }
