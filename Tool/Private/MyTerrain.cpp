@@ -97,7 +97,7 @@ HRESULT CMyTerrain::Render(void)
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(1068)))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(393)))
 		return E_FAIL;
 
 	m_pVIBufferCom->Render();
