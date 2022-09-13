@@ -33,6 +33,7 @@ private:
 	CRenderer*	m_pRendererCom = nullptr;
 
 	INDEXPOS	m_IndexPos;
+	_bool		m_bCheck = false;
 private:
 	HRESULT SetUp_Components(void);
 public:

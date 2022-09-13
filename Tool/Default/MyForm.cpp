@@ -119,7 +119,7 @@ void CMyForm::OnInitialUpdate()
 	m_EditIndex.SetWindowText(TEXT("0"));
 	m_SpinIndex.SetRange(0, 100);
 	m_SpinIndex.SetPos(0);
-
+	
 	CGameInstance* pInstance = CGameInstance::Get_Instance();
 	if (nullptr == pInstance)
 		return;
@@ -985,6 +985,8 @@ void CMyForm::OnObjectSaveButton()
 		_tchar str5[MAX_PATH];
 		_tchar str6[MAX_PATH];
 		_tchar str7[MAX_PATH];
+		_tchar str8[MAX_PATH];
+
 
 		pToolView->m_SavePos.m_iMSize = pToolView->m_SavePos.m_vMonsterPos.size();
 
@@ -999,6 +1001,9 @@ void CMyForm::OnObjectSaveButton()
 		pToolView->m_SavePos.m_PortalSize = pToolView->m_SavePos.m_PortalPos.size();
 
 		pToolView->m_SavePos.m_NPCSize = pToolView->m_SavePos.m_NPCPos.size();
+
+		pToolView->m_SavePos.m_WallSize = pToolView->m_SavePos.m_WallPos.size();
+
 
 		WriteFile(hFile, pToolView->m_SavePos.m_vPlayerPos, sizeof(_float3), &dwByte, nullptr);
 		WriteFile(hFile, pToolView->m_SavePos.m_vBackPos, sizeof(_float3), &dwByte, nullptr);
@@ -1023,6 +1028,9 @@ void CMyForm::OnObjectSaveButton()
 
 		wsprintf(str7, TEXT("%d"), pToolView->m_SavePos.m_NPCSize);
 		WriteFile(hFile, str7, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+		wsprintf(str8, TEXT("%d"), pToolView->m_SavePos.m_WallSize);
+		WriteFile(hFile, str8, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 
 		for (auto& iter : pToolView->m_SavePos.m_vMonsterPos)
 			WriteFile(hFile, iter, sizeof(_float3), &dwByte, nullptr);
@@ -1098,6 +1106,12 @@ void CMyForm::OnObjectSaveButton()
 			WriteFile(hFile, str11, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		}
 
+		for (auto& iter : pToolView->m_SavePos.m_WallPos)
+		{
+			WriteFile(hFile, iter.m_vPos, sizeof(_float3), &dwByte, nullptr);
+			WriteFile(hFile, iter.vScale, sizeof(_float3), &dwByte, nullptr);
+		}
+
 		CloseHandle(hFile);
 	}
 }
@@ -1140,7 +1154,7 @@ void CMyForm::OnObjectLoadButton()
 		Safe_AddRef(m_pGameInstance);
 
 		_float3 vPos1, m_vPlayerPos,vPos2,iBackPos;
-		_uint iMSize, iIndexSize, iTreeSize, iHouseSize, iHouse2Size, iPortalSize, iNPCSize;
+		_uint iMSize, iIndexSize, iTreeSize, iHouseSize, iHouse2Size, iPortalSize, iNPCSize, iWallSize;
 		_tchar str1[MAX_PATH];
 		_tchar str2[MAX_PATH];
 		_tchar str3[MAX_PATH];
@@ -1148,6 +1162,8 @@ void CMyForm::OnObjectLoadButton()
 		_tchar str5[MAX_PATH];
 		_tchar str6[MAX_PATH];
 		_tchar str7[MAX_PATH];
+		_tchar str8[MAX_PATH];
+
 
 		ReadFile(hFile, vPos1, sizeof(_float3), &dwByte, nullptr);
 		m_vPlayerPos = vPos1;
@@ -1162,6 +1178,8 @@ void CMyForm::OnObjectLoadButton()
 		ReadFile(hFile, str5, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		ReadFile(hFile, str6, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		ReadFile(hFile, str7, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, str8, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
 
 		iMSize = stoi(str1);
 		iIndexSize = stoi(str2);
@@ -1170,6 +1188,7 @@ void CMyForm::OnObjectLoadButton()
 		iHouse2Size = stoi(str5);
 		iPortalSize = stoi(str6);
 		iNPCSize = stoi(str7);
+		iWallSize = stoi(str8);
 
 		pToolView->m_SavePos.m_vPlayerPos = m_vPlayerPos;
 
@@ -1404,6 +1423,31 @@ void CMyForm::OnObjectLoadButton()
 				if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_NPC"), TEXT("Layer_NPC"), &IndexPos)))
 				{
 					ERR_MSG(TEXT("Failed to Cloned : Layer_Portal"));
+					return;
+				}
+			}
+
+			for (_uint i = 0; i < iWallSize; ++i)
+			{
+				if (0 == dwByte)
+					break;
+				_float3 BackPos, Scale;
+
+
+				ReadFile(hFile, &BackPos, sizeof(_float3), &dwByte, nullptr);
+				ReadFile(hFile, &Scale, sizeof(_float3), &dwByte, nullptr);
+
+
+				CToolView::WALL WallPos;
+				ZeroMemory(&WallPos, sizeof(CToolView::WALL));
+				WallPos.m_vPos = BackPos;
+				WallPos.vScale = Scale;
+
+				pToolView->m_SavePos.m_WallPos.push_back(WallPos);
+
+				if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Transparent_Wall"), TEXT("Layer_Transparent_Wall"), &WallPos)))
+				{
+					ERR_MSG(TEXT("Failed to Cloned : Layer_Transparent_Wall"));
 					return;
 				}
 			}

@@ -23,6 +23,7 @@ public:
 	virtual HRESULT Initialize_Prototype(void) override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Tick(void) override;
+	
 	virtual HRESULT Render(void) override;
 
 private:

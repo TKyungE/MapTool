@@ -3,6 +3,11 @@
 
 #include "GameInstance.h"
 
+#include "../Default/MainFrm.h"
+#include "../Default/MyForm.h"
+#include "../Default/ToolView.h"
+#include <string>
+
 Transparent_Wall::Transparent_Wall(LPDIRECT3DDEVICE9 _pGraphic_Device)
 	:CGameObject(_pGraphic_Device)
 {
@@ -31,7 +36,13 @@ HRESULT Transparent_Wall::Initialize(void * pArg)
 
 	memcpy(&m_IndexPos, pArg, sizeof(INDEXPOS));
 
+	if (m_IndexPos.vPos.x == -1.f)
+		m_bCheck = true;
+
 	m_pTransformCom->Set_Scaled(m_IndexPos.vScale);
+	m_IndexPos.vPos.y = 0.f;
+
+	m_IndexPos.vPos.y += 0.5f * m_IndexPos.vScale.y;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_IndexPos.vPos);
 
 	return S_OK;
@@ -53,15 +64,64 @@ HRESULT Transparent_Wall::Render(void)
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
-		return E_FAIL;
+	
+	if (m_bCheck)
+	{
+		CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+		CMyForm*		pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
 
-	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+		CString strstr;
+		int index = pMyForm->m_ObejctListBox.GetCurSel();
+		if (index != LB_ERR)
+		{
+			pMyForm->m_ObejctListBox.GetText(index, strstr);
 
-	m_pVIBufferCube->Render();
+			CString str;
+			if (strstr == TEXT("Transparent_Wall"))
+			{
+				CGameInstance* pInstance = CGameInstance::Get_Instance();
 
-	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+				Safe_AddRef(pInstance);
+				_float3 vPos = pInstance->Get_TargetPos();
 
+				CString strX, strY, strZ;
+
+				pMyForm->m_EditSizeX.GetWindowText(strX);
+				pMyForm->m_EditSizeY.GetWindowText(strY);
+				pMyForm->m_EditSizeZ.GetWindowText(strZ);
+
+				float fScaleX = _float(_wtof(strX));
+				float fScaleY = _float(_wtof(strY));
+				float fScaleZ = _float(_wtof(strZ));
+
+				m_pTransformCom->Set_Scaled(_float3(fScaleX, fScaleY, fScaleZ));
+				vPos.y = 0.f;
+				vPos.y = 0.5f * fScaleY;
+
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
+				if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
+					return E_FAIL;
+
+				m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+				m_pVIBufferCube->Render();
+
+				m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+			}
+		}
+	}
+	else
+	{
+		if(FAILED(m_pTransformCom->Bind_OnGraphicDev()))
+			return E_FAIL;
+
+		m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+		m_pVIBufferCube->Render();
+
+		m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	}
 	return S_OK;
 }
 

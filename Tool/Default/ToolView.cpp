@@ -250,8 +250,6 @@ void CToolView::OnInitialUpdate()
 		return;
 	}
 
-
-
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
 		CCamera_Dynamic::Create(m_pGraphic_Device))))
 		return;
@@ -267,6 +265,28 @@ void CToolView::OnInitialUpdate()
 		ERR_MSG(TEXT("Ready_Layer_Camera Failed"));
 		return;
 	}
+
+
+	m_Index.m_iIndex = 100;
+	m_Index.m_BackGroundPos = _float3(0.f,0.f,0.f);
+	m_Index.m_Scale = _float3(1.f,1.f,1.f);
+	m_Index.m_iTurn = 0;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_BackGround"), TEXT("Layer_BackGround"), &m_Index)))
+	{
+		ERR_MSG(TEXT("Failed to Cloned : Layer_BackGround"));
+		return;
+	}
+
+	m_Wall.m_vPos = _float3(-1.f, 0.f, 0.f);
+	m_Wall.vScale = _float3(1.f, 1.f, 1.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Transparent_Wall"), TEXT("Layer_Transparent_Wall"), &m_Wall)))
+	{
+		ERR_MSG(TEXT("Failed to Cloned : Layer_Transparent_Wall"));
+		return;
+	}
+
 }
 
 // CToolView ±×¸®±â
@@ -287,6 +307,7 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 		pTerrain1->Set_Check(true);
 	else
 		pTerrain1->Set_Check(false);
+
 
 	m_pGameInstance->Tick_Engine();
 
@@ -403,6 +424,7 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/NPC/NPC%d.png"), m_iNPCIndex= 7))))
 		return E_FAIL;
 	m_iNPCIndex -= 1;
+
 	return S_OK;
 }
 
@@ -684,7 +706,10 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		}
 		else if (!lstrcmp(pstr, TEXT("Transparent_Wall")))
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_Transparent_Wall"), &vPos)))
+			m_Wall.m_vPos = vPos;
+			m_Wall.vScale = _float3(pMyForm->m_fScaleX, pMyForm->m_fScaleY, pMyForm->m_fScaleZ);
+
+			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_Transparent_Wall"), &m_Wall)))
 			{
 				ERR_MSG(TEXT("Failed to Cloned : Layer_Transparent_Wall"));
 				return;
@@ -715,7 +740,8 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_SavePos.m_NPCPos.push_back(m_Index2);
 		else if (!lstrcmp(pstr, TEXT("BackSpawn")))
 			m_SavePos.m_vBackPos = vPos;
-
+		else if (!lstrcmp(pstr, TEXT("Transparent_Wall")))
+			m_SavePos.m_WallPos.push_back(m_Wall);
 		
 		if (!pMyForm->m_ResetX.GetCheck())
 			pMyForm->m_ObejctListBox.SetCurSel(-1);
