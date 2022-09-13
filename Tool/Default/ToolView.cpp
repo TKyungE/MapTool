@@ -25,6 +25,8 @@
 #include "Portal.h"
 #include "Default_NPC.h"
 #include "BackSpawn.h"
+#include "Transparent_Wall.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -241,6 +243,13 @@ void CToolView::OnInitialUpdate()
 		ERR_MSG(TEXT("Prototype_GameObject_NPC Failed"));
 		return;
 	}
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Transparent_Wall"), Transparent_Wall::Create(m_pGraphic_Device))))
+	{
+		ERR_MSG(TEXT("Prototype_GameObject_Transparent_Wall Failed"));
+		return;
+	}
+
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
@@ -673,6 +682,16 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			}
 
 		}
+		else if (!lstrcmp(pstr, TEXT("Transparent_Wall")))
+		{
+			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_Transparent_Wall"), &vPos)))
+			{
+				ERR_MSG(TEXT("Failed to Cloned : Layer_Transparent_Wall"));
+				return;
+			}
+
+		}
+
 
 		// 왜 이렇게 하고있을까 그냥 박으면 됐는데... 하아.. ㅇㅈ?
 
@@ -697,7 +716,7 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		else if (!lstrcmp(pstr, TEXT("BackSpawn")))
 			m_SavePos.m_vBackPos = vPos;
 
-
+		
 		if (!pMyForm->m_ResetX.GetCheck())
 			pMyForm->m_ObejctListBox.SetCurSel(-1);
 	}

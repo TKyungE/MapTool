@@ -79,6 +79,10 @@ public:
 		_uint m_iIndex;
 	}INDEX;
 	
+	/*typedef struct tagWall
+	{
+		_float3 */
+
 	typedef struct tagPos
 	{
 		_float3 m_vPlayerPos;

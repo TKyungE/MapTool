@@ -67,6 +67,9 @@
     <Filter Include="02. Object\01. PlayerSpawn\BackSpawn">
       <UniqueIdentifier>{b1a9cbdf-cddb-4fe4-9cb5-6e172f909fcc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\09. Transparent Wall">
+      <UniqueIdentifier>{efe66a85-d0e0-4082-a790-3db78cda205e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -135,6 +138,9 @@
     <ClInclude Include="..\Public\BackSpawn.h">
       <Filter>02. Object\01. PlayerSpawn\BackSpawn</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Transparent_Wall.h">
+      <Filter>02. Object\09. Transparent Wall</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -190,6 +196,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BackSpawn.cpp">
       <Filter>02. Object\01. PlayerSpawn\BackSpawn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Transparent_Wall.cpp">
+      <Filter>02. Object\09. Transparent Wall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

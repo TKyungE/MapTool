@@ -113,6 +113,8 @@ void CMyForm::OnInitialUpdate()
 	m_ObejctListBox.AddString(TEXT("House2"));
 	m_ObejctListBox.AddString(TEXT("Portal"));
 	m_ObejctListBox.AddString(TEXT("NPC"));
+	m_ObejctListBox.AddString(TEXT("Transparent_Wall"));
+	
 
 	m_EditIndex.SetWindowText(TEXT("0"));
 	m_SpinIndex.SetRange(0, 100);
