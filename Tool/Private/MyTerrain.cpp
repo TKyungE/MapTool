@@ -43,8 +43,8 @@ void CMyTerrain::Tick(void)
 
 	Safe_AddRef(pInstance);
 
-	if ((GetKeyState(VK_LBUTTON) < 0) & 0x8001)
-	{
+	/*if ((GetKeyState(VK_LBUTTON) < 0) & 0x8001)
+	{*/
 		_float4x4 matWorld = m_pTransformCom->Get_WorldMatrix();
 		D3DXMatrixInverse(&matWorld, nullptr, &matWorld);
 
@@ -81,7 +81,7 @@ void CMyTerrain::Tick(void)
 
 		VB->Unlock();
 		IB->Unlock();
-	}
+	//}
 
 	Safe_Release(pInstance);
 
@@ -94,13 +94,22 @@ HRESULT CMyTerrain::Render(void)
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
+
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(112)))
 		return E_FAIL;
 
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+
 	m_pVIBufferCom->Render();
+
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_NONE);
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_NONE);
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
 
 	return S_OK;
 }

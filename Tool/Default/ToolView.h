@@ -79,6 +79,12 @@ public:
 		_uint m_iIndex;
 	}INDEX;
 	
+	typedef struct tagWall
+	{
+		_float3 m_vPos;
+		_float3 vScale;
+	}WALL;
+
 	typedef struct tagPos
 	{
 		_float3 m_vPlayerPos;
@@ -92,6 +98,7 @@ public:
 		vector<INDEXPOS>	m_PortalPos;
 
 		vector<INDEX>	m_NPCPos;
+		vector<WALL> m_WallPos;
 
 		_uint		m_iMSize;
 		_uint		m_IndexSize;
@@ -100,6 +107,8 @@ public:
 		_uint		m_House2Size;
 		_uint		m_PortalSize;
 		_uint		m_NPCSize;
+		_uint		m_WallSize;
+
 	}SAVEPOS;
 
 	
@@ -107,10 +116,14 @@ public:
 
 	INDEXPOS m_Index;
 	INDEX	m_Index2;
+	WALL m_Wall;
 	_uint m_iBackIndex = 0;
 	_uint m_iTreeIndex = 0;
 	_uint m_iHouseIndex = 0;
 	_uint m_iNPCIndex = 0;
+	_uint m_iWallIndex = 0;
+
+
 
 	_bool m_bCheck = false;
 

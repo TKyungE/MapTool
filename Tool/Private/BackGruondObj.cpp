@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "..\Public\BackGruondObj.h"
 #include "GameInstance.h"
-
+#include "../Default/MainFrm.h"
+#include "../Default/MyForm.h"
+#include "../Default/ToolView.h"
+#include <string>
 CBackGroundObj::CBackGroundObj(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
 {
@@ -42,29 +45,91 @@ void CBackGroundObj::Tick(void)
 {
 	__super::Tick();
 
+
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
 }
+
 
 HRESULT CBackGroundObj::Render(void)
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
-		return E_FAIL;
+	if (m_iIndex.m_iIndex != 100)
+	{
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(m_iIndex.m_iIndex)))
-		return E_FAIL;
+		if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
+			return E_FAIL;
 
-	if (FAILED(SetUp_RenderState()))
-		return E_FAIL;
+		if (FAILED(m_pTextureCom->Bind_OnGraphicDev(m_iIndex.m_iIndex)))
+			return E_FAIL;
 
-	m_pVIBufferCom->Render();
+		if (FAILED(SetUp_RenderState()))
+			return E_FAIL;
 
-	if (FAILED(Release_RenderState()))
-		return E_FAIL;
+		m_pVIBufferCom->Render();
 
+		if (FAILED(Release_RenderState()))
+			return E_FAIL;
+	}
+	else
+	{
+		CMainFrame*		pMainFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+		CMyForm*		pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
+		
+		CString strstr;
+		int index = pMyForm->m_ObejctListBox.GetCurSel();
+		if (index != LB_ERR)
+		{
+			pMyForm->m_ObejctListBox.GetText(index, strstr);
+
+			CString str;
+			if (strstr == TEXT("BackGround"))
+			{
+				pMyForm->m_EditIndex.GetWindowText(str);
+
+				int iIndex = _ttoi(str);
+
+				CGameInstance* pInstance = CGameInstance::Get_Instance();
+
+				Safe_AddRef(pInstance);
+				_float3 vPos = pInstance->Get_TargetPos();
+
+				CString strX, strY, strZ;
+
+				pMyForm->m_EditSizeX.GetWindowText(strX);
+				pMyForm->m_EditSizeY.GetWindowText(strY);
+				pMyForm->m_EditSizeZ.GetWindowText(strZ);
+
+				float fScaleX = _float(_wtof(strX));
+				float fScaleY = _float(_wtof(strY));
+				float fScaleZ = _float(_wtof(strZ));
+
+				m_pTransformCom->Set_Scaled(_float3(fScaleX, fScaleY, fScaleZ));
+				vPos.y = 0.5f * fScaleY;
+
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
+				if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
+					return E_FAIL;
+
+				if (FAILED(m_pTextureCom->Bind_OnGraphicDev(iIndex)))
+					return E_FAIL;
+
+				if (FAILED(SetUp_RenderState()))
+					return E_FAIL;
+
+				m_pVIBufferCom->Render();
+
+				if (FAILED(Release_RenderState()))
+					return E_FAIL;
+
+				Safe_Release(pInstance);
+			}
+		}
+	}
 	return S_OK;
 }
 
@@ -104,6 +169,8 @@ HRESULT CBackGroundObj::SetUp_RenderState()
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_NONE);
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
 
+	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
 	return S_OK;
 }
 
@@ -115,6 +182,9 @@ HRESULT CBackGroundObj::Release_RenderState()
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+
+	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+
 	return S_OK;
 }
 
