@@ -33,53 +33,83 @@ void CCamera_Dynamic::Tick()
 {
 	__super::Tick();
 
-	if (GetKeyState(VK_LSHIFT) < 0)
-	{
-		m_pTransform->Set_TransformDesc_Speed(1000.f);
-	}
-	else
-	{
-		m_pTransform->Set_TransformDesc_Speed(10.f);
-	}
+	//if (GetKeyState(VK_LSHIFT) < 0)
+	//{
+	//	m_pTransform->Set_TransformDesc_Speed(1000.f);
+	//}
+	//else
+	//{
+	//	m_pTransform->Set_TransformDesc_Speed(10.f);
+	//}
 
 	if (GetKeyState('W') < 0)
 	{
-		m_pTransform->Go_Straight();
+		_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+		vPos.z += 0.02;
+		m_pTransform->Set_State(CTransform::STATE_POSITION, vPos);
 	}
 
 	if (GetKeyState('S') < 0)
 	{
-		m_pTransform->Go_Backward();
+		_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+		vPos.z -= 0.02;
+		m_pTransform->Set_State(CTransform::STATE_POSITION, vPos);
 	}
 
 	if (GetKeyState('A') < 0)
 	{
-
-		m_pTransform->Go_Left();
+		_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+		vPos.x -= 0.02;
+		m_pTransform->Set_State(CTransform::STATE_POSITION, vPos);
 	}
 
 	if (GetKeyState('D') < 0)
 	{
-		m_pTransform->Go_Right();
+		_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+		vPos.x += 0.02;
+		m_pTransform->Set_State(CTransform::STATE_POSITION, vPos);
+	}
+	if (GetKeyState('Q') < 0)
+	{
+		_float3 vTurn = { 0.f,-1.f,0.f };
+		m_pTransform->Turn(vTurn,0.0005f);
 	}
 
+	if (GetKeyState('E') < 0)
+	{
+		_float3 vTurn = { 0.f,1.f,0.f };
+		m_pTransform->Turn(vTurn, 0.0005f);
+	}
+	if (GetKeyState('R') < 0)
+	{
+		_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+		vPos.y += 0.01;
+		m_pTransform->Set_State(CTransform::STATE_POSITION, vPos);
+	}
 
+	if (GetKeyState('F') < 0)
+	{
+		_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+		vPos.y -= 0.01;
+		m_pTransform->Set_State(CTransform::STATE_POSITION, vPos);
+	}
 
 	CGameInstance*			pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
 	_long			MouseMove = 0;
-
-	if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_X))
+	if (GetKeyState(VK_F1))
 	{
-		m_pTransform->Turn(_float3(0.f, 1.f, 0.f), MouseMove * 0.001f);
-	}
+		if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_X))
+		{
+			m_pTransform->Turn(_float3(0.f, 1.f, 0.f), MouseMove * 0.001f);
+		}
 
-	if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_Y))
-	{
-		m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), MouseMove * 0.001f);
+		if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_Y))
+		{
+			m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), MouseMove * 0.001f);
+		}
 	}
-
 	Safe_Release(pGameInstance);
 
 	m_pTransform->Bind_OnGraphicDev();
