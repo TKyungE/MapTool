@@ -1,43 +1,4 @@
-﻿  ToolView.cpp
-c:\users\태경\desktop\maptool\tool\default\toolview.cpp(514): warning C4800: 'BOOL': 'true' 또는 'false'로 bool 값을 강제하고 있습니다(성능 경고).
-c:\users\태경\desktop\maptool\tool\default\toolview.cpp(643): warning C4244: '=': 'Engine::_float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\toolview.cpp(661): warning C4244: '=': 'Engine::_float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\toolview.cpp(678): warning C4244: '=': 'Engine::_float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\toolview.cpp(784): warning C4244: '=': 'Engine::_float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Tool.cpp
-  MyForm.cpp
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(168): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(206): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(244): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(157): warning C4101: 'h_root' :참조되지 않은 지역 변수입니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(158): warning C4101: 'h_Tile' :참조되지 않은 지역 변수입니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(991): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(993): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(995): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(997): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(999): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(1001): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(1003): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(1005): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(1496): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(1515): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\태경\desktop\maptool\tool\default\myform.cpp(1534): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
-  MainFrm.cpp
-  Transparent_Wall.cpp
-  TerrainRect.cpp
-  Portal.cpp
-  PlayerSpawn.cpp
-  MyTerrain.cpp
+﻿  MyTerrain.cpp
 c:\users\태경\desktop\maptool\tool\private\myterrain.cpp(71): warning C4806: '&': 안전하지 않은 연산입니다. 'bool' 형식의 값('int' 형식으로 확장)이 주어진 상수와 같을 수 없습니다.
-  House2.cpp
-  House.cpp
-  Default_NPC.cpp
-  Camera_Dynamic.cpp
-  BackSpawn.cpp
-  BackGruondObj.cpp
-  MonsterSpawn.cpp
-  코드를 생성하고 있습니다...
-c:\users\태경\desktop\maptool\tool\private\house.cpp(254): warning C4715: 'CHouse::House_Render': 모든 제어 경로에서 값을 반환하지는 않습니다.
-c:\users\태경\desktop\maptool\tool\private\house2.cpp(351): warning C4715: 'CHouse2::RectHouse_Render': 모든 제어 경로에서 값을 반환하지는 않습니다.
   Tool.vcxproj -> C:\Users\태경\Desktop\MapTool\Tool\Default\..\Bin\Tool.exe
   Tool.vcxproj -> ..\Bin\Tool.pdb (Partial PDB)
