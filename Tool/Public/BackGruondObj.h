@@ -41,6 +41,7 @@ private:
 	}INDEXPOS;
 
 	INDEXPOS m_iIndex;
+	_uint m_iTurn = 0;
 private:
 	HRESULT SetUp_Components(void);
 	HRESULT SetUp_RenderState();

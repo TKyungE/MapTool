@@ -100,7 +100,7 @@ HRESULT CMyTerrain::Render(void)
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(80)))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(123)))
 		return E_FAIL;
 
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
