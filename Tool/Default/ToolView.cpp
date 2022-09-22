@@ -420,7 +420,7 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_NPC"),
-		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/NPC/NPC%d.png"), m_iNPCIndex= 7))))
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/NPC/NPC%d.png"), m_iNPCIndex= 14))))
 		return E_FAIL;
 	m_iNPCIndex -= 1;
 

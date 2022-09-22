@@ -32,7 +32,7 @@ HRESULT CDefault_NPC::Initialize(void * pArg)
 
 	_float3 vScale = { 1.f,1.f,1.f };
 	m_pTransformCom->Set_Scaled(vScale);
-	m_IndexPos.vPos.y += 0.4f;
+	m_IndexPos.vPos.y += 0.5f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_IndexPos.vPos);
 	
