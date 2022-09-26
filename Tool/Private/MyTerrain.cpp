@@ -43,8 +43,8 @@ void CMyTerrain::Tick(void)
 
 	Safe_AddRef(pInstance);
 
-	/*if ((GetKeyState(VK_LBUTTON) < 0) & 0x8001)
-	{*/
+	if ((GetKeyState(VK_LBUTTON) < 0) & 0x8001)
+	{
 		_float4x4 matWorld = m_pTransformCom->Get_WorldMatrix();
 		D3DXMatrixInverse(&matWorld, nullptr, &matWorld);
 
@@ -81,7 +81,7 @@ void CMyTerrain::Tick(void)
 
 		VB->Unlock();
 		IB->Unlock();
-	//}
+	}
 
 	Safe_Release(pInstance);
 

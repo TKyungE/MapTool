@@ -16,9 +16,6 @@
     <Filter Include="01. Utility\99. SuperClass">
       <UniqueIdentifier>{cdee8f8a-bc47-4440-a19e-3e932d1b4a1d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility\00. GameInstance">
-      <UniqueIdentifier>{269afc19-8696-4832-8abc-7588cb82deff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Utility\02. Components">
       <UniqueIdentifier>{af0e6f7b-b141-46fd-8682-5b176245d4e3}</UniqueIdentifier>
     </Filter>
@@ -67,6 +64,9 @@
     <Filter Include="01. Utility\02. Components\VIBuffer\Rect2">
       <UniqueIdentifier>{2e1f5b26-2976-41ee-a67b-86ecb1c04742}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\01. GameObjects\00. GameInstance">
+      <UniqueIdentifier>{269afc19-8696-4832-8abc-7588cb82deff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -91,7 +91,7 @@
       <Filter>00. System\Graphic</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GameInstance.h">
-      <Filter>01. Utility\00. GameInstance</Filter>
+      <Filter>01. Utility\01. GameObjects\00. GameInstance</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GameObject.h">
       <Filter>01. Utility\01. GameObjects</Filter>
@@ -150,7 +150,7 @@
       <Filter>00. System\Graphic</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GameInstance.cpp">
-      <Filter>01. Utility\00. GameInstance</Filter>
+      <Filter>01. Utility\01. GameObjects\00. GameInstance</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GameObject.cpp">
       <Filter>01. Utility\01. GameObjects</Filter>
