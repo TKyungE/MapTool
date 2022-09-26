@@ -366,11 +366,10 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 
 	/*For.Prototype_Component_Texture_Terrain*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/Map/Map%d.png"), 114))))
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/OBJ/OBJ/MAP/Map/Map%d.png"), m_iNumTex = 140))))
 		return E_FAIL;
 
 	//m_strTexFilePath = TEXT("Map");
-	m_iNumTex = 114;
 
 	/*For.Prototype_Component_Texture_PlayerSpawn*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_PlayerSpawn"),
@@ -384,7 +383,7 @@ HRESULT CToolView::Ready_Prototype_Component(void)
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/BackGround/BackGround%d.png"), m_iBackIndex = 13))))
+		CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/BackGround/BackGround%d.png"), m_iBackIndex = 17))))
 		return E_FAIL;
 
 	m_iBackIndex -= 1;
@@ -608,7 +607,9 @@ void CToolView::OnLButtonUp(UINT nFlags, CPoint point)
 			m_Index.m_iIndex = pMyForm->m_iIndex1;
 			m_Index.m_BackGroundPos = vPos;
 			m_Index.m_Scale = _float3(pMyForm->m_fScaleX, pMyForm->m_fScaleY, pMyForm->m_fScaleZ);
-			m_Index.m_iTurn = 0;
+			CString strTrun;
+			pMyForm->m_EditTrun.GetWindowText(strTrun);
+			m_Index.m_iTurn = _float(_wtof(strTrun));
 
 			if (FAILED(m_pGameInstance->Add_GameObject(PrototypeTag, TEXT("Layer_BackGround"), &m_Index)))
 			{

@@ -68,13 +68,15 @@ void CMyTerrain::Tick(void)
 				/*_tchar m_szFPS[MAX_PATH] = L"";
 				wsprintf(m_szFPS, L"ÁÂÇ¥ : %d, %d, %d", (int)pInstance->Get_TargetPos().x, (int)pInstance->Get_TargetPos().y, (int)pInstance->Get_TargetPos().z);
 				ERR_MSG(m_szFPS);*/
-				if (!m_bObjectCheck && !m_bTileCheck)
+				if ((GetKeyState(VK_LBUTTON) < 0) & 0x8001)
 				{
-					pVertices[pIndices[i]._0].vPosition.y = m_fValue;
-					pVertices[pIndices[i]._1].vPosition.y = m_fValue;
-					pVertices[pIndices[i]._2].vPosition.y = m_fValue;
+					if (!m_bObjectCheck && !m_bTileCheck)
+					{
+						pVertices[pIndices[i]._0].vPosition.y = m_fValue;
+						pVertices[pIndices[i]._1].vPosition.y = m_fValue;
+						pVertices[pIndices[i]._2].vPosition.y = m_fValue;
+					}
 				}
-
 				break;
 			}
 		}
@@ -98,7 +100,7 @@ HRESULT CMyTerrain::Render(void)
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(112)))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDev(123)))
 		return E_FAIL;
 
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);

@@ -36,6 +36,11 @@ HRESULT CBackGroundObj::Initialize(void * pArg)
 
 	m_iIndex.m_BackGroundPos.y += 0.5f * m_iIndex.m_Scale.y;
 
+	for (_uint i = 0; i < m_iIndex.iTrun; ++i)
+	{
+		m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), 1);
+	}
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_iIndex.m_BackGroundPos);
 
 	return S_OK;
@@ -110,6 +115,32 @@ HRESULT CBackGroundObj::Render(void)
 				m_pTransformCom->Set_Scaled(_float3(fScaleX, fScaleY, fScaleZ));
 				vPos.y = 0.5f * fScaleY;
 
+				CString strTrun;
+				pMyForm->m_EditTrun.GetWindowText(strTrun);
+				_uint iTurn = _float(_wtof(strTrun));
+
+				if (m_iTurn != iTurn)
+				{
+					if (m_iTurn > iTurn)  // 2    1 
+					{
+						_uint iTurn2 = m_iTurn - iTurn;
+
+						for (_uint i = 0; i < iTurn2; ++i)
+							m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), -1);
+						
+						m_iTurn = iTurn;
+					}
+					else
+					{
+						_uint iTrun3 = iTurn - m_iTurn;
+
+						for (_uint i = 0; i < iTrun3; ++i)
+							m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), 1);
+						
+						m_iTurn = iTurn;
+					}
+				}
+				
 				m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
 				if (FAILED(m_pTransformCom->Bind_OnGraphicDev()))
